@@ -253,6 +253,26 @@ PrefabInstance:
       propertyPath: embeddingSpace
       value: 
       objectReference: {fileID: 1032749717}
+    - target: {fileID: 8370107686997645975, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370107686997645965, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
+        type: 3}
+      propertyPath: buttonText
+      value: Exit To Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370107686997645965, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
+        type: 3}
+      propertyPath: dimensions.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370107686997645965, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
+        type: 3}
+      propertyPath: dimensions.y
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0, type: 3}
 --- !u!1 &416871038
@@ -779,7 +799,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1445339415}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &1445339418
 Camera:
   m_ObjectHideFlags: 0
