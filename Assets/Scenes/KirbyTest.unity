@@ -248,16 +248,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8370107686997645971, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
-        type: 3}
-      propertyPath: embeddingSpace
-      value: 
-      objectReference: {fileID: 1032749717}
-    - target: {fileID: 8370107686997645975, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8370107686997645965, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
         type: 3}
       propertyPath: buttonText
@@ -272,6 +262,16 @@ PrefabInstance:
         type: 3}
       propertyPath: dimensions.y
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370107686997645971, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
+        type: 3}
+      propertyPath: embeddingSpace
+      value: 
+      objectReference: {fileID: 1032749717}
+    - target: {fileID: 8370107686997645975, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0, type: 3}
@@ -531,6 +531,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CommunicationsBridge
       objectReference: {fileID: 0}
+    - target: {fileID: 8107553886549661820, guid: 082a8178cdcdc41759a4f44cb6709907,
+        type: 3}
+      propertyPath: connectionRetryTimerTime
+      value: 3000
+      objectReference: {fileID: 0}
     - target: {fileID: 8107553886549661821, guid: 082a8178cdcdc41759a4f44cb6709907,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -585,11 +590,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8107553886549661820, guid: 082a8178cdcdc41759a4f44cb6709907,
-        type: 3}
-      propertyPath: connectionRetryTimerTime
-      value: 3000
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 082a8178cdcdc41759a4f44cb6709907, type: 3}
@@ -684,6 +684,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &941503510
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 941503512}
+  m_Layer: 0
+  m_Name: RedisManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &941503512
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941503510}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1032749717 stripped
 GameObject:
