@@ -28,18 +28,28 @@ public class RedisInterface : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
         {
             // ping
-            string messageToSend = "ping";
-            byte[] bytes = Encoding.ASCII.GetBytes("$").Concat(
+            WriteCommand("ping");
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            // set foo bar
+            WriteCommand("set foo bar");
+        }
+    }
+
+    void WriteCommand(string messageToSend)
+    {
+        byte[] bytes = Encoding.ASCII.GetBytes("$").Concat(
                 Encoding.ASCII.GetBytes(messageToSend.Length.ToString())).Concat(
                 Encoding.ASCII.GetBytes("\r\n").Concat(
                 Encoding.ASCII.GetBytes(messageToSend)).Concat(
                 Encoding.ASCII.GetBytes("\r\n"))).ToArray<byte>();
-            redisSocket.Write(bytes);
-        }
+        redisSocket.Write(bytes);
     }
 
     void ReceivedResponse(object sender, EventArgs e)
     {
-        Debug.Log("Got response from Redis");
+        Debug.Log(string.Format("Got response from Redis: {0}", ((RedisEventArgs)e).Content));
     }
 }
