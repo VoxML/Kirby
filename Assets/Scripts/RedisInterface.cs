@@ -63,16 +63,52 @@ public class RedisInterface : MonoBehaviour
 
     void WriteCommand(string messageToSend)
     {
-        byte[] bytes = Encoding.ASCII.GetBytes("$").Concat(
-                Encoding.ASCII.GetBytes(messageToSend.Length.ToString())).Concat(
-                Encoding.ASCII.GetBytes("\r\n").Concat(
-                Encoding.ASCII.GetBytes(messageToSend)).Concat(
-                Encoding.ASCII.GetBytes("\r\n"))).ToArray<byte>();
+        string bulkString = string.Format("${0}\r\n{1}\r\n", messageToSend.Length.ToString(), messageToSend);
+        Debug.Log(string.Format("Writing bulk string command \"{0}\" to Redis", bulkString.Replace("\r","\\r").Replace("\n", "\\n")));
+        byte[] bytes = Encoding.ASCII.GetBytes(bulkString).ToArray<byte>();
         redisSocket.Write(bytes);
     }
 
     void ReceivedResponse(object sender, EventArgs e)
     {
-        Debug.Log(string.Format("Got response from Redis: {0}", ((RedisEventArgs)e).Content));
+        string raw = ((RedisEventArgs)e).Content;
+        Debug.Log(string.Format("Got raw response from Redis: {0}", raw));
+
+        // split on new lines
+        // first line is "unknown command" response -- throw it out
+        // type is first char of second line
+        char type = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1][0];
+        string response = string.Empty;
+
+        switch (type)
+        {
+            // simple strings
+            case '+':
+                response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('+');
+                Debug.Log(string.Format("Got simple string response from Redis: {0}", response));
+                break;
+
+            // errors
+            case '-':
+                break;
+
+            // integers
+            case ':':
+                break;
+
+            // bulk strings
+            case '$':
+                string size = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('$');
+                response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[2];
+                Debug.Log(string.Format("Got bulk string response of size {0} from Redis: {1}", size, response));
+                break;
+
+            // arrays
+            case '*':
+                break;
+
+            default:
+                break;
+        }
     }
 }
