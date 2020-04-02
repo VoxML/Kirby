@@ -1,3 +1,6 @@
 [submodule "submodules/VoxSim"]
 	path = submodules/VoxSim
 	url = https://github.com/VoxML/VoxSim
+[submodule "submodules/RedisJSON"]
+	path = submodules/RedisJSON
+	url = https://github.com/RedisJSON/RedisJSON.git
