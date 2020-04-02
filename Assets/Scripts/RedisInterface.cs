@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Text;
 
+using Newtonsoft.Json;
 using VoxSimPlatform.Network;
 
 public class RedisInterface : MonoBehaviour
@@ -25,16 +26,38 @@ public class RedisInterface : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             // ping
             WriteCommand("ping");
         }
 
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             // set foo bar
             WriteCommand("set foo bar");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            // get foo
+            WriteCommand("get foo");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            // set json val
+            SampleJson jsonObj = new SampleJson();
+            jsonObj.key = "value";
+
+            string json = JsonUtility.ToJson(jsonObj);
+            WriteCommand(string.Format("json.set json . '{0}'",json));
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            // get json val
+            WriteCommand("json.get json");
         }
     }
 
