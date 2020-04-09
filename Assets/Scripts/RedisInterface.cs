@@ -13,6 +13,8 @@ public class RedisInterface : MonoBehaviour
 
     bool sentAuthentication = false;
 
+    public bool usingRejson = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -59,13 +61,29 @@ public class RedisInterface : MonoBehaviour
             jsonObj.key = "value";
 
             string json = JsonUtility.ToJson(jsonObj);
-            WriteCommand(string.Format("set json '{0}'",json));
+
+            // get json val
+            if (usingRejson)
+            {
+                WriteCommand(string.Format("json.set json . '{0}'", json));
+            }
+            else
+            {
+                WriteCommand(string.Format("set json '{0}'", json));
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {
             // get json val
-            WriteCommand("get json");
+            if (usingRejson)
+            {
+                WriteCommand("json.get json");
+            }
+            else
+            {
+                WriteCommand("get json");
+            }
         }
     }
 
