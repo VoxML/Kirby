@@ -72,7 +72,7 @@ public class RedisInterface : MonoBehaviour
     void ReceivedResponse(object sender, EventArgs e)
     {
         string raw = ((RedisEventArgs)e).Content;
-        Debug.Log(string.Format("Got raw response from Redis: {0}", raw));
+        Debug.Log(string.Format("Raw response from Redis: {0}", raw));
 
         // split on new lines
         // first line is "unknown command" response -- throw it out
@@ -101,6 +101,18 @@ public class RedisInterface : MonoBehaviour
                 string size = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('$');
                 response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[2];
                 Debug.Log(string.Format("Got bulk string response of size {0} from Redis: {1}", size, response));
+                JsonUpdate update = JsonConvert.DeserializeObject<JsonUpdate>(response);
+                //object json = JsonUtility.FromJson(response,typeof(JsonUpdate));
+                //JsonUpdate update = (JsonUpdate)json;
+                Debug.Log(string.Format("Value of \"id\" in jsonObj = {0}", update.id));
+                Debug.Log(string.Format("Value of \"width\" in jsonObj = {0}", update.width));
+                Debug.Log(string.Format("Value of \"height\" in jsonObj = {0}", update.height));
+                Debug.Log(string.Format("Value of \"resolution\" in jsonObj = {0}", update.resolution));
+                Debug.Log(string.Format("Value of \"data\" in jsonObj = {0}", string.Format("[{0}]", string.Join(",", 
+                    update.data.Select(l => string.Format("[{0}]", string.Join(",", l.Select(ll => ll.ToString()))))))));
+
+                    //string.Join(",", 
+                    //string.Format("[{0}]",update.data.Select(l => string.Join(",",l.Select(ll => ll.ToString())))).ToString())));
                 break;
 
             // arrays
