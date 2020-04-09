@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-public class JsonUpdate
+public class MapUpdate
 {
     [JsonProperty("id")]
     public int id { get; set; }
@@ -19,7 +19,7 @@ public class JsonUpdate
     [JsonProperty("data")]
     public List<List<int>> data { get; set; }
 
-    public JsonUpdate()
+    public MapUpdate()
     {
         id = -1;
         width = 0;

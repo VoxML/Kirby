@@ -11,6 +11,8 @@ public class RedisInterface : MonoBehaviour
     GameObject commBridge;
     RedisSocket redisSocket;
 
+    bool sentAuthentication = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +22,12 @@ public class RedisInterface : MonoBehaviour
         if (redisSocket != null)
         {
             redisSocket.UpdateReceived += ReceivedResponse;
+
+            // try authentication
+            if (!sentAuthentication)
+            {
+                WriteCommand("auth ROSlab134");
+            }
         }
     }
 
@@ -101,7 +109,7 @@ public class RedisInterface : MonoBehaviour
                 string size = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('$');
                 response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[2];
                 Debug.Log(string.Format("Got bulk string response of size {0} from Redis: {1}", size, response));
-                JsonUpdate update = JsonConvert.DeserializeObject<JsonUpdate>(response);
+                MapUpdate update = JsonConvert.DeserializeObject<MapUpdate>(response);
                 //object json = JsonUtility.FromJson(response,typeof(JsonUpdate));
                 //JsonUpdate update = (JsonUpdate)json;
                 Debug.Log(string.Format("Value of \"id\" in jsonObj = {0}", update.id));
