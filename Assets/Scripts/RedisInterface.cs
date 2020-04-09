@@ -59,13 +59,13 @@ public class RedisInterface : MonoBehaviour
             jsonObj.key = "value";
 
             string json = JsonUtility.ToJson(jsonObj);
-            WriteCommand(string.Format("json.set json . '{0}'",json));
+            WriteCommand(string.Format("set json '{0}'",json));
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {
             // get json val
-            WriteCommand("json.get json");
+            WriteCommand("get json");
         }
     }
 
