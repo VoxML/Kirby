@@ -11,7 +11,7 @@ public class RedisInterface : MonoBehaviour
     GameObject commBridge;
     RedisSocket redisSocket;
 
-    bool sentAuthentication = false;
+    bool authenticated = false;
 
     public bool usingRejson = false;
 
@@ -26,7 +26,7 @@ public class RedisInterface : MonoBehaviour
             redisSocket.UpdateReceived += ReceivedResponse;
 
             // try authentication
-            if (!sentAuthentication)
+            if (!authenticated)
             {
                 WriteCommand("auth ROSlab134");
             }
@@ -112,6 +112,14 @@ public class RedisInterface : MonoBehaviour
             case '+':
                 response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('+');
                 Debug.Log(string.Format("Got simple string response from Redis: {0}", response));
+
+                if (!authenticated)
+                {
+                    if (string.Equals(response,"OK"))
+                    {
+                        authenticated = true;
+                    }
+                }
                 break;
 
             // errors
