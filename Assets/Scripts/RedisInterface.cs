@@ -157,4 +157,10 @@ public class RedisInterface : MonoBehaviour
                 break;
         }
     }
+
+    void OnDestroy()
+    {
+        // clear all redis keys
+        WriteCommand("flushdb");
+    }
 }
