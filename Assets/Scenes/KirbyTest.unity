@@ -263,6 +263,11 @@ PrefabInstance:
       propertyPath: dimensions.y
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 8370107686997645965, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
+        type: 3}
+      propertyPath: position
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8370107686997645971, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
         type: 3}
       propertyPath: embeddingSpace
@@ -695,8 +700,9 @@ GameObject:
   m_Component:
   - component: {fileID: 941503512}
   - component: {fileID: 941503511}
+  - component: {fileID: 941503513}
   m_Layer: 0
-  m_Name: RedisManager
+  m_Name: KirbyManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -714,6 +720,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5806b1edb55448959f2f2d362c8913f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapKey: json
+  roboKey: 
+  fiducialKey: 
+  cmdKey: cmd
   usingRejson: 0
 --- !u!4 &941503512
 Transform:
@@ -729,6 +739,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &941503513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941503510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da87496e6609a42c1b42d1e6db3116fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1032749717 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8370107687644816506, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
@@ -800,6 +822,61 @@ PrefabInstance:
     - target: {fileID: 4950227606559937996, guid: 326643045520b47d6a16555f040c4c40,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: inputRect.width
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: inputRect.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: inputRect.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: inputRect.height
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: silenceAcknowledgment
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: allowToggleAgent
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: inputMaxWidth
+      value: 375
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: inputHeight
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: inputWidth
+      value: 375
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: inputLabel
+      value: Command
+      objectReference: {fileID: 0}
+    - target: {fileID: 4950227606559937997, guid: 326643045520b47d6a16555f040c4c40,
+        type: 3}
+      propertyPath: directToEventManager
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

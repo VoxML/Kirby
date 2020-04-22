@@ -4,12 +4,20 @@ using System;
 using VoxSimPlatform.Global;
 using VoxSimPlatform.Network;
 
+public enum RedisEventType
+{
+    Command,
+    Response
+}
+
 public class RedisEventArgs : EventArgs
 {
+    public RedisEventType Type { get; set; }
     public string Content { get; set; }
 
-    public RedisEventArgs(string content)
+    public RedisEventArgs(RedisEventType type, string content)
     {
+        this.Type = type;
         this.Content = content;
     }
 }

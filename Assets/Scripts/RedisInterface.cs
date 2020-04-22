@@ -13,6 +13,14 @@ public class RedisInterface : MonoBehaviour
 
     bool authenticated = false;
 
+    RedisEventArgs lastEvent = null;
+
+    /* KEYS */
+    public string mapKey;
+    public string roboKey;
+    public string fiducialKey;
+    public string cmdKey;
+
     public bool usingRejson = false;
 
     // Start is called before the first frame update
@@ -51,25 +59,24 @@ public class RedisInterface : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             // get foo
-            WriteCommand("get foo");
+            WriteCommand(string.Format("get {0}",cmdKey));
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             // set json val
-            SampleJson jsonObj = new SampleJson();
+            JsonKeyValue jsonObj = new JsonKeyValue();
             jsonObj.key = "value";
 
             string json = JsonUtility.ToJson(jsonObj);
 
-            // get json val
             if (usingRejson)
             {
-                WriteCommand(string.Format("json.set json . '{0}'", json));
+                WriteCommand(string.Format("json.set {0} . '{1}'", mapKey, json));
             }
             else
             {
-                WriteCommand(string.Format("set json '{0}'", json));
+                WriteCommand(string.Format("set {0} '{1}'", mapKey, json));
             }
         }
 
@@ -78,17 +85,22 @@ public class RedisInterface : MonoBehaviour
             // get json val
             if (usingRejson)
             {
-                WriteCommand("json.get json");
+                WriteCommand(string.Format("json.get {0}", mapKey));
             }
             else
             {
-                WriteCommand("get json");
+                WriteCommand(string.Format("get {0}", mapKey));
             }
         }
     }
 
-    void WriteCommand(string messageToSend)
+    public void WriteCommand(string messageToSend)
     {
+        if (lastEvent == null)
+        {
+            lastEvent = new RedisEventArgs(RedisEventType.Command, messageToSend);
+        }
+
         string bulkString = string.Format("${0}\r\n{1}\r\n", messageToSend.Length.ToString(), messageToSend);
         Debug.Log(string.Format("Writing bulk string command \"{0}\" to Redis", bulkString.Replace("\r","\\r").Replace("\n", "\\n")));
         byte[] bytes = Encoding.ASCII.GetBytes(bulkString).ToArray<byte>();
@@ -97,6 +109,15 @@ public class RedisInterface : MonoBehaviour
 
     void ReceivedResponse(object sender, EventArgs e)
     {
+        
+        if (lastEvent != null)
+        {
+            if (lastEvent.Type == RedisEventType.Command)
+            { 
+                Debug.Log(string.Format("Received response to: {0}", lastEvent.Content));
+            }
+        }
+
         string raw = ((RedisEventArgs)e).Content;
         Debug.Log(string.Format("Raw response from Redis: {0}", raw));
 
@@ -134,19 +155,34 @@ public class RedisInterface : MonoBehaviour
             case '$':
                 string size = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('$');
                 response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[2];
-                Debug.Log(string.Format("Got bulk string response of size {0} from Redis: {1}", size, response));
-                MapUpdate update = JsonConvert.DeserializeObject<MapUpdate>(response);
-                //object json = JsonUtility.FromJson(response,typeof(JsonUpdate));
-                //JsonUpdate update = (JsonUpdate)json;
-                Debug.Log(string.Format("Value of \"id\" in jsonObj = {0}", update.id));
-                Debug.Log(string.Format("Value of \"width\" in jsonObj = {0}", update.width));
-                Debug.Log(string.Format("Value of \"height\" in jsonObj = {0}", update.height));
-                Debug.Log(string.Format("Value of \"resolution\" in jsonObj = {0}", update.resolution));
-                Debug.Log(string.Format("Value of \"data\" in jsonObj = {0}", string.Format("[{0}]", string.Join(",", 
-                    update.data.Select(l => string.Format("[{0}]", string.Join(",", l.Select(ll => ll.ToString()))))))));
+                Debug.Log(string.Format("Got bulk string response from Redis (responding to \"{0}\", size {1}): {2}",
+                    lastEvent.Content, size, response));
 
-                    //string.Join(",", 
-                    //string.Format("[{0}]",update.data.Select(l => string.Join(",",l.Select(ll => ll.ToString())))).ToString())));
+                if (lastEvent.Content.StartsWith("get"))
+                {
+                    string key = lastEvent.Content.Split()[1];
+
+                    if (!string.IsNullOrEmpty(mapKey) && (key == mapKey))
+                    {
+                        MapUpdate update = JsonConvert.DeserializeObject<MapUpdate>(response);
+                        Debug.Log(string.Format("Value of \"id\" in jsonObj = {0}", update.id));
+                        Debug.Log(string.Format("Value of \"width\" in jsonObj = {0}", update.width));
+                        Debug.Log(string.Format("Value of \"height\" in jsonObj = {0}", update.height));
+                        Debug.Log(string.Format("Value of \"resolution\" in jsonObj = {0}", update.resolution));
+                        Debug.Log(string.Format("Value of \"data\" in jsonObj = {0}", string.Format("[{0}]", string.Join(",",
+                            update.data.Select(l => string.Format("[{0}]", string.Join(",", l.Select(ll => ll.ToString()))))))));
+                    }
+                    else if (!string.IsNullOrEmpty(roboKey) && (key == roboKey))
+                    {
+                    }
+                    else if (!string.IsNullOrEmpty(fiducialKey) && (key == fiducialKey))
+                    {
+                    }
+                    else if (!string.IsNullOrEmpty(cmdKey) && (key == cmdKey))
+                    {
+                    }
+                }
+
                 break;
 
             // arrays
@@ -155,6 +191,11 @@ public class RedisInterface : MonoBehaviour
 
             default:
                 break;
+        }
+
+        if (lastEvent != null)
+        {
+            lastEvent = null;
         }
     }
 

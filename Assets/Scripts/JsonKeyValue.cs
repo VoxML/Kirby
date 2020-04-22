@@ -1,8 +1,8 @@
-﻿public class SampleJson
+﻿public class JsonKeyValue
 {
     public string key;
 
-    public SampleJson()
+    public JsonKeyValue()
     {
         key = string.Empty;
     }

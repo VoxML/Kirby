@@ -43,7 +43,7 @@ public class RedisIOClient : MonoBehaviour
                 {
                     Debug.Log(string.Format("Received message: {0}",inputFromRedis));
                     Debug.Log(_redisSocket.HowManyLeft() + " messages left.");
-                    _redisSocket.OnUpdateReceived(this, new RedisEventArgs(inputFromRedis));
+                    _redisSocket.OnUpdateReceived(this, new RedisEventArgs(RedisEventType.Response,inputFromRedis));
                 }
             }
             else
