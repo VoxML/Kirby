@@ -15,21 +15,15 @@ public class CommandInput : MonoBehaviour
         inputController = GameObject.Find("IOController").GetComponent<InputController>();
         if (inputController == null)
         {
-            Debug.LogError("Could not find InputController!");
+            Debug.LogError("CommandInput.Start: Could not find InputController!");
         }
-
-        //inputController.directToEventManager must be false
-        //if (inputController.directToEventManager)
-        //{ 
-        //    inputController.directToEventManager = false;
-        //}
 
         inputController.InputReceived += PostMessage;
 
         redis = gameObject.GetComponent<RedisInterface>();
-        if (inputController == null)
+        if (redis == null)
         {
-            Debug.LogError("Could not find RedisInterface!");
+            Debug.LogError("CommandInput.Start: Could not find RedisInterface!");
         }
     }
 

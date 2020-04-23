@@ -812,6 +812,37 @@ MonoBehaviour:
   cursorToggleAllowed: 1
   cursorToggleButton: 27
   panSpeed: 0.1
+--- !u!1 &538056673 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8370107686997645960, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
+    type: 3}
+  m_PrefabInstance: {fileID: 366083344}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &538056684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538056673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2bfdb8555f2c4b488cf49ad5d6566c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultFontSize: 12
+  buttonRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  buttonText: Flush Database
+  id: 0
+  position: 1
+  offset: {x: 0, y: 30}
+  dimensions: {x: 100, y: 25}
+  fontSize: 12
 --- !u!1 &714400441
 GameObject:
   m_ObjectHideFlags: 0
@@ -869,7 +900,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 714400441}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &714400445
 Camera:
   m_ObjectHideFlags: 0

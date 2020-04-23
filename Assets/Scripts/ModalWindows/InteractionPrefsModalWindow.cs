@@ -100,7 +100,7 @@ public class InteractionPrefsModalWindow : ModalWindow {
 		if (GUI.Button(new Rect(
 				Screen.width - (10 + (int) (110 * fontSizeModifier / 3)) + 36 * fontSizeModifier -
 				(GUI.skin.label.CalcSize(new GUIContent(actionButtonText)).x + 10),
-				40, GUI.skin.label.CalcSize(new GUIContent(actionButtonText)).x + 10, 25 * fontSizeModifier),
+				70, GUI.skin.label.CalcSize(new GUIContent(actionButtonText)).x + 10, 25 * fontSizeModifier),
 			actionButtonText, buttonStyle)) {
 			render = true;
 		}

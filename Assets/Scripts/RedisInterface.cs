@@ -154,32 +154,36 @@ public class RedisInterface : MonoBehaviour
             // bulk strings
             case '$':
                 string size = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('$');
-                response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[2];
-                Debug.Log(string.Format("Got bulk string response from Redis (responding to \"{0}\", size {1}): {2}",
-                    lastEvent.Content, size, response));
 
-                if (lastEvent.Content.StartsWith("get"))
-                {
-                    string key = lastEvent.Content.Split()[1];
+                if (raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length > 2)
+                { 
+                    response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[2];
+                    Debug.Log(string.Format("Got bulk string response from Redis (responding to \"{0}\", size {1}): {2}",
+                        lastEvent.Content, size, response));
 
-                    if (!string.IsNullOrEmpty(mapKey) && (key == mapKey))
+                    if (lastEvent.Content.StartsWith("get"))
                     {
-                        MapUpdate update = JsonConvert.DeserializeObject<MapUpdate>(response);
-                        Debug.Log(string.Format("Value of \"id\" in jsonObj = {0}", update.id));
-                        Debug.Log(string.Format("Value of \"width\" in jsonObj = {0}", update.width));
-                        Debug.Log(string.Format("Value of \"height\" in jsonObj = {0}", update.height));
-                        Debug.Log(string.Format("Value of \"resolution\" in jsonObj = {0}", update.resolution));
-                        Debug.Log(string.Format("Value of \"data\" in jsonObj = {0}", string.Format("[{0}]", string.Join(",",
-                            update.data.Select(l => string.Format("[{0}]", string.Join(",", l.Select(ll => ll.ToString()))))))));
-                    }
-                    else if (!string.IsNullOrEmpty(roboKey) && (key == roboKey))
-                    {
-                    }
-                    else if (!string.IsNullOrEmpty(fiducialKey) && (key == fiducialKey))
-                    {
-                    }
-                    else if (!string.IsNullOrEmpty(cmdKey) && (key == cmdKey))
-                    {
+                        string key = lastEvent.Content.Split()[1];
+
+                        if (!string.IsNullOrEmpty(mapKey) && (key == mapKey))
+                        {
+                            MapUpdate update = JsonConvert.DeserializeObject<MapUpdate>(response);
+                            Debug.Log(string.Format("Value of \"id\" in jsonObj = {0}", update.id));
+                            Debug.Log(string.Format("Value of \"width\" in jsonObj = {0}", update.width));
+                            Debug.Log(string.Format("Value of \"height\" in jsonObj = {0}", update.height));
+                            Debug.Log(string.Format("Value of \"resolution\" in jsonObj = {0}", update.resolution));
+                            Debug.Log(string.Format("Value of \"data\" in jsonObj = {0}", string.Format("[{0}]", string.Join(",",
+                                update.data.Select(l => string.Format("[{0}]", string.Join(",", l.Select(ll => ll.ToString()))))))));
+                        }
+                        else if (!string.IsNullOrEmpty(roboKey) && (key == roboKey))
+                        {
+                        }
+                        else if (!string.IsNullOrEmpty(fiducialKey) && (key == fiducialKey))
+                        {
+                        }
+                        else if (!string.IsNullOrEmpty(cmdKey) && (key == cmdKey))
+                        {
+                        }
                     }
                 }
 
@@ -193,15 +197,6 @@ public class RedisInterface : MonoBehaviour
                 break;
         }
 
-        if (lastEvent != null)
-        {
-            lastEvent = null;
-        }
-    }
-
-    void OnDestroy()
-    {
-        // clear all redis keys
-        WriteCommand("flushdb");
+        lastEvent = null;
     }
 }
