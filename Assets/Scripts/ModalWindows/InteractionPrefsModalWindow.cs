@@ -91,7 +91,6 @@ public class InteractionPrefsModalWindow : ModalWindow {
 
 	// Update is called once per frame
 	void Update() {
-        Debug.Log(GameObject.Find("RoboCamera").GetComponent<Camera>().targetTexture);
 	}
 
 	protected override void OnGUI() {
