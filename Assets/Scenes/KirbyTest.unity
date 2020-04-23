@@ -623,6 +623,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8370107686997645965, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
+        type: 3}
+      propertyPath: buttonRect.height
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8370107686997645971, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
         type: 3}
       propertyPath: embeddingSpace
