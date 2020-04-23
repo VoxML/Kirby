@@ -84,7 +84,7 @@ public class InteractionPrefsModalWindow : ModalWindow {
 
 		fontSizeModifier = (int) (fontSize / defaultFontSize);
 
-		windowRect = new Rect(Screen.width - 230, 50 + (int) (20 * fontSizeModifier), 215, 200);
+		windowRect = new Rect(Screen.width - 230, 80 + (int) (20 * fontSizeModifier), 215, 200);
 
         GameObject.Find("RoboCamera").GetComponent<SyntheticVision>().ShowFoV = showSyntheticVision;
     }
