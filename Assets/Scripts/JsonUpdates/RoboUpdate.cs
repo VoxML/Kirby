@@ -2,30 +2,38 @@
 
 using Newtonsoft.Json;
 
+/// <summary>
+/// This class represents updates to Kirby's odometry
+/// </summary>
+
 public class RoboUpdate
 {
-    [JsonProperty("id")]
-    public int id { get; set; }
+    [JsonProperty("odom_id")]
+    public int odomId { get; set; }
 
-    [JsonProperty("width")]
-    public int width { get; set; }
+    [JsonProperty("time")]
+    public int time { get; set; }
 
-    [JsonProperty("height")]
-    public int height { get; set; }
+    [JsonProperty("location")]
+    public List<float> location { get; set; }
 
-    [JsonProperty("resolution")]
-    public float resolution { get; set; }
+    [JsonProperty("orientation")]
+    public List<float> orientation { get; set; }
 
-    [JsonProperty("data")]
-    public List<List<int>> data { get; set; }
+    [JsonProperty("linearvelocity")]
+    public float linearVelocity { get; set; }
+
+    [JsonProperty("angularvelocity")]
+    public float angularVelocity { get; set; }
 
     public RoboUpdate()
     {
-        id = -1;
-        width = 0;
-        height = 0;
-        resolution = 0;
-        data = new List<List<int>>();
+        odomId = -1;
+        time = 0;
+        location = new List<float>;
+        orientation = new List<float>;
+        linearVelocity = 0.0f;
+        angularVelocity = 0.0f;
     }
 }
 
