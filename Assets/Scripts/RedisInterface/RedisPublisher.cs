@@ -119,7 +119,6 @@ public class RedisPublisher : RedisInterface
                     if (string.Equals(response, "OK"))
                     {
                         authenticated = true;
-                        BroadcastMessage("PublisherAuthenticated");
                     }
                 }
                 break;

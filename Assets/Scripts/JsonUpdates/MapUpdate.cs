@@ -66,11 +66,9 @@ public class MapUpdate
             {
                 // first pair is start coords (X,Z)
                 Vector3 start = new Vector3(coordPair[0], 0.0f, coordPair[1]);
-                Debug.Log(string.Format("start = {0}", GlobalHelper.VectorToParsable(start)));
 
                 // second pair is end coords (X,Z)
                 Vector3 end = new Vector3(coordPair[2], 0.0f, coordPair[3]);
-                Debug.Log(string.Format("end = {0}", GlobalHelper.VectorToParsable(end)));
 
                 // create a cube
                 GameObject wallSegment = GameObject.CreatePrimitive(PrimitiveType.Cube);

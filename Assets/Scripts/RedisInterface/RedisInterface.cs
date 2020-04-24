@@ -45,12 +45,22 @@ public class RedisInterface : MonoBehaviour
 
     protected char GetResponseType(string raw)
     {
-        Debug.Log(string.Format("Raw response from Redis: {0}", raw));
+        char type = '\0';
+        Debug.Log(string.Format("Raw content from Redis: {0}", raw));
 
         // split on new lines
-        // first line is "unknown command" response -- throw it out
-        // type is first char of second line
-        char type = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1][0];
+        // if first line is "unknown command" response -- throw it out
+        //  type is first char of second line
+        string first = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[0].Trim();
+
+        if (first.StartsWith("unknown command"))
+        {
+            type = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1][0];
+        }
+        else
+        {
+            type = first[0];
+        }
 
         return type;
     }
