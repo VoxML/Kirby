@@ -167,13 +167,9 @@ public class RedisInterface : MonoBehaviour
 
                         if (!string.IsNullOrEmpty(mapKey) && (key == mapKey))
                         {
-                            MapUpdate update = JsonConvert.DeserializeObject<MapUpdate>(response);
-                            Debug.Log(string.Format("Value of \"id\" in jsonObj = {0}", update.id));
-                            Debug.Log(string.Format("Value of \"width\" in jsonObj = {0}", update.width));
-                            Debug.Log(string.Format("Value of \"height\" in jsonObj = {0}", update.height));
-                            Debug.Log(string.Format("Value of \"resolution\" in jsonObj = {0}", update.resolution));
-                            Debug.Log(string.Format("Value of \"data\" in jsonObj = {0}", string.Format("[{0}]", string.Join(",",
-                                update.data.Select(l => string.Format("[{0}]", string.Join(",", l.Select(ll => ll.ToString()))))))));
+                            MapUpdate mapUpdate = JsonConvert.DeserializeObject<MapUpdate>(response);
+                            mapUpdate.Log();
+                            mapUpdate.Interpret();
                         }
                         else if (!string.IsNullOrEmpty(roboKey) && (key == roboKey))
                         {
