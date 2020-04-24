@@ -39,7 +39,7 @@ public class CommandInput : MonoBehaviour
         string message = ((InputEventArgs)e).InputString;
         Debug.Log(string.Format("Got input \"{0}\"", message));
 
-        string command = string.Format("rpush cmd \"'{0}'\"", message);
+        string command = string.Format("rpush cmd \"{0}\"", message);
         Debug.Log(string.Format("Posting message {0} to Redis", command));
         redis.WriteCommand(command);
     }
