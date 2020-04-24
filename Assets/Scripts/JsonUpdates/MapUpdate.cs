@@ -75,6 +75,16 @@ public class MapUpdate
                 // create a cube
                 GameObject wallSegment = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
+                // example using [2.0, 0.0, 0.0, -2.0] line segment
+                // start: (2.0, 0.0, 0.0)
+                // end: (0.0,0.0,-2.0)
+                // end - start: (-2.0,0.0,-2.0)
+                // (end - start).magnitude: √8 ≈ 2.828
+                // wallSegment.transform.localScale = (2.828, 1.0, 0,1)
+                // wallSegment.transform.position = (-2.0/2, 0.0/2 + 1.0/2, -2.0/2) = (-1.0, 0.5, -1.0)
+                // normalized = (-1/√2, 0, -1/√2) ≈ (-0.707, 0, -0.707)
+                // arcsin(-0.707) ≈ -45 degrees
+
                 // scale it along the X-axis by the length of the line segment (and make it thin along the Z)
                 wallSegment.transform.localScale = new Vector3((end - start).magnitude, 1.0f, 0.1f);
 
@@ -87,7 +97,8 @@ public class MapUpdate
 
                 // rotate the wall segment around the Y by the arcsin of the unit vector
                 //  result is in radians so convert to degrees
-                wallSegment.transform.eulerAngles = new Vector3(0.0f, Mathf.Asin(normalized.z) * Mathf.Rad2Deg, 0.0f);
+                float yRot = -Mathf.Asin(normalized.z) * Mathf.Sign(normalized.x) * Mathf.Rad2Deg;
+                wallSegment.transform.eulerAngles = new Vector3(0.0f, yRot, 0.0f);
             }
         }
     }
