@@ -14,17 +14,17 @@ public class FlushDBButton : UIButton
 
     GUIStyle buttonStyle;
 
-    RedisInterface redis;
+    RedisPublisher redisPublisher;
 
     // Use this for initialization
     void Start()
     {
         FontSizeModifier = (int)(fontSize / defaultFontSize);
 
-        redis = GameObject.Find("KirbyManager").GetComponent<RedisInterface>();
-        if (redis == null)
+        redisPublisher = GameObject.Find("KirbyManager").GetComponent<RedisPublisher>();
+        if (redisPublisher == null)
         {
-            Debug.LogError("FlushDBButton.Start: Could not find RedisInterface!");
+            Debug.LogError("FlushDBButton.Start: Could not find RedisPublisher!");
         }
 
         base.Start();
@@ -43,7 +43,7 @@ public class FlushDBButton : UIButton
         if (GUI.Button(buttonRect, buttonText, buttonStyle))
         {
             // clear all redis keys
-            redis.WriteCommand("flushdb");
+            redisPublisher.WriteCommand("flushdb");
             return;
         }
 

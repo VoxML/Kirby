@@ -7,7 +7,7 @@ using VoxSimPlatform.Agent;
 public class CommandInput : MonoBehaviour
 {
     InputController inputController;
-    RedisInterface redis;
+    RedisPublisher redisPublisher;
 
     // Start is called before the first frame update
     void Start()
@@ -20,10 +20,10 @@ public class CommandInput : MonoBehaviour
 
         inputController.InputReceived += PostMessage;
 
-        redis = gameObject.GetComponent<RedisInterface>();
-        if (redis == null)
+        redisPublisher = gameObject.GetComponent<RedisPublisher>();
+        if (redisPublisher == null)
         {
-            Debug.LogError("CommandInput.Start: Could not find RedisInterface!");
+            Debug.LogError("CommandInput.Start: Could not find RedisPublisher!");
         }
     }
 
@@ -41,6 +41,6 @@ public class CommandInput : MonoBehaviour
 
         string command = string.Format("rpush cmd \"{0}\"", message);
         Debug.Log(string.Format("Posting message {0} to Redis", command));
-        redis.WriteCommand(command);
+        redisPublisher.WriteCommand(command);
     }
 }

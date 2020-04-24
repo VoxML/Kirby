@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using VoxSimPlatform.Network;
 
 public class RedisIOClient : MonoBehaviour
 {
+    CommunicationsBridge commBridge;
+
     RedisSocket _redisSocket;
     public RedisSocket RedisSocket
     {
@@ -13,13 +16,20 @@ public class RedisIOClient : MonoBehaviour
         set { _redisSocket = value; }
     }
 
-    CommunicationsBridge commBridge;
+    public string socketName = string.Empty;
 
     // Use this for initialization
     void Start()
     {
         commBridge = GameObject.Find("CommunicationsBridge").GetComponent<CommunicationsBridge>();
-        _redisSocket = (RedisSocket)commBridge.FindSocketConnectionByType(typeof(RedisIOClient));
+
+        List<string> clientNames = commBridge.GetComponents<RedisIOClient>().Select(s => s.socketName).ToList();
+
+        List<string> exclusions = commBridge.SocketConnections.FindAll(s => s.IOClientType == typeof(RedisIOClient) && 
+            clientNames.Contains(s.Label)).Select(s => s.Label).ToList();
+        
+        _redisSocket = (RedisSocket)commBridge.FindSocketConnectionByType(typeof(RedisIOClient), exclusions);
+        socketName = _redisSocket.Label;
     }
 
     // Update is called once per frame

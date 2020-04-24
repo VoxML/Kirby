@@ -84,7 +84,7 @@ public class MapUpdate
                 // wallSegment.transform.position = (-2.0/2, 0.0/2 + 1.0/2, -2.0/2) = (-1.0, 0.5, -1.0)
                 // normalized = (-1/√2, 0, -1/√2) ≈ (-0.707, 0, -0.707)
                 // arcsin(-0.707) ≈ -45 degrees
-                // -45 * sign(-0.70) = 45 degrees
+                // -45 * sign(-0.707) = 45 degrees
 
                 // scale it along the X-axis by the length of the line segment (and make it thin along the Z)
                 wallSegment.transform.localScale = new Vector3((end - start).magnitude, 1.0f, 0.1f);
