@@ -15,7 +15,7 @@ Install [Unity](https://unity3d.com/get-unity/download) (Current Unity version i
 
 VoxSim requires the following Unity packages to run (can be found on the Asset Store):
 
-* SimpleFileBrowser (recommended location: `submodules/VoxSim/`)
+* Simple File Browser (recommended location: `submodules/VoxSim/`)
 * Console Enhanced Free (recommended location: `submodules/VoxSim/Plugins`)
 * RT-Voice Pro (recommended location: `submodules/VoxSim/Plugins`)
 * Final IK (recommended location: `submodules/VoxSim/Plugins`)
