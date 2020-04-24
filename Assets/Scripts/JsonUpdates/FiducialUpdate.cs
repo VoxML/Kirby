@@ -2,6 +2,11 @@
 
 using Newtonsoft.Json;
 
+/// <summary>
+/// This class represents updates to the fiducials (objects of interest) received from Kirby
+/// </summary>
+
+
 public class FiducialUpdate
 {
     [JsonProperty("id")]

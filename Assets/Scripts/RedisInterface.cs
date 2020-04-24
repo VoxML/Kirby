@@ -15,7 +15,7 @@ public class RedisInterface : MonoBehaviour
 
     RedisEventArgs lastEvent = null;
 
-    /* KEYS */
+    // keys
     public string mapKey;
     public string roboKey;
     public string fiducialKey;
@@ -44,6 +44,9 @@ public class RedisInterface : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // below are tests that set preset commands to JSON
+        // TODO: remove when no longer necessary
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             // ping
@@ -96,6 +99,7 @@ public class RedisInterface : MonoBehaviour
 
     public void WriteCommand(string messageToSend)
     {
+        // take a message to sent to Redis, turn it into a properly formatted bulk string, and send it
         if (lastEvent == null)
         {
             lastEvent = new RedisEventArgs(RedisEventType.Command, messageToSend);

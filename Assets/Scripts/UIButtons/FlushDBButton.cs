@@ -4,6 +4,10 @@ using UnityEngine;
 
 using VoxSimPlatform.UI.UIButtons;
 
+/// <summary>
+/// A button to clear the contents of the Redis DB
+/// </summary>
+
 public class FlushDBButton : UIButton
 {
     public int fontSize = 12;

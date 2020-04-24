@@ -35,6 +35,7 @@ public class CommandInput : MonoBehaviour
 
     void PostMessage(object sender, EventArgs e)
     {
+        // take the input message, turn it into a Redis command and post it
         string message = ((InputEventArgs)e).InputString;
         Debug.Log(string.Format("Got input \"{0}\"", message));
 

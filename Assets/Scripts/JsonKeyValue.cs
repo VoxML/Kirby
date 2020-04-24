@@ -1,4 +1,8 @@
-﻿public class JsonKeyValue
+﻿/// <summary>
+/// Very simple JSON key-value class
+/// </summary>
+
+public class JsonKeyValue
 {
     public string key;
 
