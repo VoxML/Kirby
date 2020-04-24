@@ -30,8 +30,8 @@ public class RoboUpdate
     {
         odomId = -1;
         time = 0;
-        location = new List<float>;
-        orientation = new List<float>;
+        location = new List<float>();
+        orientation = new List<float>();
         linearVelocity = 0.0f;
         angularVelocity = 0.0f;
     }
