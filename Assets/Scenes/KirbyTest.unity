@@ -479,6 +479,7 @@ GameObject:
   - component: {fileID: 190478249}
   - component: {fileID: 190478248}
   - component: {fileID: 190478247}
+  - component: {fileID: 190478251}
   m_Layer: 0
   m_Name: RoboStandIn
   m_TagString: Agent
@@ -561,6 +562,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &190478251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190478246}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46e056a22b51047b9bde33a27b34d76d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  density: 0
+  graspConvention: {fileID: 0}
+  interactionTargets: []
+  moveSpeed: 0
+  turnSpeed: 0
+  defaultMoveSpeed: 0
+  defaultTurnSpeed: 0
+  minYBound: 0
+  isGrasped: 0
+  graspTracker: {fileID: 0}
+  grasperCoord: {fileID: 0}
+  children: []
+  startPosition: {x: 0, y: 0, z: 0}
+  startRotation: {x: 0, y: 0, z: 0}
+  startScale: {x: 0, y: 0, z: 0}
+  defaultParent: {fileID: 0}
 --- !u!1001 &366083344
 PrefabInstance:
   m_ObjectHideFlags: 0
