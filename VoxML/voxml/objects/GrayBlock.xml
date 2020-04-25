@@ -2,19 +2,15 @@
 <VoxML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Entity Type="Object" />
   <Lex>
-    <Pred>bottle</Pred>
+    <Pred>block</Pred>
     <Type>physobj*artifact</Type>
   </Lex>
   <Type>
-    <Head>cylindroid[1]</Head>
-    <Components>
-      <Component Value="surface[1]" />
-      <Component Value="interior_surface" />
-      <Component Value="interior[2]" />
-    </Components>
-    <Concavity>Concave[2]</Concavity>
-    <RotatSym>Y</RotatSym>
-    <ReflSym>XY,YZ</ReflSym>
+    <Head>rectangular_prism[1]</Head>
+    <Components />
+    <Concavity>Flat</Concavity>
+    <RotatSym>X,Y,Z</RotatSym>
+    <ReflSym>XY,XZ,YZ</ReflSym>
     <Args />
     <Body />
     <Scale />
@@ -25,20 +21,16 @@
   </Type>
   <Habitat>
     <Intrinsic>
-      <Intr Name="UP[3]" Value="align(Y,E_y)" />
-      <Intr Name="TOP[3]" Value="top(+Y)" />
+      <Intr Name="CONSTR[2]" Value="X = Y = Z" />
     </Intrinsic>
-    <Extrinsic>
-      <Extr Name="UP[4]" Value="align(Y,E_y)" />
-      <Extr Name="TOP[4]" Value="top(-Y)" />
-    </Extrinsic>
+    <Extrinsic />
   </Habitat>
   <Afford_Str>
     <Affordances>
-      <Affordance Formula="H-&gt;[put(x, on([1]))]support([1], x)" />
-      <Affordance Formula="H-&gt;[put(x, in([2]))]contain([2], x)" />
+      <Affordance Formula="H-&gt;[put(x, y, on([1]))]support([1], y)" />
       <Affordance Formula="H-&gt;[grasp(x, [1])]hold(x, [1])" />
       <Affordance Formula="H-&gt;[lift(x, [1])]hold(x, [1])" />
+      <Affordance Formula="H-&gt;[ungrasp(x, [1])]release(x, [1])" />
     </Affordances>
   </Afford_Str>
   <Embodiment>
@@ -46,6 +38,9 @@
     <Movable>true</Movable>
   </Embodiment>
   <Attributes>
-    <Attrs />
+    <Attrs>
+      <Attr Value="gray" />
+      <Attr Value="white" />
+    </Attrs>
   </Attributes>
 </VoxML>

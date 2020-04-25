@@ -2,7 +2,7 @@
 <VoxML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <Entity Type="Relation" />
   <Lex>
-    <Pred>in_front</Pred>
+    <Pred>right</Pred>
   </Lex>
   <Type>
     <Class>config</Class>
@@ -11,7 +11,7 @@
         <Arg Value="x:physobj" />
         <Arg Value="y:physobj" />
     </Args>
-    <Constr>Z(x) &lt; Z(y)</Constr>
+    <Constr>X(x) &lt; X(y) | X(x) &gt; X(y)</Constr>
     <Corresps />
   </Type>
 </VoxML>

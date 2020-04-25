@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<VoxML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Entity Type="Object" />
+  <Lex>
+    <Pred>robot</Pred>
+    <Type>physobj*artifact</Type>
+  </Lex>
+  <Type>
+    <Head>cylindroid[1]</Head>
+    <Components />
+    <Concavity>Concave</Concavity>
+    <RotatSym>Y</RotatSym>
+    <ReflSym>XY,XZ,YZ</ReflSym>
+    <Args />
+    <Body />
+    <Scale />
+    <Arity />
+    <Class />
+    <Value />
+    <Constr />
+  </Type>
+  <Habitat>
+    <Intrinsic>
+      <Intr Name="CONSTR[2]" Value="X = Z" />
+      <Intr Name="CONSTR[2]" Value="Y > X" />
+      <Intr Name="CONSTR[2]" Value="Y > Z" />
+    </Intrinsic>
+    <Extrinsic />
+  </Habitat>
+  <Afford_Str />
+  <Embodiment>
+    <Scale>=agent</Scale>
+    <Movable>true</Movable>
+  </Embodiment>
+  <Attributes>
+    <Attrs>
+      <Attr Value="black" />
+    </Attrs>
+  </Attributes>
+</VoxML>
