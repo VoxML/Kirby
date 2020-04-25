@@ -480,7 +480,11 @@ GameObject:
   - component: {fileID: 190478248}
   - component: {fileID: 190478247}
   - component: {fileID: 190478251}
-  m_Layer: 0
+  - component: {fileID: 190478255}
+  - component: {fileID: 190478254}
+  - component: {fileID: 190478253}
+  - component: {fileID: 190478252}
+  m_Layer: 10
   m_Name: RoboStandIn
   m_TagString: Agent
   m_Icon: {fileID: 0}
@@ -569,7 +573,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 190478246}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 46e056a22b51047b9bde33a27b34d76d, type: 3}
   m_Name: 
@@ -577,8 +581,8 @@ MonoBehaviour:
   density: 0
   graspConvention: {fileID: 0}
   interactionTargets: []
-  moveSpeed: 0
-  turnSpeed: 0
+  moveSpeed: 1
+  turnSpeed: 2.5
   defaultMoveSpeed: 0
   defaultTurnSpeed: 0
   minYBound: 0
@@ -590,6 +594,75 @@ MonoBehaviour:
   startRotation: {x: 0, y: 0, z: 0}
   startScale: {x: 0, y: 0, z: 0}
   defaultParent: {fileID: 0}
+--- !u!114 &190478252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190478246}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d8eb56fb56a3483fbb763cc7074a762, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  source: {fileID: 0}
+  rotateAround: 1
+  debug: 0
+--- !u!114 &190478253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190478246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41f425a4a83914b04af3f1642c000f5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  otherLookAtTarget: {fileID: 0}
+  otherTargetsRoot: {fileID: 0}
+  positionOffsetSpace: {fileID: 0}
+  weightCurves: []
+  multipliers: []
+  events: []
+--- !u!114 &190478254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190478246}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6848f410a0a2d405eb0432e706a46566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionSystem: {fileID: 0}
+  rootJoint: {fileID: 0}
+  effectorType: 6
+  handTarget: {fileID: 0}
+  overrideDirection: 0
+  localDirection: {x: 0.8660254, y: 0, z: 0.5}
+--- !u!114 &190478255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190478246}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6848f410a0a2d405eb0432e706a46566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionSystem: {fileID: 0}
+  rootJoint: {fileID: 0}
+  effectorType: 5
+  handTarget: {fileID: 0}
+  overrideDirection: 0
+  localDirection: {x: -0.8660254, y: 0, z: 0.5}
 --- !u!1001 &366083344
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -706,6 +779,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2127496905063538820, guid: 6654ac9c5e0c3429e898e353484ff16c,
+        type: 3}
+      propertyPath: activeAgent
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2127496905063538822, guid: 6654ac9c5e0c3429e898e353484ff16c,
         type: 3}
       propertyPath: m_Name
@@ -1185,6 +1263,8 @@ GameObject:
   - component: {fileID: 941503513}
   - component: {fileID: 941503511}
   - component: {fileID: 941503514}
+  - component: {fileID: 941503516}
+  - component: {fileID: 941503515}
   m_Layer: 0
   m_Name: KirbyManager
   m_TagString: Untagged
@@ -1204,8 +1284,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181ad60c7448d481b914db3cae8f3753, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapKey: json
-  roboKey: 
+  authenticated: 0
+  mapKey: map
+  roboKey: odom
   fiducialKey: 
   cmdKey: cmd
   usingRejson: 0
@@ -1247,11 +1328,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df8cb126beee24b7c93cee43b3178c6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  authenticated: 0
   mapKey: 
   roboKey: 
   fiducialKey: 
   cmdKey: 
   usingRejson: 0
+--- !u!114 &941503515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941503510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15090113d2c304d4f89db3a2dc6b0ae6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &941503516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941503510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33e495871fd3e4f95ba98107b91cf204, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1032749717 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8370107687644816506, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
