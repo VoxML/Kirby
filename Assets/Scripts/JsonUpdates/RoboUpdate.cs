@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 using Newtonsoft.Json;
 
@@ -6,7 +8,7 @@ using Newtonsoft.Json;
 /// This class represents updates to Kirby's odometry
 /// </summary>
 
-public class RoboUpdate
+public class RoboUpdate : MonoBehaviour
 {
     [JsonProperty("odom_id")]
     public int odomId { get; set; }
@@ -34,6 +36,25 @@ public class RoboUpdate
         orientation = new List<float>();
         linearVelocity = 0.0f;
         angularVelocity = 0.0f;
+    }
+
+    public void Log()
+    {
+        // print the contents of the map update to the console
+        Debug.Log(string.Format("Value of \"odom_id\" in jsonObj = {0}", this.odomId));
+        Debug.Log(string.Format("Value of \"time\" in jsonObj = {0}", this.time));
+        Debug.Log(string.Format("Value of \"location\" in jsonObj = {0}", string.Format("[{0}]", string.Join(",",
+            this.location.Select(l => l.ToString())))));
+        Debug.Log(string.Format("Value of \"orientation\" in jsonObj = {0}", string.Format("[{0}]", string.Join(",",
+            this.orientation.Select(l => l.ToString())))));
+        Debug.Log(string.Format("Value of \"linearvelocity\" in jsonObj = {0}", this.linearVelocity));
+        Debug.Log(string.Format("Value of \"angularvelocity\" in jsonObj = {0}", this.angularVelocity));
+    }
+
+
+    public void Interpret()
+    {
+        
     }
 }
 

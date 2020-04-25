@@ -8,9 +8,15 @@ public class RedisPublisher : RedisInterface
 {
     RedisEventArgs lastEvent = null;
 
+    MapUpdater mapUpdater;
+    RoboUpdater roboUpdater;
+
     // Start is called before the first frame update
     void Start()
     {
+        mapUpdater = gameObject.GetComponent<MapUpdater>();
+        roboUpdater = gameObject.GetComponent<RoboUpdater>();
+
         base.Start();
 
         redisSocket = (RedisSocket)commBridge.GetComponent<CommunicationsBridge>().FindSocketConnectionByLabel("RedisPublisher");
@@ -149,10 +155,13 @@ public class RedisPublisher : RedisInterface
                         {
                             MapUpdate mapUpdate = JsonConvert.DeserializeObject<MapUpdate>(response);
                             mapUpdate.Log();
-                            mapUpdate.Interpret();
+                            mapUpdater.UpdateMap(mapUpdate);
                         }
                         else if (!string.IsNullOrEmpty(roboKey) && (key == roboKey))
                         {
+                            RoboUpdate roboUpdate = JsonConvert.DeserializeObject<RoboUpdate>(response);
+                            roboUpdate.Log();
+                            roboUpdater.UpdateRobot(roboUpdate);
                         }
                         else if (!string.IsNullOrEmpty(fiducialKey) && (key == fiducialKey))
                         {
