@@ -8,7 +8,7 @@ using VoxSimPlatform.UI.UIButtons;
 /// A button to clear the contents of the Redis DB
 /// </summary>
 
-public class FlushDBButton : UIButton
+public class FlushDBUIButton : UIButton
 {
     public int fontSize = 12;
 

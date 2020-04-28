@@ -84,7 +84,7 @@ public class InteractionPrefsModalWindow : ModalWindow {
 
 		fontSizeModifier = (int) (fontSize / defaultFontSize);
 
-		windowRect = new Rect(Screen.width - 230, 80 + (int) (20 * fontSizeModifier), 215, 200);
+		windowRect = new Rect(Screen.width - 230, 110 + (int) (20 * fontSizeModifier), 215, 200);
 
         GameObject.Find("RoboCamera").GetComponent<SyntheticVision>().ShowFoV = showSyntheticVision;
     }
@@ -100,7 +100,7 @@ public class InteractionPrefsModalWindow : ModalWindow {
 		if (GUI.Button(new Rect(
 				Screen.width - (10 + (int) (110 * fontSizeModifier / 3)) + 36 * fontSizeModifier -
 				(GUI.skin.label.CalcSize(new GUIContent(actionButtonText)).x + 10),
-				70, GUI.skin.label.CalcSize(new GUIContent(actionButtonText)).x + 10, 25 * fontSizeModifier),
+				100, GUI.skin.label.CalcSize(new GUIContent(actionButtonText)).x + 10, 25 * fontSizeModifier),
 			actionButtonText, buttonStyle)) {
 			render = true;
 		}
