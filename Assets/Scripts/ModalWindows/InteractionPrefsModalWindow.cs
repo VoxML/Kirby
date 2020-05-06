@@ -55,7 +55,7 @@ public class InteractionPrefsModalWindow : ModalWindow {
 
 	bool showSyntheticVision = true;
 
-    public bool ShowSyntheticVision
+    public bool ShowInsetCamera
     {
         get { return showSyntheticVision; }
         set
@@ -154,8 +154,8 @@ public class InteractionPrefsModalWindow : ModalWindow {
 		GUILayout.BeginVertical(GUI.skin.box);
 		GUILayout.Label("Agent Perception:");
 		GUILayout.BeginVertical(GUI.skin.box);
-		ShowSyntheticVision =
-			GUILayout.Toggle(ShowSyntheticVision, "Show Synthetic Vision", GUILayout.ExpandWidth(true));
+		ShowInsetCamera =
+			GUILayout.Toggle(ShowInsetCamera, "Show Inset Camera", GUILayout.ExpandWidth(true));
 		//showVisualMemory = GUILayout.Toggle(showVisualMemory, "Show Visual Memory", GUILayout.ExpandWidth(true));
 		GUILayout.EndVertical();
 		GUILayout.EndVertical();
