@@ -11,6 +11,8 @@ public class RedisPublisher : RedisInterface
     MapUpdater mapUpdater;
     RoboUpdater roboUpdater;
 
+    bool initedMap = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +38,20 @@ public class RedisPublisher : RedisInterface
     // Update is called once per frame
     void Update()
     {
+        if (authenticated && !initedMap)
+        {
+            if (usingRejson)
+            {
+                WriteCommand(string.Format("json.lpop {0}", mapKey));
+            }
+            else
+            {
+                WriteCommand(string.Format("lpop {0}", mapKey));
+            }
+
+            initedMap = true;
+        }
+
         // below are tests that set preset commands to JSON
         // TODO: remove when no longer necessary
 
@@ -147,7 +163,7 @@ public class RedisPublisher : RedisInterface
                     Debug.Log(string.Format("RedisPublisher: Got bulk string response from Redis (responding to \"{0}\", size {1}): {2}",
                         lastEvent.Content, size, response));
 
-                    if (lastEvent.Content.StartsWith("get"))
+                    if (lastEvent.Content.StartsWith("get") || lastEvent.Content.StartsWith("lpop"))
                     {
                         string key = lastEvent.Content.Split()[1];
 

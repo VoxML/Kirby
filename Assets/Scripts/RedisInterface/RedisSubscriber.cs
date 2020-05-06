@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using VoxSimPlatform.Network;
@@ -87,17 +88,42 @@ public class RedisSubscriber : RedisInterface
                     $4
                     json
                 */
-                response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Last();
-                Debug.Log(string.Format("RedisPublisher: Got bulk string response from Redis: {0}", response));
+                List<string> lines = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                string key = lines.Take(lines.FindIndex(l => l.StartsWith("*"))-2).Last().Split(':')[1];
+                string cmd = lines.Take(lines.FindIndex(l => l.StartsWith("*"))).Last();
+                Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, cmd: {1}", key, cmd));
 
-                string key = response;
                 if (usingRejson)
                 {
-                    publisher.WriteCommand(string.Format("json.get {0}", key));
+                    switch (cmd)
+                    {
+                        case "set":
+                            publisher.WriteCommand(string.Format("json.get {0}", key));
+                            break;
+
+                        case "rpush":
+                            publisher.WriteCommand(string.Format("json.lpop {0}", key));
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
                 else
                 {
-                    publisher.WriteCommand(string.Format("get {0}", key));
+                    switch (cmd)
+                    {
+                        case "set":
+                            publisher.WriteCommand(string.Format("get {0}", key));
+                            break;
+
+                        case "rpush":
+                            publisher.WriteCommand(string.Format("lpop {0}", key));
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
                 break;
 
