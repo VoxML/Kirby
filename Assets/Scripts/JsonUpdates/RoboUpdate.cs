@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 /// This class represents updates to Kirby's odometry
 /// </summary>
 
-public class RoboUpdate : MonoBehaviour
+public class RoboUpdate
 {
     [JsonProperty("odom_id")]
     public int odomId { get; set; }
