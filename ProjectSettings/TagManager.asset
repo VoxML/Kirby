@@ -6,6 +6,7 @@ TagManager:
   tags:
   - UnPhysic
   - Agent
+  - Camera
   layers:
   - Default
   - TransparentFX
