@@ -264,7 +264,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 320, y: 180}
+  m_SizeDelta: {x: 480, y: 270}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &92908022
 MonoBehaviour:
@@ -985,6 +985,31 @@ MonoBehaviour:
   offset: {x: 0, y: 30}
   dimensions: {x: 100, y: 25}
   fontSize: 12
+--- !u!114 &538056685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538056673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be009fdf7afe54621a8159ed081e75ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultFontSize: 12
+  buttonRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  buttonText: Switch Camera Views
+  id: 0
+  position: 1
+  offset: {x: 0, y: 60}
+  dimensions: {x: 135, y: 25}
+  fontSize: 12
 --- !u!1 &714400441
 GameObject:
   m_ObjectHideFlags: 0
@@ -999,7 +1024,7 @@ GameObject:
   - component: {fileID: 714400443}
   m_Layer: 0
   m_Name: RoboCamera
-  m_TagString: Untagged
+  m_TagString: Camera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1285,8 +1310,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   authenticated: 0
-  mapKey: map
-  roboKey: odom
+  mapKey: Map
+  roboKey: Odom
   fiducialKey: 
   cmdKey: cmd
   usingRejson: 0
@@ -1346,6 +1371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15090113d2c304d4f89db3a2dc6b0ae6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  kirby: {fileID: 190478246}
 --- !u!114 &941503516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1358,6 +1384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e495871fd3e4f95ba98107b91cf204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  map: {fileID: 0}
 --- !u!1 &1032749717 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8370107687644816506, guid: 1d104b2c6fd8e45d9a2953c2779e4ad0,
@@ -1499,7 +1526,7 @@ GameObject:
   - component: {fileID: 1405266355}
   - component: {fileID: 1405266354}
   m_Layer: 0
-  m_Name: UI
+  m_Name: InteractionPrefs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1660,8 +1687,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 10, y: 190}
-  m_SizeDelta: {x: 320, y: 180}
+  m_AnchoredPosition: {x: 10, y: 150}
+  m_SizeDelta: {x: 480, y: 270}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &1991202302
 GameObject:
@@ -1749,3 +1776,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
+--- !u!1 &2112811584
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2112811586}
+  - component: {fileID: 2112811585}
+  m_Layer: 0
+  m_Name: CameraManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2112811585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2112811584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd101d8ef56ec4ecc804af2c28c8283b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  curMainCamera: {fileID: 534669904}
+  curSecondCamera: {fileID: 714400445}
+  renderTextureRef: {fileID: 8400000, guid: ee0b650395499434696bb972265be216, type: 2}
+--- !u!4 &2112811586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2112811584}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
