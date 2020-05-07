@@ -124,6 +124,10 @@ public class MapUpdater : MonoBehaviour
             }
             else
             {
+                // get coordinates from map update instance
+                // need to transform from Redis +X forward space to Unity +Z forward space
+                // do this by flipping the X and Z and coordinates and reflecting horizontally
+
                 // first pair is start coords (X,Z)
                 Vector3 start = new Vector3(-coordPair[1], 0.0f, coordPair[0]);
 
