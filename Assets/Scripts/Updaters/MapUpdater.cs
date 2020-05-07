@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,14 +7,14 @@ using VoxSimPlatform.Global;
 
 public class MapSegment
 {
-    public int id;
+    public Guid guid;
     public List<float> endpoints;
     public GameObject geom;
     public bool remove;
 
-    public MapSegment(int _id, List<float> _endpoints, GameObject _geom)
+    public MapSegment(Guid _guid, List<float> _endpoints, GameObject _geom)
     {
-        id = _id;
+        guid = _guid;
         endpoints = new List<float>(_endpoints);
         geom = _geom;
         remove = false;
@@ -28,6 +29,8 @@ public class MapUpdater : MonoBehaviour
 
     MapUpdate curMap;
     List<MapSegment> mapSegments;
+
+    bool inited = false;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +56,24 @@ public class MapUpdater : MonoBehaviour
             {
                 mapSegments.RemoveAt(i);
             }
+        }
+    }
+
+    public void SubscriberAuthenticated()
+    {
+        Debug.Log("MapUpdater: picked up message SubscriberAuthenticated");
+        if (!inited)
+        {
+            if (publisher.usingRejson)
+            {
+                publisher.WriteCommand(string.Format("json.lpop {0}", publisher.mapKey));
+            }
+            else
+            {
+                publisher.WriteCommand(string.Format("lpop {0}", publisher.mapKey));
+            }
+
+            inited = true;
         }
     }
 
@@ -104,21 +125,21 @@ public class MapUpdater : MonoBehaviour
             else
             {
                 // first pair is start coords (X,Z)
-                Vector3 start = new Vector3(coordPair[0], 0.0f, coordPair[1]);
+                Vector3 start = new Vector3(-coordPair[1], 0.0f, coordPair[0]);
 
                 // second pair is end coords (X,Z)
-                Vector3 end = new Vector3(coordPair[2], 0.0f, coordPair[3]);
+                Vector3 end = new Vector3(-coordPair[3], 0.0f, coordPair[2]);
 
                 // create a cube, add it to "Map" object
                 GameObject wallGeom = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-                wallGeom.name = string.Format("WallSegment-{0}", System.Guid.NewGuid());
+                Guid guid = Guid.NewGuid();
+                wallGeom.name = string.Format("WallSegment-{0}", guid);
 
                 wallGeom.transform.parent = map.transform;
 
                 // create a new MapSegment object
-                MapSegment wallSegment = new MapSegment(map.transform.childCount + 1,
-                    coordPair, wallGeom);
+                MapSegment wallSegment = new MapSegment(guid, coordPair, wallGeom);
 
                 // example using [2.0, 0.0, 0.0, -2.0] line segment
                 // start: (2.0, 0.0, 0.0)

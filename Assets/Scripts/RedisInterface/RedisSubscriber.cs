@@ -18,14 +18,8 @@ public class RedisSubscriber : RedisInterface
 
         if (redisSocket != null)
         {
-            // try authentication
-            if (!authenticated)
-            {
-                WriteCommand("auth ROSlab134");
-            }
+            redisSocket.UpdateReceived += ReceivedUpdate;
         }
-
-        redisSocket.UpdateReceived += ReceivedUpdate;
 
         publisher = gameObject.GetComponent<RedisPublisher>();
     }
@@ -34,6 +28,18 @@ public class RedisSubscriber : RedisInterface
     void Update()
     {
 
+    }
+
+    public void PublisherAuthenticated()
+    {
+        if (redisSocket != null)
+        {
+            // try authentication
+            if (!authenticated)
+            {
+                WriteCommand("auth ROSlab134");
+            }
+        }
     }
 
     public void ReceivedUpdate(object sender, EventArgs e)
@@ -53,6 +59,7 @@ public class RedisSubscriber : RedisInterface
                 {
                     if (string.Equals(response, "OK"))
                     {
+                        BroadcastMessage("SubscriberAuthenticated", SendMessageOptions.DontRequireReceiver);
                         authenticated = true;
                         WriteCommand("psubscribe \'__key*__:*\'");
                     }

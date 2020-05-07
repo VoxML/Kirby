@@ -32,7 +32,7 @@ public class RoboUpdater : MonoBehaviour
     public void UpdateRobot(RoboUpdate update)
     {
         Vector3 targetPos = new Vector3(update.location[0], kirbyVox.transform.position.y, update.location[1]);
-        targetPos = Quaternion.Euler(0.0f, 90.0f, 0.0f) * targetPos;
+        targetPos = Quaternion.Euler(0.0f, -90.0f, 0.0f) * targetPos;
         kirbyVox.targetPosition = targetPos;
     }
 }

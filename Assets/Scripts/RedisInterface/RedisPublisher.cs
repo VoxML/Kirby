@@ -11,8 +11,6 @@ public class RedisPublisher : RedisInterface
     MapUpdater mapUpdater;
     RoboUpdater roboUpdater;
 
-    bool initedMap = false;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -38,71 +36,32 @@ public class RedisPublisher : RedisInterface
     // Update is called once per frame
     void Update()
     {
-        if (authenticated && !initedMap)
+    /* 
+        // to set set json val
+        JsonKeyValue jsonObj = new JsonKeyValue();
+        jsonObj.key = "value";
+
+        string json = JsonUtility.ToJson(jsonObj);
+
+        if (usingRejson)
         {
-            if (usingRejson)
-            {
-                WriteCommand(string.Format("json.lpop {0}", mapKey));
-            }
-            else
-            {
-                WriteCommand(string.Format("lpop {0}", mapKey));
-            }
-
-            initedMap = true;
+            WriteCommand(string.Format("json.set {0} . '{1}'", mapKey, json));
         }
-
-        // below are tests that set preset commands to JSON
-        // TODO: remove when no longer necessary
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        else
         {
-            // ping
-            WriteCommand("ping");
+            WriteCommand(string.Format("set {0} '{1}'", mapKey, json));
         }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        
+        // to get json val
+        if (usingRejson)
         {
-            // set foo bar
-            WriteCommand("set foo bar");
+            WriteCommand(string.Format("json.get {0}", mapKey));
         }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
+        else
         {
-            // get foo
-            WriteCommand(string.Format("get {0}", cmdKey));
+            WriteCommand(string.Format("get {0}", mapKey));
         }
-
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            // set json val
-            JsonKeyValue jsonObj = new JsonKeyValue();
-            jsonObj.key = "value";
-
-            string json = JsonUtility.ToJson(jsonObj);
-
-            if (usingRejson)
-            {
-                WriteCommand(string.Format("json.set {0} . '{1}'", mapKey, json));
-            }
-            else
-            {
-                WriteCommand(string.Format("set {0} '{1}'", mapKey, json));
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            // get json val
-            if (usingRejson)
-            {
-                WriteCommand(string.Format("json.get {0}", mapKey));
-            }
-            else
-            {
-                WriteCommand(string.Format("get {0}", mapKey));
-            }
-        }
+    */
     }
 
     public void WriteCommand(string messageToSend)
@@ -140,6 +99,7 @@ public class RedisPublisher : RedisInterface
                 {
                     if (string.Equals(response, "OK"))
                     {
+                        BroadcastMessage("PublisherAuthenticated", SendMessageOptions.DontRequireReceiver);
                         authenticated = true;
                     }
                 }
