@@ -24,6 +24,8 @@ public class MapUpdater : MonoBehaviour
 {
     public GameObject map;
 
+    RedisPublisher publisher;
+
     MapUpdate curMap;
     List<MapSegment> mapSegments;
 
@@ -33,6 +35,8 @@ public class MapUpdater : MonoBehaviour
         curMap = new MapUpdate();
         mapSegments = new List<MapSegment>();
         map = new GameObject("Map");
+
+        publisher = gameObject.GetComponent<RedisPublisher>();
     }
 
     // Update is called once per frame
@@ -108,7 +112,7 @@ public class MapUpdater : MonoBehaviour
                 // create a cube, add it to "Map" object
                 GameObject wallGeom = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-                wallGeom.name = string.Format("WallSegment{0}", System.Guid.NewGuid());
+                wallGeom.name = string.Format("WallSegment-{0}", System.Guid.NewGuid());
 
                 wallGeom.transform.parent = map.transform;
 

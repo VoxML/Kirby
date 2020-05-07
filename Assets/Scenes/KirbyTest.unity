@@ -1368,7 +1368,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 941503510}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15090113d2c304d4f89db3a2dc6b0ae6, type: 3}
+  m_Script: {fileID: 11500000, guid: d1a6995bba3ec4ac0918d371c74ff1c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   kirby: {fileID: 190478246}
@@ -1381,7 +1381,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 941503510}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33e495871fd3e4f95ba98107b91cf204, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b3079882751d40978bf492946e8bfbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   map: {fileID: 0}
