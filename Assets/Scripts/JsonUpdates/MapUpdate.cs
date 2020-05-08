@@ -22,9 +22,6 @@ public class MapUpdate
     [JsonProperty("height")]
     public float height { get; set; }
 
-    [JsonProperty("resolution")]
-    public float resolution { get; set; }
-
     [JsonProperty("data")]
     public List<List<float>> data { get; set; }
 
@@ -34,7 +31,6 @@ public class MapUpdate
         lineCount = 0;
         width = 0.0f;
         height = 0.0f;
-        resolution = 0;
         data = new List<List<float>>();
     }
 
@@ -45,9 +41,15 @@ public class MapUpdate
         Debug.Log(string.Format("Value of \"line_count\" in jsonObj = {0}", this.lineCount));
         Debug.Log(string.Format("Value of \"width\" in jsonObj = {0}", this.width));
         Debug.Log(string.Format("Value of \"height\" in jsonObj = {0}", this.height));
-        Debug.Log(string.Format("Value of \"resolution\" in jsonObj = {0}", this.resolution));
         Debug.Log(string.Format("Value of \"data\" in jsonObj = {0}", string.Format("[{0}]", string.Join(",",
             this.data.Select(l => string.Format("[{0}]", string.Join(",", l.Select(ll => ll.ToString()))))))));
+    }
+
+    public static bool Validate(MapUpdate map)
+    {
+        return (map.id != -1) && (map.lineCount != 0) &&
+            (map.width != 0.0f) && (map.height != 0.0f) &&
+            (map.data.Count != 0);
     }
 }
 

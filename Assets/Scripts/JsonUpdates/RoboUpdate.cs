@@ -51,10 +51,11 @@ public class RoboUpdate
         Debug.Log(string.Format("Value of \"angularvelocity\" in jsonObj = {0}", this.angularVelocity));
     }
 
-
-    public void Interpret()
+    public static bool Validate(RoboUpdate odom)
     {
-        
+        return (odom.odomId != -1) && (odom.time != 0) &&
+            (odom.location.Count != 0) && (odom.orientation.Count != 0) &&
+            (odom.linearVelocity != 0.0f) && (odom.angularVelocity != 0.0f);
     }
 }
 

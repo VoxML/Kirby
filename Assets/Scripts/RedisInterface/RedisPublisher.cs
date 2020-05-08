@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Newtonsoft.Json;
 using VoxSimPlatform.Network;
@@ -10,6 +12,12 @@ public class RedisPublisher : RedisInterface
 
     MapUpdater mapUpdater;
     RoboUpdater roboUpdater;
+
+    List<string> validReceiveCommands = new List<string>()
+    {
+        "get",
+        "lpop"
+    };
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +38,7 @@ public class RedisPublisher : RedisInterface
             }
         }
 
-        redisSocket.UpdateReceived += ReceivedResponse;
+        redisSocket.UpdateReceived += ReceivedMessage;
     }
 
     // Update is called once per frame
@@ -74,18 +82,15 @@ public class RedisPublisher : RedisInterface
         base.WriteCommand(messageToSend);
     }
 
-    public void ReceivedResponse(object sender, EventArgs e)
+    public void ReceivedMessage(object sender, EventArgs e)
     {
-        if (lastEvent != null)
-        {
-            if (lastEvent.Type == RedisEventType.Command)
-            {
-                Debug.Log(string.Format("RedisPublisher: Received response to: {0}", lastEvent.Content));
-            }
-        }
-
         string raw = ((RedisEventArgs)e).Content;
         char type = GetResponseType(((RedisEventArgs)e).Content);
+
+        if (lastEvent != null)
+        {
+            Debug.Log(string.Format("RedisPublisher: Received response to: {0}", lastEvent.Content));
+        }
 
         string response = string.Empty;
         switch (type)
@@ -119,32 +124,40 @@ public class RedisPublisher : RedisInterface
 
                 if (raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length > 2)
                 {
+                    if (!IsValidResponseEvent(lastEvent))
+                    {
+                        return;
+                    }
+
                     response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[2];
                     Debug.Log(string.Format("RedisPublisher: Got bulk string response from Redis (responding to \"{0}\", size {1}): {2}",
                         lastEvent.Content, size, response));
 
-                    if (lastEvent.Content.StartsWith("get") || lastEvent.Content.StartsWith("lpop"))
-                    {
-                        string key = lastEvent.Content.Split()[1];
+                    string requestKey = lastEvent.Content.Split()[1];
 
-                        if (!string.IsNullOrEmpty(mapKey) && (key == mapKey))
+                    if (!string.IsNullOrEmpty(mapKey) && (requestKey == mapKey))
+                    {
+                        MapUpdate mapUpdate = JsonConvert.DeserializeObject<MapUpdate>(response);
+                        if (MapUpdate.Validate(mapUpdate))
                         {
-                            MapUpdate mapUpdate = JsonConvert.DeserializeObject<MapUpdate>(response);
                             mapUpdate.Log();
                             mapUpdater.UpdateMap(mapUpdate);
                         }
-                        else if (!string.IsNullOrEmpty(roboKey) && (key == roboKey))
+                    }
+                    else if (!string.IsNullOrEmpty(roboKey) && (requestKey == roboKey))
+                    {
+                        RoboUpdate roboUpdate = JsonConvert.DeserializeObject<RoboUpdate>(response);
+                        if (RoboUpdate.Validate(roboUpdate))
                         {
-                            RoboUpdate roboUpdate = JsonConvert.DeserializeObject<RoboUpdate>(response);
                             roboUpdate.Log();
                             roboUpdater.UpdateRobot(roboUpdate);
                         }
-                        else if (!string.IsNullOrEmpty(fiducialKey) && (key == fiducialKey))
-                        {
-                        }
-                        else if (!string.IsNullOrEmpty(cmdKey) && (key == cmdKey))
-                        {
-                        }
+                    }
+                    else if (!string.IsNullOrEmpty(fiducialKey) && (requestKey == fiducialKey))
+                    {
+                    }
+                    else if (!string.IsNullOrEmpty(cmdKey) && (requestKey == cmdKey))
+                    {
                     }
                 }
 
@@ -159,5 +172,26 @@ public class RedisPublisher : RedisInterface
         }
 
         lastEvent = null;
+    }
+
+    bool IsValidResponseEvent(RedisEventArgs ev)
+    {
+        bool valid = true;
+
+        valid &= ((ev != null) && (ev.Type == RedisEventType.Command));
+
+        if (valid)
+        {
+            if (usingRejson)
+            {
+                valid &= validReceiveCommands.Any(f => ev.Content.StartsWith("json." + f));
+            }
+            else
+            {
+                valid &= validReceiveCommands.Any(f => ev.Content.StartsWith(f));
+            }
+        }
+
+        return valid;
     }
 }

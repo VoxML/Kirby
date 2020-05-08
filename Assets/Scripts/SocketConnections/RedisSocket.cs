@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System;
-
+﻿using System;
+using UnityEngine;
 using VoxSimPlatform.Global;
 using VoxSimPlatform.Network;
 
