@@ -14,12 +14,6 @@ public class RedisInterface : MonoBehaviour
 
     public bool authenticated = false;
 
-    // keys
-    public string mapKey;
-    public string roboKey;
-    public string fiducialKey;
-    public string cmdKey;
-
     public bool usingRejson = false;
 
     // Start is called before the first frame update

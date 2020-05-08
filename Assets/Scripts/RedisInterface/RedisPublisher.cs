@@ -13,6 +13,12 @@ public class RedisPublisher : RedisInterface
     MapUpdater mapUpdater;
     RoboUpdater roboUpdater;
 
+    // keys
+    public string mapKey;
+    public string roboKey;
+    public string fiducialKey;
+    public string cmdKey;
+
     List<string> validReceiveCommands = new List<string>()
     {
         "get",
