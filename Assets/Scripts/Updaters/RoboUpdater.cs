@@ -34,5 +34,8 @@ public class RoboUpdater : MonoBehaviour
         Vector3 targetPos = new Vector3(update.location[0], kirbyVox.transform.position.y, update.location[1]);
         targetPos = Quaternion.Euler(0.0f, -90.0f, 0.0f) * targetPos;
         kirbyVox.targetPosition = targetPos;
+
+        Vector3 targetRot = new Vector3(kirbyVox.transform.eulerAngles.x, -update.orientation[2] * Mathf.Rad2Deg, kirbyVox.transform.eulerAngles.z);
+        kirbyVox.targetRotation = targetRot;
     }
 }
