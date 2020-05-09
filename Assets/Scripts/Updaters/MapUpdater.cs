@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using VoxSimPlatform.Global;
+using TMPro;
 
 public class MapSegment
 {
@@ -26,6 +27,7 @@ public class MapUpdater : MonoBehaviour
     public GameObject map;
 
     RedisPublisher publisher;
+    GameObject outputDisplay;
 
     MapUpdate curMap;
     List<MapSegment> mapSegments;
@@ -40,6 +42,10 @@ public class MapUpdater : MonoBehaviour
         map = new GameObject("Map");
 
         publisher = gameObject.GetComponent<RedisPublisher>();
+
+        //TODO: route this through VoxSim OutputController
+        outputDisplay = GameObject.Find("OutputDisplay");
+        outputDisplay.GetComponent<TextMeshProUGUI>().text = "Waiting for Map...";
     }
 
     // Update is called once per frame
@@ -72,8 +78,6 @@ public class MapUpdater : MonoBehaviour
             {
                 publisher.WriteCommand(string.Format("lpop {0}", publisher.mapKey));
             }
-
-            inited = true;
         }
     }
 
@@ -157,7 +161,7 @@ public class MapUpdater : MonoBehaviour
                 // -45 * sign(-0.707) = 45 degrees
 
                 // scale it along the X-axis by the length of the line segment (and make it thin along the Z)
-                wallSegment.geom.transform.localScale = new Vector3((end - start).magnitude, 1.0f, 0.1f);
+                wallSegment.geom.transform.localScale = new Vector3((end - start).magnitude, 1.0f, 0.05f);
 
                 // position it at the center of the line segment (at ground level)
                 wallSegment.geom.transform.position = new Vector3((end.x + start.x) / 2.0f,
@@ -176,5 +180,11 @@ public class MapUpdater : MonoBehaviour
         }
 
         curMap = update;
+
+        if (!inited)
+        {
+            outputDisplay.GetComponent<TextMeshProUGUI>().text = "";
+            inited = true;
+        }
     }
 }
