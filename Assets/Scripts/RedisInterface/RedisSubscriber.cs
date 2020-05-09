@@ -9,6 +9,8 @@ public class RedisSubscriber : RedisInterface
 {
     RedisPublisher publisher;
 
+    OutputDisplay outputDisplay;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +24,9 @@ public class RedisSubscriber : RedisInterface
         }
 
         publisher = gameObject.GetComponent<RedisPublisher>();
+
+        //TODO: route this through VoxSim OutputController
+        outputDisplay = GameObject.Find("OutputDisplay").GetComponent<OutputDisplay>();
     }
 
     // Update is called once per frame
@@ -37,6 +42,7 @@ public class RedisSubscriber : RedisInterface
             // try authentication
             if (!authenticated)
             {
+                outputDisplay.SetText("Authenticating subscriber...");
                 WriteCommand("auth ROSlab134");
             }
         }
@@ -59,6 +65,7 @@ public class RedisSubscriber : RedisInterface
                 {
                     if (string.Equals(response, "OK"))
                     {
+                        outputDisplay.SetText("Subscriber authenticated.");
                         BroadcastMessage("SubscriberAuthenticated", SendMessageOptions.DontRequireReceiver);
                         authenticated = true;
                         WriteCommand("psubscribe \'__key*__:*\'");

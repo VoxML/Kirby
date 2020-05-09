@@ -27,7 +27,7 @@ public class MapUpdater : MonoBehaviour
     public GameObject map;
 
     RedisPublisher publisher;
-    GameObject outputDisplay;
+    OutputDisplay outputDisplay;
 
     MapUpdate curMap;
     List<MapSegment> mapSegments;
@@ -44,8 +44,7 @@ public class MapUpdater : MonoBehaviour
         publisher = gameObject.GetComponent<RedisPublisher>();
 
         //TODO: route this through VoxSim OutputController
-        outputDisplay = GameObject.Find("OutputDisplay");
-        outputDisplay.GetComponent<TextMeshProUGUI>().text = "Waiting for Map...";
+        outputDisplay = GameObject.Find("OutputDisplay").GetComponent<OutputDisplay>();
     }
 
     // Update is called once per frame
@@ -70,6 +69,7 @@ public class MapUpdater : MonoBehaviour
         Debug.Log("MapUpdater: picked up message SubscriberAuthenticated");
         if (!inited)
         {
+            outputDisplay.SetText("Waiting for Map...");
             if (publisher.usingRejson)
             {
                 publisher.WriteCommand(string.Format("json.lpop {0}", publisher.mapKey));
@@ -183,7 +183,7 @@ public class MapUpdater : MonoBehaviour
 
         if (!inited)
         {
-            outputDisplay.GetComponent<TextMeshProUGUI>().text = "";
+            outputDisplay.Clear();
             inited = true;
         }
     }

@@ -13,6 +13,8 @@ public class RedisPublisher : RedisInterface
     MapUpdater mapUpdater;
     RoboUpdater roboUpdater;
 
+    OutputDisplay outputDisplay;
+
     // keys
     public string mapKey;
     public string roboKey;
@@ -31,6 +33,9 @@ public class RedisPublisher : RedisInterface
         mapUpdater = gameObject.GetComponent<MapUpdater>();
         roboUpdater = gameObject.GetComponent<RoboUpdater>();
 
+        //TODO: route this through VoxSim OutputController
+        outputDisplay = GameObject.Find("OutputDisplay").GetComponent<OutputDisplay>();
+
         base.Start();
 
         redisSocket = (RedisSocket)commBridge.GetComponent<CommunicationsBridge>().FindSocketConnectionByLabel("RedisPublisher");
@@ -40,6 +45,7 @@ public class RedisPublisher : RedisInterface
             // try authentication
             if (!authenticated)
             {
+                outputDisplay.SetText("Authenticating publisher...");
                 WriteCommand("auth ROSlab134");
             }
         }
@@ -110,6 +116,7 @@ public class RedisPublisher : RedisInterface
                 {
                     if (string.Equals(response, "OK"))
                     {
+                        outputDisplay.SetText("Publisher authenticated.");
                         BroadcastMessage("PublisherAuthenticated", SendMessageOptions.DontRequireReceiver);
                         authenticated = true;
                     }
