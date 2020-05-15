@@ -161,7 +161,7 @@ EpiSim/UserModels*
 local_config
 
 # ignore StreamingAssets (don't commit Google SR key to repo)
-Assets/StreamingAssets
+Assets/StreamingAssets*
 
 # ignore NuGet packages (e.g. Nunit)
 packages*
