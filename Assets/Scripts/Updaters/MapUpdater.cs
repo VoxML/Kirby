@@ -24,6 +24,16 @@ public class MapSegment
 
 public class MapUpdater : MonoBehaviour
 {
+    public event EventHandler MapInited;
+
+    public void OnMapInited(object sender, EventArgs e)
+    {
+        if (MapInited != null)
+        {
+            MapInited(this, e);
+        }
+    }
+
     public GameObject map;
 
     RedisPublisher publisher;
@@ -185,6 +195,7 @@ public class MapUpdater : MonoBehaviour
         {
             outputDisplay.Clear();
             inited = true;
+            OnMapInited(this, null);
         }
     }
 }
