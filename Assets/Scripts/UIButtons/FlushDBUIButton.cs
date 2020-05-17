@@ -43,7 +43,7 @@ public class FlushDBUIButton : UIButton
         if (GUI.Button(buttonRect, buttonText, buttonStyle))
         {
             // clear all redis keys
-            redisPublisher.WriteCommand("flushdb");
+            redisPublisher.ResetBridge();
             return;
         }
 

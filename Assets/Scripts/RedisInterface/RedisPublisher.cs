@@ -10,6 +10,8 @@ public class RedisPublisher : RedisInterface
 {
     RedisEventArgs lastEvent = null;
 
+    RedisSubscriber subscriber;
+
     MapUpdater mapUpdater;
     RoboUpdater roboUpdater;
 
@@ -19,6 +21,7 @@ public class RedisPublisher : RedisInterface
     public string mapKey;
     public string roboKey;
     public string fiducialKey;
+    public string resetKey;
     public string cmdKey;
 
     List<string> validReceiveCommands = new List<string>()
@@ -30,13 +33,10 @@ public class RedisPublisher : RedisInterface
     // Start is called before the first frame update
     void Start()
     {
-        mapUpdater = gameObject.GetComponent<MapUpdater>();
-        roboUpdater = gameObject.GetComponent<RoboUpdater>();
+        base.Start();
 
         //TODO: route this through VoxSim OutputController
         outputDisplay = GameObject.Find("OutputDisplay").GetComponent<OutputDisplay>();
-
-        base.Start();
 
         redisSocket = (RedisSocket)commBridge.GetComponent<CommunicationsBridge>().FindSocketConnectionByLabel("RedisPublisher");
 
@@ -51,6 +51,11 @@ public class RedisPublisher : RedisInterface
         }
 
         redisSocket.UpdateReceived += ReceivedMessage;
+
+        subscriber = gameObject.GetComponent<RedisSubscriber>();
+
+        mapUpdater = gameObject.GetComponent<MapUpdater>();
+        roboUpdater = gameObject.GetComponent<RoboUpdater>();
     }
 
     // Update is called once per frame
@@ -84,6 +89,13 @@ public class RedisPublisher : RedisInterface
     */
     }
 
+    public void SubscriberAuthenticated()
+    {
+        Debug.Log("RedisPublisher: picked up message SubscriberAuthenticated");
+
+        ResetBridge();
+    }
+
     public void WriteCommand(string messageToSend)
     {
         if (lastEvent == null)
@@ -98,6 +110,7 @@ public class RedisPublisher : RedisInterface
     {
         string raw = ((RedisEventArgs)e).Content;
         char type = GetResponseType(((RedisEventArgs)e).Content);
+        string requestKey = string.Empty;
 
         if (lastEvent != null)
         {
@@ -116,9 +129,9 @@ public class RedisPublisher : RedisInterface
                 {
                     if (string.Equals(response, "OK"))
                     {
+                        authenticated = true;
                         outputDisplay.SetText("Publisher authenticated.");
                         BroadcastMessage("PublisherAuthenticated", SendMessageOptions.DontRequireReceiver);
-                        authenticated = true;
                     }
                 }
                 break;
@@ -146,7 +159,7 @@ public class RedisPublisher : RedisInterface
                     Debug.Log(string.Format("RedisPublisher: Got bulk string response from Redis (responding to \"{0}\", size {1}): {2}",
                         lastEvent.Content, size, response));
 
-                    string requestKey = lastEvent.Content.Split()[1];
+                    requestKey = lastEvent.Content.Split()[1];
 
                     if (!string.IsNullOrEmpty(mapKey) && (requestKey == mapKey))
                     {
@@ -168,6 +181,14 @@ public class RedisPublisher : RedisInterface
                     }
                     else if (!string.IsNullOrEmpty(fiducialKey) && (requestKey == fiducialKey))
                     {
+                    }
+                    else if (!string.IsNullOrEmpty(resetKey) && (requestKey == resetKey))
+                    {
+                        if (Convert.ToInt32(response) == 0)
+                        {
+                            outputDisplay.SetText("Databased flushed.");
+                            BroadcastMessage("DatabaseFlushed", SendMessageOptions.DontRequireReceiver);
+                        }
                     }
                     else if (!string.IsNullOrEmpty(cmdKey) && (requestKey == cmdKey))
                     {
@@ -206,5 +227,14 @@ public class RedisPublisher : RedisInterface
         }
 
         return valid;
+    }
+
+    public void ResetBridge()
+    {
+        outputDisplay.SetText("Flushing database...");
+
+        // halt subscriber processing while bridge is reset
+        subscriber.processing = false;
+        WriteCommand(string.Format("set {0} 1", resetKey));
     }
 }

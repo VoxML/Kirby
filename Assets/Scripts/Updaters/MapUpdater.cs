@@ -74,9 +74,9 @@ public class MapUpdater : MonoBehaviour
         }
     }
 
-    public void SubscriberAuthenticated()
+    public void DatabaseFlushed()
     {
-        Debug.Log("MapUpdater: picked up message SubscriberAuthenticated");
+        Debug.Log("MapUpdater: picked up message DatabaseFlushed");
         if (!inited)
         {
             outputDisplay.SetText("Waiting for Map...");

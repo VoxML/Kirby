@@ -11,10 +11,15 @@ public class RedisSubscriber : RedisInterface
 
     OutputDisplay outputDisplay;
 
+    public bool processing = false;
+
     // Start is called before the first frame update
     void Start()
     {
         base.Start();
+
+        //TODO: route this through VoxSim OutputController
+        outputDisplay = GameObject.Find("OutputDisplay").GetComponent<OutputDisplay>();
 
         redisSocket = (RedisSocket)commBridge.GetComponent<CommunicationsBridge>().FindSocketConnectionByLabel("RedisSubscriber");
 
@@ -24,9 +29,6 @@ public class RedisSubscriber : RedisInterface
         }
 
         publisher = gameObject.GetComponent<RedisPublisher>();
-
-        //TODO: route this through VoxSim OutputController
-        outputDisplay = GameObject.Find("OutputDisplay").GetComponent<OutputDisplay>();
     }
 
     // Update is called once per frame
@@ -37,6 +39,7 @@ public class RedisSubscriber : RedisInterface
 
     public void PublisherAuthenticated()
     {
+        Debug.Log("RedisPSubscriber: picked up message PublisherAuthenticated");
         if (redisSocket != null)
         {
             // try authentication
@@ -65,10 +68,10 @@ public class RedisSubscriber : RedisInterface
                 {
                     if (string.Equals(response, "OK"))
                     {
-                        outputDisplay.SetText("Subscriber authenticated.");
-                        BroadcastMessage("SubscriberAuthenticated", SendMessageOptions.DontRequireReceiver);
                         authenticated = true;
                         WriteCommand("psubscribe \'__key*__:*\'");
+                        outputDisplay.SetText("Subscriber authenticated.");
+                        BroadcastMessage("SubscriberAuthenticated", SendMessageOptions.DontRequireReceiver);
                     }
                 }
                 break;
@@ -107,36 +110,40 @@ public class RedisSubscriber : RedisInterface
                 string cmd = lines.Take(lines.FindIndex(l => l.StartsWith("*"))).Last();
                 Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, cmd: {1}", key, cmd));
 
-                if (usingRejson)
-                {
-                    switch (cmd)
+                // changes to resetKey might mean we have to start listening
+                if (processing || key == publisher.resetKey)
+                { 
+                    if (usingRejson)
                     {
-                        case "set":
-                            publisher.WriteCommand(string.Format("json.get {0}", key));
-                            break;
+                        switch (cmd)
+                        {
+                            case "set":
+                                publisher.WriteCommand(string.Format("json.get {0}", key));
+                                break;
 
-                        case "rpush":
-                            publisher.WriteCommand(string.Format("json.lpop {0}", key));
-                            break;
+                            case "rpush":
+                                publisher.WriteCommand(string.Format("json.lpop {0}", key));
+                                break;
 
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
                     }
-                }
-                else
-                {
-                    switch (cmd)
+                    else
                     {
-                        case "set":
-                            publisher.WriteCommand(string.Format("get {0}", key));
-                            break;
+                        switch (cmd)
+                        {
+                            case "set":
+                                publisher.WriteCommand(string.Format("get {0}", key));
+                                break;
 
-                        case "rpush":
-                            publisher.WriteCommand(string.Format("lpop {0}", key));
-                            break;
+                            case "rpush":
+                                publisher.WriteCommand(string.Format("lpop {0}", key));
+                                break;
 
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
                     }
                 }
                 break;
@@ -148,5 +155,11 @@ public class RedisSubscriber : RedisInterface
             default:
                 break;
         }
+    }
+
+    public void DatabaseFlushed()
+    {
+        Debug.Log("RedisSubscriber: picked up message DatabaseFlushed");
+        processing = true;
     }
 }

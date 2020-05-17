@@ -1637,6 +1637,7 @@ GameObject:
   m_Component:
   - component: {fileID: 925699381}
   - component: {fileID: 925699382}
+  - component: {fileID: 925699383}
   m_Layer: 0
   m_Name: CommunicationArchitecture
   m_TagString: Untagged
@@ -1673,6 +1674,20 @@ MonoBehaviour:
   comment: 
   display: {fileID: 0}
   inputController: {fileID: 891213369}
+--- !u!114 &925699383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925699380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a99cc72de3da456cacba125525a8715, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  comment: 
+  display: {fileID: 0}
 --- !u!1 &933341506
 GameObject:
   m_ObjectHideFlags: 0
@@ -1803,6 +1818,7 @@ MonoBehaviour:
   mapKey: Map
   roboKey: Odom
   fiducialKey: 
+  resetKey: Bridge_Reset
   cmdKey: cmd
 --- !u!4 &941503512
 Transform:
