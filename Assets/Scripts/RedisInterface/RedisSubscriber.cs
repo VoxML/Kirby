@@ -45,7 +45,7 @@ public class RedisSubscriber : RedisInterface
             // try authentication
             if (!authenticated)
             {
-                outputDisplay.SetText("Authenticating subscriber...");
+                outputDisplay.SetText("Authenticating subscriber...", TextDisplayMode.Persistent);
                 WriteCommand("auth ROSlab134");
             }
         }

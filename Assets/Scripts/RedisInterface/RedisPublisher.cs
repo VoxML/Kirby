@@ -45,7 +45,7 @@ public class RedisPublisher : RedisInterface
             // try authentication
             if (!authenticated)
             {
-                outputDisplay.SetText("Authenticating publisher...");
+                outputDisplay.SetText("Authenticating publisher...", TextDisplayMode.Persistent);
                 WriteCommand("auth ROSlab134");
             }
         }
@@ -231,7 +231,7 @@ public class RedisPublisher : RedisInterface
 
     public void ResetBridge()
     {
-        outputDisplay.SetText("Flushing database...");
+        outputDisplay.SetText("Flushing database...", TextDisplayMode.Persistent);
 
         // halt subscriber processing while bridge is reset
         subscriber.processing = false;

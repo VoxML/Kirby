@@ -79,7 +79,7 @@ public class MapUpdater : MonoBehaviour
         Debug.Log("MapUpdater: picked up message DatabaseFlushed");
         if (!inited)
         {
-            outputDisplay.SetText("Waiting for Map...");
+            outputDisplay.SetText("Waiting for Map...", TextDisplayMode.Persistent);
             if (publisher.usingRejson)
             {
                 publisher.WriteCommand(string.Format("json.lpop {0}", publisher.mapKey));
