@@ -1601,10 +1601,35 @@ PrefabInstance:
       propertyPath: onFinalResult.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
       value: SetBoolean
       objectReference: {fileID: 0}
+    - target: {fileID: 7832359474391093077, guid: 47ccd4022dbf6442d9e0fac591c61779,
+        type: 3}
+      propertyPath: onInterimResult.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1285414964}
+    - target: {fileID: 7832359474391093077, guid: 47ccd4022dbf6442d9e0fac591c61779,
+        type: 3}
+      propertyPath: onInterimResult.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: SetBoolean
+      objectReference: {fileID: 0}
     - target: {fileID: 7832359474391093079, guid: 47ccd4022dbf6442d9e0fac591c61779,
         type: 3}
       propertyPath: m_Name
       value: Google SR
+      objectReference: {fileID: 0}
+    - target: {fileID: 7832359474391093082, guid: 47ccd4022dbf6442d9e0fac591c61779,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7832359474391093082, guid: 47ccd4022dbf6442d9e0fac591c61779,
+        type: 3}
+      propertyPath: BypassEffects
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7832359474391093082, guid: 47ccd4022dbf6442d9e0fac591c61779,
+        type: 3}
+      propertyPath: Mute
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7832359473833050000, guid: 47ccd4022dbf6442d9e0fac591c61779, type: 3}
@@ -1633,6 +1658,7 @@ GameObject:
   - component: {fileID: 925699381}
   - component: {fileID: 925699382}
   - component: {fileID: 925699383}
+  - component: {fileID: 925699384}
   m_Layer: 0
   m_Name: CommunicationArchitecture
   m_TagString: Untagged
@@ -1669,6 +1695,7 @@ MonoBehaviour:
   comment: 
   display: {fileID: 0}
   kirbyManager: {fileID: 941503510}
+  clearSpeechTime: 2500
 --- !u!114 &925699383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1683,6 +1710,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comment: 
   display: {fileID: 0}
+--- !u!114 &925699384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925699380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2504fd9dcfef548069da252c98386468, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  comment: 
+  display: {fileID: 0}
+  mutedByDefault: 1
+  muteToggle: 32
+  outputDisplay: {fileID: 54073172}
 --- !u!1 &933341506
 GameObject:
   m_ObjectHideFlags: 0
