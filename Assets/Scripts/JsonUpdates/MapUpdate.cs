@@ -47,9 +47,9 @@ public class MapUpdate
 
     public static bool Validate(MapUpdate map)
     {
-        return (map.id != -1) && (map.lineCount != 0) &&
-            (map.width != 0.0f) && (map.height != 0.0f) &&
-            (map.data.Count != 0);
+        return (!((map.id == -1) && (map.lineCount == 0) &&
+            (map.width == 0.0f) && (map.height == 0.0f) &&
+            (map.data.Count == 0)));
     }
 }
 

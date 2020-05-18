@@ -164,6 +164,7 @@ public class RedisPublisher : RedisInterface
                     if (!string.IsNullOrEmpty(mapKey) && (requestKey == mapKey))
                     {
                         MapUpdate mapUpdate = JsonConvert.DeserializeObject<MapUpdate>(response);
+
                         if (MapUpdate.Validate(mapUpdate))
                         {
                             mapUpdate.Log();
@@ -173,6 +174,7 @@ public class RedisPublisher : RedisInterface
                     else if (!string.IsNullOrEmpty(roboKey) && (requestKey == roboKey))
                     {
                         RoboUpdate roboUpdate = JsonConvert.DeserializeObject<RoboUpdate>(response);
+
                         if (RoboUpdate.Validate(roboUpdate))
                         {
                             roboUpdate.Log();
