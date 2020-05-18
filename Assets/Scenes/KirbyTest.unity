@@ -1814,7 +1814,7 @@ MonoBehaviour:
   roboKey: Odom
   fiducialKey: 
   resetKey: Bridge_Reset
-  cmdKey: cmd
+  cmdKey: Cmd
 --- !u!4 &941503512
 Transform:
   m_ObjectHideFlags: 0
