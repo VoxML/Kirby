@@ -15,13 +15,17 @@ using VoxSimPlatform.Agent;
 
 public class NLUModule : ModuleBase
 {
-    public InputController inputController;
+    public GameObject kirbyManager;
+
+    CommandInput commandInput;
 
     // Use this for initialization
     void Start()
     {
         base.Start();
         DataStore.Subscribe("user:speech", ParseLanguageInput);
+
+        commandInput = kirbyManager.GetComponent<CommandInput>();
     }
 
     // Update is called once per frame
@@ -38,6 +42,7 @@ public class NLUModule : ModuleBase
             return;
         }
 
-        inputController.inputString = DataStore.GetStringValue(key);
+        commandInput.inputController.inputString = DataStore.GetStringValue(key);
+        commandInput.PostMessage(commandInput.inputController.inputString);
     }
 }

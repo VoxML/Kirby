@@ -397,6 +397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55a71ad71b53c4edf991b5757d8ca07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayTimeoutTime: 1000
 --- !u!1 &92908020
 GameObject:
   m_ObjectHideFlags: 0
@@ -1621,12 +1622,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82673d329af0740159afda670b0ed1b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &891213370 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4950227606559937996, guid: 326643045520b47d6a16555f040c4c40,
-    type: 3}
-  m_PrefabInstance: {fileID: 1268952470}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &925699380
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,8 +1651,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 891213370}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &925699382
 MonoBehaviour:
@@ -1673,7 +1668,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comment: 
   display: {fileID: 0}
-  inputController: {fileID: 891213369}
+  kirbyManager: {fileID: 941503510}
 --- !u!114 &925699383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1846,6 +1841,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da87496e6609a42c1b42d1e6db3116fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputController: {fileID: 891213369}
 --- !u!114 &941503514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1860,6 +1856,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   authenticated: 0
   usingRejson: 0
+  processing: 0
 --- !u!114 &941503515
 MonoBehaviour:
   m_ObjectHideFlags: 0
