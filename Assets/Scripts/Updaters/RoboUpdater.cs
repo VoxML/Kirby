@@ -9,6 +9,9 @@ public class RoboUpdater : MonoBehaviour
 {
     public GameObject kirby;
 
+    public float intervalMoveSpeed; // m/s
+    public float intervalRotSpeed;  // rad/s
+
     Voxeme kirbyVox;
 
     bool inited = false;
@@ -16,7 +19,8 @@ public class RoboUpdater : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-    
+        intervalMoveSpeed = 0.0f;
+        intervalRotSpeed = 0.0f;
     }
 
     // Update is called once per frame
