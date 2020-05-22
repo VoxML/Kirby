@@ -108,7 +108,7 @@ public class RedisSubscriber : RedisInterface
                 List<string> lines = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 string key = lines.Take(lines.FindIndex(l => l.StartsWith("*"))-2).Last().Split(':')[1];
                 string cmd = lines.Take(lines.FindIndex(l => l.StartsWith("*"))).Last();
-                Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, cmd: {1}", key, cmd));
+                Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, command: {1}", key, cmd));
 
                 // changes to resetKey might mean we have to start listening
                 if (processing || key == publisher.resetKey)
