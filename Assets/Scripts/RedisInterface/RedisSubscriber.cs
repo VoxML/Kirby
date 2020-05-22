@@ -113,36 +113,39 @@ public class RedisSubscriber : RedisInterface
                 // changes to resetKey might mean we have to start listening
                 if (processing || key == publisher.resetKey)
                 { 
-                    if (usingRejson)
+                    if (key != publisher.cmdKey)
                     {
-                        switch (cmd)
+                        if (usingRejson)
                         {
-                            case "set":
-                                publisher.WriteCommand(string.Format("json.get {0}", key));
-                                break;
+                            switch (cmd)
+                            {
+                                case "set":
+                                    publisher.WriteCommand(string.Format("json.get {0}", key));
+                                    break;
 
-                            case "rpush":
-                                publisher.WriteCommand(string.Format("json.lpop {0}", key));
-                                break;
+                                case "rpush":
+                                    publisher.WriteCommand(string.Format("json.lpop {0}", key));
+                                    break;
 
-                            default:
-                                break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
-                    else
-                    {
-                        switch (cmd)
+                        else
                         {
-                            case "set":
-                                publisher.WriteCommand(string.Format("get {0}", key));
-                                break;
+                            switch (cmd)
+                            {
+                                case "set":
+                                    publisher.WriteCommand(string.Format("get {0}", key));
+                                    break;
 
-                            case "rpush":
-                                publisher.WriteCommand(string.Format("lpop {0}", key));
-                                break;
+                                case "rpush":
+                                    publisher.WriteCommand(string.Format("lpop {0}", key));
+                                    break;
 
-                            default:
-                                break;
+                                default:
+                                    break;
+                            }
                         }
                     }
                 }
