@@ -4,6 +4,7 @@
  * TODO: if this works, move it to VoxSimPlatform
  */
 
+using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 
@@ -173,42 +174,6 @@ public class NeuralNetwork
         return neurons[layers.Length-1];
     }
 
-    //Genetic implementations down onwards until save.
-
-    public void Mutate(int high, float val)//used as a simple mutation function for any genetic implementations.
-    {
-        for (int i = 0; i < biases.Length; i++)
-        {
-            for (int j = 0; j < biases[i].Length; j++)
-            {
-                biases[i][j] = (UnityEngine.Random.Range(0f, high) <= 2) ? biases[i][j] += UnityEngine.Random.Range(-val, val) : biases[i][j];
-            }
-        }
-
-        for (int i = 0; i < weights.Length; i++)
-        {
-            for (int j = 0; j < weights[i].Length; j++)
-            {
-                for (int k = 0; k < weights[i][j].Length; k++)
-                {
-                    weights[i][j][k] = (UnityEngine.Random.Range(0f, high) <= 2) ? weights[i][j][k] += UnityEngine.Random.Range(-val, val) : weights[i][j][k];
-                }
-            }
-        }
-    }
-
-    public int CompareTo(NeuralNetwork other) //Comparing For Genetic implementations. Used for sorting based on the fitness of the network
-    {
-        if (other == null) return 1;
-
-        if (fitness > other.fitness)
-            return 1;
-        else if (fitness < other.fitness)
-            return -1;
-        else
-            return 0;
-    }
-
     // For creating a deep copy, to ensure arrays are serialized
     public NeuralNetwork Copy(NeuralNetwork nn) 
     {
@@ -295,5 +260,44 @@ public class NeuralNetwork
             }
         }
         writer.Close();
+
+        Debug.Log(string.Format("Network saved to file \"{0}\""));
+    }
+
+    //Genetic implementations down onwards until save.
+    //used as a simple mutation function for any genetic implementations.
+    public void Mutate(int high, float val)
+    {
+        for (int i = 0; i < biases.Length; i++)
+        {
+            for (int j = 0; j < biases[i].Length; j++)
+            {
+                biases[i][j] = (UnityEngine.Random.Range(0f, high) <= 2) ? biases[i][j] += UnityEngine.Random.Range(-val, val) : biases[i][j];
+            }
+        }
+
+        for (int i = 0; i < weights.Length; i++)
+        {
+            for (int j = 0; j < weights[i].Length; j++)
+            {
+                for (int k = 0; k < weights[i][j].Length; k++)
+                {
+                    weights[i][j][k] = (UnityEngine.Random.Range(0f, high) <= 2) ? weights[i][j][k] += UnityEngine.Random.Range(-val, val) : weights[i][j][k];
+                }
+            }
+        }
+    }
+
+    //Comparing For Genetic implementations. Used for sorting based on the fitness of the network
+    public int CompareTo(NeuralNetwork other)
+    {
+        if (other == null) return 1;
+
+        if (fitness > other.fitness)
+            return 1;
+        else if (fitness < other.fitness)
+            return -1;
+        else
+            return 0;
     }
 }
