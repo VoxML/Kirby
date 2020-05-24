@@ -261,7 +261,7 @@ public class NeuralNetwork
         }
         writer.Close();
 
-        Debug.Log(string.Format("Network saved to file \"{0}\""));
+        Debug.Log(string.Format("Network saved to file \"{0}\"", path));
     }
 
     //Genetic implementations down onwards until save.
