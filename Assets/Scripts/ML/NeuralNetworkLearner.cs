@@ -24,25 +24,25 @@ public class NeuralNetworkLearner : MonoBehaviour
             GUILayout.BeginHorizontal();
             GUILayout.Label("Epochs", GUILayout.Width(120));
             ((NeuralNetworkLearner)target).epochs = Convert.ToInt32(GUILayout.TextField(((NeuralNetworkLearner)target).epochs.ToString(),
-            GUILayout.MaxWidth(200)));
+                GUILayout.MaxWidth(200)));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Learning Rate", GUILayout.Width(120));
             ((NeuralNetworkLearner)target).learningRate = Convert.ToSingle(GUILayout.TextField(((NeuralNetworkLearner)target).learningRate.ToString(),
-            GUILayout.MaxWidth(200)));
+                GUILayout.MaxWidth(200)));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Cost", GUILayout.Width(120));
             ((NeuralNetworkLearner)target).cost = Convert.ToSingle(GUILayout.TextField(((NeuralNetworkLearner)target).cost.ToString(),
-            GUILayout.MaxWidth(200)));
+                GUILayout.MaxWidth(200)));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Save Path", GUILayout.Width(120));
             ((NeuralNetworkLearner)target).savePath = GUILayout.TextField(((NeuralNetworkLearner)target).savePath,
-            GUILayout.MaxWidth(200));
+                GUILayout.MaxWidth(200));
             GUILayout.EndHorizontal();
 
             if (GUILayout.Button("Train and Test"))

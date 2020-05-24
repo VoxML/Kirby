@@ -203,6 +203,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1066389259}
+  - component: {fileID: 1066389260}
   - component: {fileID: 1066389258}
   m_Layer: 0
   m_Name: Manager
@@ -220,7 +221,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1066389257}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49f54a1f3ae1b47f2b5a851f1905c905, type: 3}
+  m_Script: {fileID: 11500000, guid: 49336bf4d324d4396961795fb9f5e3b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   layers: 
@@ -228,7 +229,8 @@ MonoBehaviour:
   epochs: 20000
   learningRate: 0.01
   cost: 0
-  savePath: testNet.txt
+  savePath: 
+  groundTruthPath: 
 --- !u!4 &1066389259
 Transform:
   m_ObjectHideFlags: 0
@@ -243,6 +245,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1066389260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066389257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bea54b8219e7646999691b566ab0240a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layers: 
+  activations: []
+  epochs: 20000
+  learningRate: 0.01
+  cost: 0
+  savePath: 
 --- !u!1 &1322616848
 GameObject:
   m_ObjectHideFlags: 0
