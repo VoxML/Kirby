@@ -17,8 +17,8 @@ public class WorldModel
     [XmlAttribute]
     public string name { get; set; }
 
-    [XmlElement]
-    public PoseFrame pose { get; set; }
+    //[XmlElement]
+    //public PoseFrame pose { get; set; }
 
     [XmlElement("link")]
     public List<WorldModelLink> link { get; set; }

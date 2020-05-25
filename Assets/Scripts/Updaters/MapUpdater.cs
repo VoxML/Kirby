@@ -36,6 +36,8 @@ public class MapUpdater : MonoBehaviour
 
     public GameObject map;
 
+    public bool keepRosCoords;
+
     RedisPublisher publisher;
     OutputDisplay outputDisplay;
 
@@ -139,14 +141,27 @@ public class MapUpdater : MonoBehaviour
             else
             {
                 // get coordinates from map update instance
-                // need to transform from Redis +X forward space to Unity +Z forward space
-                // do this by flipping the X and Z and coordinates and reflecting horizontally
 
-                // first pair is start coords (X,Z)
-                Vector3 start = new Vector3(-coordPair[1], 0.0f, coordPair[0]);
+                Vector3 start, end;
+                if (keepRosCoords)
+                {
+                    // first pair is start coords (X,Z)
+                    start = new Vector3(coordPair[0], 0.0f, coordPair[1]);
 
-                // second pair is end coords (X,Z)
-                Vector3 end = new Vector3(-coordPair[3], 0.0f, coordPair[2]);
+                    // second pair is end coords (X,Z)
+                    end = new Vector3(coordPair[2], 0.0f, coordPair[3]);
+                }
+                else
+                {
+                    // need to transform from Redis +X forward space to Unity +Z forward space
+                    // do this by flipping the X and Z and coordinates and reflecting horizontally
+
+                    // first pair is start coords (X,Z)
+                    start = new Vector3(-coordPair[1], 0.0f, coordPair[0]);
+
+                    // second pair is end coords (X,Z)
+                    end = new Vector3(-coordPair[3], 0.0f, coordPair[2]);
+                }
 
                 // create a cube, add it to "Map" object
                 GameObject wallGeom = GameObject.CreatePrimitive(PrimitiveType.Cube);
