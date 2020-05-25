@@ -2,6 +2,7 @@
 using UnityEditor;
 using System;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 using Newtonsoft.Json;
@@ -49,24 +50,6 @@ public class WallAdjusterDataGathering : MonoBehaviour
         }
     }
 #endif
-
-    [MenuItem("Wall Adjustment/Make Link %#l")]
-    static void MakeLink()
-    {
-        foreach (object obj in Selection.objects)
-        {
-            if (obj is GameObject)
-            {
-                Debug.Log((obj as GameObject).name);
-            }
-        }
-    }
-
-    [MenuItem("Wall Adjustment/Make Link %#l", true)]
-    static bool ValidateMakeLink()
-    {
-        return (Selection.objects.Length == 2);
-    }
 
     void LoadGroundTruth(string path)
     {
@@ -202,6 +185,29 @@ public class WallAdjusterDataGathering : MonoBehaviour
             //  result is in radians so convert to degrees
             float yRot = -Mathf.Asin(normalized.z) * Mathf.Sign(normalized.x) * Mathf.Rad2Deg;
             wallGeom.transform.eulerAngles = new Vector3(0.0f, yRot, 0.0f);
+
+            float startX = wallGeom.transform.position.x - (wallGeom.transform.localScale.x / 2.0f);
+            float endX = wallGeom.transform.position.x + (wallGeom.transform.localScale.x / 2.0f);
+            float startY = wallGeom.transform.position.z - (wallGeom.transform.localScale.z / 2.0f);
+            float endY = wallGeom.transform.position.z + (wallGeom.transform.localScale.z / 2.0f);
+
+            Vector3 startDir = new Vector3(startX, wallGeom.transform.position.y, startY) - wallGeom.transform.position; // get point direction relative to pivot
+            startDir = Quaternion.Euler(wallGeom.transform.eulerAngles) * startDir; // rotate it
+            Vector3 startPoint = startDir + wallGeom.transform.position; // calculate rotated point
+
+            GameObject startMarker = new GameObject("StartMarker");
+            startMarker.transform.position = start;
+            startMarker.transform.parent = wallGeom.transform;
+
+            Vector3 endDir = new Vector3(endX, wallGeom.transform.position.y, endY) - wallGeom.transform.position; // get point direction relative to pivot
+            endDir = Quaternion.Euler(wallGeom.transform.eulerAngles) * endDir; // rotate it
+            Vector3 endPoint = endDir + wallGeom.transform.position; // calculate rotated point
+
+            GameObject endMarker = new GameObject("EndMarker");
+            endMarker.transform.position = end;
+            endMarker.transform.parent = wallGeom.transform;
+
+            Debug.Log(string.Format("Endpoints: [{0}, {1}, {2}, {3}]", startPoint.x, startPoint.z, endPoint.x, endPoint.z));
 
             wallGeom.transform.parent = sampleMapObj.transform;
         }

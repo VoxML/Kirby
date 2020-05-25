@@ -2,11 +2,11 @@
 
 /*
  * Action space:
- *  0 - none
- *  1 - align, using first segment as anchor
- *  2 - align, using second segment as anchor
- *  3 - close, using first segment as anchor
- *  4 - close, using second segment as anchor
+ *  0 - no transformation
+ *  1 - align first invariant (align, using first segment as anchor)
+ *  2 - align second invariant (align, using second segment as anchor)
+ *  3 - close first invariant (close gap, using first segment as anchor)
+ *  4 - close second invariant (close gap, using second segment as anchor)
  */
 
 public class WallAdjusterNeuralNetwork : NeuralNetworkLearner
