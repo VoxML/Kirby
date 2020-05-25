@@ -52,6 +52,11 @@ public class WallAdjusterNeuralNetwork : NeuralNetworkLearner
             {
                 ((WallAdjusterNeuralNetwork)target).LoadSampleMap(((WallAdjusterNeuralNetwork)target).sampleMapPath);
             }
+
+            if (GUILayout.Button("Delete Sample Map"))
+            {
+                ((WallAdjusterNeuralNetwork)target).DeleteSampleMap();
+            }
         }
     }
 #endif
@@ -154,6 +159,9 @@ public class WallAdjusterNeuralNetwork : NeuralNetworkLearner
         // groundTruth.model.link[i].visual.geometry.box.size -> sizeX sizeZ sizeY
 
         Debug.Log(string.Format("Line count: {0}", groundTruth.model.link.Count));
+
+        GameObject groundTruthMapObj = new GameObject("GroundTruthMap");
+
         for (int i = 0; i < groundTruth.model.link.Count; i++)
         {
             GameObject wallGeom = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -193,6 +201,8 @@ public class WallAdjusterNeuralNetwork : NeuralNetworkLearner
             endMarker.transform.parent = wallGeom.transform;
 
             Debug.Log(string.Format("Endpoints: [{0}, {1}, {2}, {3}]", start.x, start.z, end.x, end.z));
+
+            wallGeom.transform.parent = groundTruthMapObj.transform;
         }
     }
 
@@ -207,34 +217,56 @@ public class WallAdjusterNeuralNetwork : NeuralNetworkLearner
         {
             sampleMap.Log();
 
-            for (int i = 0; i < sampleMap.data.Count; i++)
-            {
-                // first pair is start coords (X,Z)
-                Vector3 start = new Vector3(sampleMap.data[i][0], 0.0f, sampleMap.data[i][1]);
+            VisualizeSampleMap();
+        }
+    }
 
-                // second pair is end coords (X,Z)
-                Vector3 end = new Vector3(sampleMap.data[i][2], 0.0f, sampleMap.data[i][3]);
+    void VisualizeSampleMap()
+    {
+        GameObject sampleMapObj = new GameObject("SampleMap");
+        for (int i = 0; i < sampleMap.data.Count; i++)
+        {
+            // first pair is start coords (X,Z)
+            Vector3 start = new Vector3(sampleMap.data[i][0], 0.0f, sampleMap.data[i][1]);
 
-                GameObject wallGeom = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                wallGeom.name = string.Format("SampleSegment-{0}", i);
+            // second pair is end coords (X,Z)
+            Vector3 end = new Vector3(sampleMap.data[i][2], 0.0f, sampleMap.data[i][3]);
 
-                wallGeom.GetComponent<Renderer>().material.color = new Color(0, 1, 0);
+            GameObject wallGeom = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            wallGeom.name = string.Format("SampleSegment-{0}", i);
 
-                // scale it along the X-axis by the length of the line segment (and make it thin along the Z)
-                wallGeom.transform.localScale = new Vector3((end - start).magnitude, 1.0f, 0.05f);
+            wallGeom.GetComponent<Renderer>().material.color = new Color(0, 1, 0);
 
-                // position it at the center of the line segment (at ground level)
-                wallGeom.transform.position = new Vector3((end.x + start.x) / 2.0f,
-                    ((end.y + start.y) / 2.0f) + (wallGeom.transform.localScale.y / 2.0f), (end.z + start.z) / 2.0f);
+            // scale it along the X-axis by the length of the line segment (and make it thin along the Z)
+            wallGeom.transform.localScale = new Vector3((end - start).magnitude, 1.0f, 0.05f);
 
-                // create an equivalent unit vector
-                Vector3 normalized = (end - start).normalized;
+            // position it at the center of the line segment (at ground level)
+            wallGeom.transform.position = new Vector3((end.x + start.x) / 2.0f,
+                ((end.y + start.y) / 2.0f) + (wallGeom.transform.localScale.y / 2.0f), (end.z + start.z) / 2.0f);
 
-                // rotate the wall segment around the Y by the arcsin of the unit vector
-                //  result is in radians so convert to degrees
-                float yRot = -Mathf.Asin(normalized.z) * Mathf.Sign(normalized.x) * Mathf.Rad2Deg;
-                wallGeom.transform.eulerAngles = new Vector3(0.0f, yRot, 0.0f);
-            }
+            // create an equivalent unit vector
+            Vector3 normalized = (end - start).normalized;
+
+            // rotate the wall segment around the Y by the arcsin of the unit vector
+            //  result is in radians so convert to degrees
+            float yRot = -Mathf.Asin(normalized.z) * Mathf.Sign(normalized.x) * Mathf.Rad2Deg;
+            wallGeom.transform.eulerAngles = new Vector3(0.0f, yRot, 0.0f);
+
+            wallGeom.transform.parent = sampleMapObj.transform;
+        }
+    }
+
+    void DeleteSampleMap()
+    {
+        GameObject sampleMapObj = GameObject.Find("SampleMap");
+
+        if (sampleMapObj != null)
+        {
+            Destroy(GameObject.Find("SampleMap"));
+        }
+        else
+        {
+            Debug.Log("No sample map object!");
         }
     }
 }
