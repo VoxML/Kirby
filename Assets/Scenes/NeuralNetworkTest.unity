@@ -205,6 +205,7 @@ GameObject:
   - component: {fileID: 1066389259}
   - component: {fileID: 1066389260}
   - component: {fileID: 1066389258}
+  - component: {fileID: 1066389261}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -230,7 +231,6 @@ MonoBehaviour:
   learningRate: 0.01
   cost: 0
   savePath: 
-  groundTruthPath: 
 --- !u!4 &1066389259
 Transform:
   m_ObjectHideFlags: 0
@@ -263,6 +263,20 @@ MonoBehaviour:
   learningRate: 0.01
   cost: 0
   savePath: 
+--- !u!114 &1066389261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066389257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bacec82495bf4a6cae733768e0570e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundTruthPath: model_1.sdf
+  sampleMapPath: walldump.json
 --- !u!1 &1322616848
 GameObject:
   m_ObjectHideFlags: 0
