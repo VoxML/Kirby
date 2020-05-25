@@ -51,6 +51,38 @@ public class WallAdjusterDataGathering : MonoBehaviour
     }
 #endif
 
+    void Start()
+    {
+        Selection.selectionChanged += SelectionChanged;
+    }
+
+    void SelectionChanged()
+    {
+        if (GameObject.Find("SampleMap") != null)
+        {
+            if (Selection.objects.All(o => (o as GameObject).transform.
+                IsChildOf(GameObject.Find("SampleMap").transform)))
+            {
+                for (int i = 0; i < ((Selection.objects.Length < 2) ? Selection.objects.Length : 2); i++)
+                {
+                    (Selection.objects[i] as GameObject).GetComponent<Renderer>().
+                        material.color = i == 0 ? new Color(1, 0, 0) : new Color(0, 0, 1);
+                }
+            }
+
+            if (Selection.objects.Length == 0) // no object selected
+            {
+                foreach (Transform transform in GameObject.Find("SampleMap").transform)
+                {
+                    if (transform.gameObject.GetComponent<Renderer>() != null)
+                    {
+                        transform.gameObject.GetComponent<Renderer>().material.color = new Color(0, 1, 0);
+                    }
+                }
+            }
+        }
+    }
+
     void LoadGroundTruth(string path)
     {
         XmlSerializer serializer = new XmlSerializer(typeof(sdf));

@@ -4,23 +4,30 @@ using System.Linq;
 
 public class WallAdjusterMakeLink
 {
+    static void Log()
+    {
+        Debug.Log(string.Format("Selection: {0}, {1}",
+                (Selection.objects[0] as GameObject).name,
+                (Selection.objects[1] as GameObject).name));
+    }
+
     /// <summary>
     /// No transformation
     /// </summary>
     [MenuItem("Make Link/No Transformation &#0")]
-    static void NoTransformation()
+    static void NoTransformation() 
     {
         if (Selection.objects.All(o => o is GameObject))
         {
+            Log();
             Vector3 firstStart = (Selection.objects[0] as GameObject).
-                transform.Find("StartMarker").transform.position;
+            transform.Find("StartMarker").transform.position;
             Vector3 firstEnd = (Selection.objects[0] as GameObject).
                 transform.Find("EndMarker").transform.position;
             Vector3 secondStart = (Selection.objects[1] as GameObject).
                 transform.Find("StartMarker").transform.position;
             Vector3 secondEnd = (Selection.objects[1] as GameObject).
                 transform.Find("EndMarker").transform.position;
-
             Debug.Log(string.Format("[{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, 0]",
                 firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
                 secondStart.x, secondStart.z, secondEnd.x, secondEnd.z));
@@ -41,6 +48,7 @@ public class WallAdjusterMakeLink
     {
         if (Selection.objects.All(o => o is GameObject))
         {
+            Log();
             Vector3 firstStart = (Selection.objects[0] as GameObject).
                 transform.Find("StartMarker").transform.position;
             Vector3 firstEnd = (Selection.objects[0] as GameObject).
@@ -70,6 +78,7 @@ public class WallAdjusterMakeLink
     {
         if (Selection.objects.All(o => o is GameObject))
         {
+            Log();
             Vector3 firstStart = (Selection.objects[0] as GameObject).
                 transform.Find("StartMarker").transform.position;
             Vector3 firstEnd = (Selection.objects[0] as GameObject).
@@ -99,6 +108,7 @@ public class WallAdjusterMakeLink
     {
         if (Selection.objects.All(o => o is GameObject))
         {
+            Log();
             Vector3 firstStart = (Selection.objects[0] as GameObject).
                 transform.Find("StartMarker").transform.position;
             Vector3 firstEnd = (Selection.objects[0] as GameObject).
@@ -128,6 +138,7 @@ public class WallAdjusterMakeLink
     {
         if (Selection.objects.All(o => o is GameObject))
         {
+            Log();
             Vector3 firstStart = (Selection.objects[0] as GameObject).
                 transform.Find("StartMarker").transform.position;
             Vector3 firstEnd = (Selection.objects[0] as GameObject).
