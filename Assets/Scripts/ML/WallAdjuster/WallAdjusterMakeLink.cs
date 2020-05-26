@@ -1,12 +1,23 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using System;
 using System.Linq;
 
 public class WallAdjusterMakeLink
 {
+    public static event EventHandler VectorGenerated;
+
+    public static void OnVectorGenerated(object sender, EventArgs e)
+    {
+        if (VectorGenerated != null)
+        {
+            VectorGenerated(sender, e);
+        }
+    }
+
     static void Log()
     {
-        Debug.Log(string.Format("Selection: {0}, {1}",
+        Debug.Log(string.Format("Selected: {0}, {1}",
                 (Selection.objects[0] as GameObject).name,
                 (Selection.objects[1] as GameObject).name));
     }
@@ -28,9 +39,10 @@ public class WallAdjusterMakeLink
                 transform.Find("StartMarker").transform.position;
             Vector3 secondEnd = (Selection.objects[1] as GameObject).
                 transform.Find("EndMarker").transform.position;
-            Debug.Log(string.Format("[{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, 0]",
-                firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
-                secondStart.x, secondStart.z, secondEnd.x, secondEnd.z));
+
+            float[] vector = new float[] { firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
+                secondStart.x, secondStart.z, secondEnd.x, secondEnd.z, 0 };
+            OnVectorGenerated(null, new VectorGeneratedEventArgs(vector));
         }
     }
 
@@ -58,9 +70,9 @@ public class WallAdjusterMakeLink
             Vector3 secondEnd = (Selection.objects[1] as GameObject).
                 transform.Find("EndMarker").transform.position;
 
-            Debug.Log(string.Format("[{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, 1]",
-                firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
-                secondStart.x, secondStart.z, secondEnd.x, secondEnd.z));
+            float[] vector = new float[] { firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
+                secondStart.x, secondStart.z, secondEnd.x, secondEnd.z, 1 };
+            OnVectorGenerated(null, new VectorGeneratedEventArgs(vector));
         }
     }
 
@@ -88,9 +100,9 @@ public class WallAdjusterMakeLink
             Vector3 secondEnd = (Selection.objects[1] as GameObject).
                 transform.Find("EndMarker").transform.position;
 
-            Debug.Log(string.Format("[{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, 2]",
-                firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
-                secondStart.x, secondStart.z, secondEnd.x, secondEnd.z));
+            float[] vector = new float[] { firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
+                secondStart.x, secondStart.z, secondEnd.x, secondEnd.z, 2 };
+            OnVectorGenerated(null, new VectorGeneratedEventArgs(vector));
         }
     }
 
@@ -118,9 +130,9 @@ public class WallAdjusterMakeLink
             Vector3 secondEnd = (Selection.objects[1] as GameObject).
                 transform.Find("EndMarker").transform.position;
 
-            Debug.Log(string.Format("[{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, 3]",
-                firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
-                secondStart.x, secondStart.z, secondEnd.x, secondEnd.z));
+            float[] vector = new float[] { firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
+                secondStart.x, secondStart.z, secondEnd.x, secondEnd.z, 3 };
+            OnVectorGenerated(null, new VectorGeneratedEventArgs(vector));
         }
     }
 
@@ -148,9 +160,9 @@ public class WallAdjusterMakeLink
             Vector3 secondEnd = (Selection.objects[1] as GameObject).
                 transform.Find("EndMarker").transform.position;
 
-            Debug.Log(string.Format("[{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, 4]",
-                firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
-                secondStart.x, secondStart.z, secondEnd.x, secondEnd.z));
+            float[] vector = new float[] { firstStart.x, firstStart.z, firstEnd.x, firstEnd.z,
+                secondStart.x, secondStart.z, secondEnd.x, secondEnd.z, 4 };
+            OnVectorGenerated(null, new VectorGeneratedEventArgs(vector));
         }
     }
 

@@ -1,16 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
-
-/*
- * Action space:
- *  0 - none
- *  1 - align, using first segment as anchor
- *  2 - align, using second segment as anchor
- *  3 - close, using first segment as anchor
- *  4 - close, using second segment as anchor
- */
 
 public class NeuralNetworkExample : NeuralNetworkLearner
 {
@@ -39,7 +28,7 @@ public class NeuralNetworkExample : NeuralNetworkLearner
     {
         
     }
-
+    
     public override void BeginTraining()
     {
         base.BeginTraining();

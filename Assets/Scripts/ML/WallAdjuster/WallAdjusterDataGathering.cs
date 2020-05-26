@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -14,6 +15,9 @@ public class WallAdjusterDataGathering : MonoBehaviour
 
     public string sampleMapPath;
     MapUpdate sampleMap;
+
+    public List<float[]> trainingVectors = new List<float[]>();
+    public string trainingDataPath;
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(WallAdjusterDataGathering))]
@@ -47,40 +51,61 @@ public class WallAdjusterDataGathering : MonoBehaviour
             {
                 ((WallAdjusterDataGathering)target).DeleteSampleMap();
             }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Training Data Path", GUILayout.Width(120));
+            ((WallAdjusterDataGathering)target).trainingDataPath = GUILayout.TextField(((WallAdjusterDataGathering)target).trainingDataPath,
+                GUILayout.MaxWidth(200));
+            GUILayout.EndHorizontal();
+            if (GUILayout.Button("Save Training Data"))
+            {
+                ((WallAdjusterDataGathering)target).SaveTrainingData(((WallAdjusterDataGathering)target).trainingDataPath);
+            }
         }
     }
 #endif
 
     void Start()
     {
-        Selection.selectionChanged += SelectionChanged;
+        Selection.selectionChanged += ChangedSelection;
+
+        WallAdjusterMakeLink.VectorGenerated += GeneratedVector;
     }
 
-    void SelectionChanged()
+    void ChangedSelection()
     {
         if (GameObject.Find("SampleMap") != null)
         {
+            foreach (Transform transform in GameObject.Find("SampleMap").transform)
+            {
+                if (transform.gameObject.GetComponent<Renderer>() != null)
+                {
+                    transform.gameObject.GetComponent<Renderer>().material.color = new Color(0, 1, 0);
+                }
+            }
+
             if (Selection.objects.All(o => (o as GameObject).transform.
                 IsChildOf(GameObject.Find("SampleMap").transform)))
             {
                 for (int i = 0; i < ((Selection.objects.Length < 2) ? Selection.objects.Length : 2); i++)
                 {
-                    (Selection.objects[i] as GameObject).GetComponent<Renderer>().
-                        material.color = i == 0 ? new Color(1, 0, 0) : new Color(0, 0, 1);
-                }
-            }
-
-            if (Selection.objects.Length == 0) // no object selected
-            {
-                foreach (Transform transform in GameObject.Find("SampleMap").transform)
-                {
-                    if (transform.gameObject.GetComponent<Renderer>() != null)
-                    {
-                        transform.gameObject.GetComponent<Renderer>().material.color = new Color(0, 1, 0);
+                    if ((Selection.objects[i] as GameObject) != GameObject.Find("SampleMap"))
+                    { 
+                        (Selection.objects[i] as GameObject).GetComponent<Renderer>().
+                            material.color = i == 0 ? new Color(1, 0, 0) : new Color(0, 0, 1);
                     }
                 }
             }
         }
+    }
+
+    void GeneratedVector(object sender, EventArgs e)
+    {
+        float[] vec = ((VectorGeneratedEventArgs)e).Vector;
+
+        Debug.Log(string.Format("Generated vector: [{0}]", string.Join(", ", vec)));
+
+        trainingVectors.Add(vec);
     }
 
     void LoadGroundTruth(string path)
@@ -166,7 +191,7 @@ public class WallAdjusterDataGathering : MonoBehaviour
             endMarker.transform.position = end;
             endMarker.transform.parent = wallGeom.transform;
 
-            Debug.Log(string.Format("Endpoints: [{0}, {1}, {2}, {3}]", start.x, start.z, end.x, end.z));
+            //Debug.Log(string.Format("Endpoints: [{0}, {1}, {2}, {3}]", start.x, start.z, end.x, end.z));
 
             wallGeom.transform.parent = groundTruthMapObj.transform;
         }
@@ -239,7 +264,7 @@ public class WallAdjusterDataGathering : MonoBehaviour
             endMarker.transform.position = end;
             endMarker.transform.parent = wallGeom.transform;
 
-            Debug.Log(string.Format("Endpoints: [{0}, {1}, {2}, {3}]", startPoint.x, startPoint.z, endPoint.x, endPoint.z));
+            //Debug.Log(string.Format("Endpoints: [{0}, {1}, {2}, {3}]", startPoint.x, startPoint.z, endPoint.x, endPoint.z));
 
             wallGeom.transform.parent = sampleMapObj.transform;
         }
@@ -256,6 +281,15 @@ public class WallAdjusterDataGathering : MonoBehaviour
         else
         {
             Debug.Log("No sample map object!");
+        }
+    }
+
+    void SaveTrainingData(string path)
+    {
+        using (var stream = new StreamWriter(path))
+        {
+            stream.Write(JsonConvert.SerializeObject(trainingVectors));
+            stream.Close();
         }
     }
 }

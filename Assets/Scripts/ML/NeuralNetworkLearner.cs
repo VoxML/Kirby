@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System;
+using System.Collections.Generic;
 
 public class NeuralNetworkLearner : MonoBehaviour
 {
@@ -14,6 +15,30 @@ public class NeuralNetworkLearner : MonoBehaviour
     public string savePath;
 
     DateTime trainStartTime;
+
+    List<float[]> inputs;
+    public List<float[]> Inputs
+    {
+        get { return inputs; }
+        set { inputs = value; }
+    }
+
+    List<float[]> outputs;
+    public List<float[]> Outputs
+    {
+        get { return outputs; }
+        set { outputs = value; }
+    }
+
+    public static event EventHandler TrainingDataLoaded;
+
+    public static void OnTrainingDataLoaded(object sender, EventArgs e)
+    {
+        if (TrainingDataLoaded != null)
+        {
+            TrainingDataLoaded(sender, e);
+        }
+    }
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(NeuralNetworkLearner))]
@@ -63,6 +88,9 @@ public class NeuralNetworkLearner : MonoBehaviour
     public virtual void Start()
     {
         net = new NeuralNetwork(layers, activations, learningRate, cost);
+
+        inputs = new List<float[]>();
+        outputs = new List<float[]>();
     }
 
     public virtual void BeginTraining()
