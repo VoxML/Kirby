@@ -2331,6 +2331,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blackboardKey: user:isSpeaking
+--- !u!1 &1337547121 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8539438816920335060, guid: d92550561c2bd438c8d4f99a11a56b34,
+    type: 3}
+  m_PrefabInstance: {fileID: 1203260991}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1405266353
 GameObject:
   m_ObjectHideFlags: 0
@@ -2476,6 +2482,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5204347879818037675, guid: bc571eaa085b641aea6163f44b5a8dd6,
+        type: 3}
+      propertyPath: PointingMarker
+      value: 
+      objectReference: {fileID: 1337547121}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc571eaa085b641aea6163f44b5a8dd6, type: 3}
 --- !u!1 &1659851435
