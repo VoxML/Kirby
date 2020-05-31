@@ -18,6 +18,8 @@ public class DialogueInteractionModule : ModuleBase
 {
     MapUpdater mapUpdater;
 
+    AgentOutputController agentOutput;
+
     // Use this for initialization
     void Start()
     {
@@ -33,6 +35,10 @@ public class DialogueInteractionModule : ModuleBase
         {
             mapUpdater.MapInited += StartListening;
         }
+
+        agentOutput = GameObject.Find("RoboStandIn").GetComponentInChildren<AgentOutputController>();
+
+        DataStore.Subscribe("user:isEngaged", CheckEngagement);
     }
 
     // Update is called once per frame
@@ -45,5 +51,18 @@ public class DialogueInteractionModule : ModuleBase
     void StartListening(object sender, EventArgs e)
     {
         SetValue("kirby:isListening", true, string.Empty);
+    }
+
+    // callback when user:isEngaged changes
+    void CheckEngagement(string key, DataStore.IValue value)
+    {
+        if (DataStore.GetBoolValue(key))
+        {
+            agentOutput.outputString = "Hello.";
+        }
+        else
+        {
+            agentOutput.outputString = "Goodbye.";
+        }
     }
 }

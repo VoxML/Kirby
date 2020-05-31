@@ -18,7 +18,7 @@ public class PointingIntentModule: ModuleBase
 
 	private void Update()
 	{
-		if (pointingStateMachine.Evaluate())
+        if (pointingStateMachine.Evaluate())
 		{
 			switch (pointingStateMachine.CurrentState)
 			{

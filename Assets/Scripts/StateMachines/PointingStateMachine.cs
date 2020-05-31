@@ -42,18 +42,18 @@ public class PointingStateMachine : RuleStateMachine<PointingState>
 	private bool IsUserEngaged()
 	{
 		bool userIsEngaged = DataStore.GetBoolValue("user:isEngaged");
-		return userIsEngaged;
+        return userIsEngaged;
 	}
 
 	private bool IsUserPointing(bool checkValidity=true)
 	{
 		bool userIsPointing = DataStore.GetBoolValue("user:isPointing");
-		if (checkValidity)
+        if (checkValidity)
 		{
 			bool pointPositionIsValid = DataStore.GetBoolValue("user:pointValid");
-			return userIsPointing && pointPositionIsValid;
+            return userIsPointing && pointPositionIsValid;
 		}
-		return userIsPointing;
+        return userIsPointing;
 	}
 
 	private Queue<Vector3> lastNPositions;
@@ -85,8 +85,8 @@ public class PointingStateMachine : RuleStateMachine<PointingState>
 				maxV.z = v.z;
 		}
 
-		//Debug.LogWarning((maxV - minV).magnitude);
-		return (maxV - minV).magnitude < stableLocationConstant;
+        //Debug.LogWarning((maxV - minV).magnitude);
+        return (maxV - minV).magnitude < stableLocationConstant;
 	}
 
 	private Vector3 AveragePointedAtLocation

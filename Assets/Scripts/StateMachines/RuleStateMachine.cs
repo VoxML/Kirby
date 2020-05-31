@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System;
 
+using UnityEngine;
+
 /// <summary>
 /// Base class for a state machine that has a fixed number of states such
 /// that the transitions between states are decided by <see cref="Rule"/>s.
@@ -178,9 +180,10 @@ public abstract class RuleStateMachine<T> where T: Enum
 	public bool Evaluate()
 	{
 		bool stateChanged = false;
-		foreach(var pair in transitions[CurrentState])
+
+        foreach (var pair in transitions[CurrentState])
 		{
-			var (toState, rule) = (pair.Key, pair.Value);
+            var (toState, rule) = (pair.Key, pair.Value);
 			if (rule.Evaluate())
 			{
 				CurrentState = toState;
