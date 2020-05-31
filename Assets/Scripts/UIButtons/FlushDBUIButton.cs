@@ -24,7 +24,7 @@ public class FlushDBUIButton : UIButton
         redisPublisher = GameObject.Find("KirbyManager").GetComponent<RedisPublisher>();
         if (redisPublisher == null)
         {
-            Debug.LogError("FlushDBButton.Start: Could not find RedisPublisher!");
+            Debug.LogWarning("FlushDBButton.Start: Could not find RedisPublisher.  Expect errors!");
         }
 
         base.Start();

@@ -26,7 +26,7 @@ public class OutputDisplay : MonoBehaviour
 
         if (gui == null)
         {
-            Debug.LogError("OutputDisplay: could not find component TextMeshProUGUI!  Expect errors!");
+            Debug.LogWarning("OutputDisplay: could not find component TextMeshProUGUI!  Expect errors!");
         }
 
         displayTimeoutTimer = new Timer(displayTimeoutTime);

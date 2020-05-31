@@ -24,7 +24,7 @@ public class SwitchCamerasUIButton : UIButton
         cameraManager = GameObject.Find("CameraManager").GetComponent<CameraManager>();
         if (cameraManager == null)
         {
-            Debug.LogError("FlushDBButton.Start: Could not find CameraManager!");
+            Debug.LogError("FlushDBButton.Start: Could not find CameraManager.  Expect errors!");
         }
 
         base.Start();

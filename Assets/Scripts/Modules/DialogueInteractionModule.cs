@@ -27,7 +27,7 @@ public class DialogueInteractionModule : ModuleBase
 
         if (mapUpdater == null)
         {
-            Debug.LogError("DialogueInteractionModule.Start: Could not find MapUpdater!");
+            Debug.LogWarning("DialogueInteractionModule.Start: Could not find MapUpdater.  Expect errors!");
         }
         else
         {

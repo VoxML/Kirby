@@ -16,7 +16,7 @@ public class CommandInput : MonoBehaviour
         inputController = GameObject.Find("IOController").GetComponent<InputController>();
         if (inputController == null)
         {
-            Debug.LogError("CommandInput.Start: Could not find InputController!");
+            Debug.LogWarning("CommandInput.Start: Could not find InputController.  Expect errors!");
         }
 
         inputController.InputReceived += PostMessage;
@@ -24,7 +24,7 @@ public class CommandInput : MonoBehaviour
         redisPublisher = gameObject.GetComponent<RedisPublisher>();
         if (redisPublisher == null)
         {
-            Debug.LogError("CommandInput.Start: Could not find RedisPublisher!");
+            Debug.LogWarning("CommandInput.Start: Could not find RedisPublisher.  Expect errors!");
         }
     }
 
