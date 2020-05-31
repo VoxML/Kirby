@@ -18,8 +18,9 @@ using Newtonsoft.Json;
 public class WallAdjusterNeuralNetwork : NeuralNetworkLearner
 {
     public string trainingDataPath;
-
     public List<float[]> trainingData;
+
+    public string testingDataPath;
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(WallAdjusterNeuralNetwork))]
@@ -29,6 +30,12 @@ public class WallAdjusterNeuralNetwork : NeuralNetworkLearner
         {
             base.OnInspectorGUI();
             // add other custom inspector stuff here
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Testing Data Path", GUILayout.Width(120));
+            ((WallAdjusterNeuralNetwork)target).testingDataPath = GUILayout.TextField(((WallAdjusterNeuralNetwork)target).testingDataPath,
+                GUILayout.MaxWidth(200));
+            GUILayout.EndHorizontal();
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Training Data Path", GUILayout.Width(120));
             ((WallAdjusterNeuralNetwork)target).trainingDataPath = GUILayout.TextField(((WallAdjusterNeuralNetwork)target).trainingDataPath,
@@ -74,6 +81,18 @@ public class WallAdjusterNeuralNetwork : NeuralNetworkLearner
         }
     }
 
+    public List<float[]> LoadTestingData(string path)
+    {
+        List<float[]> testingData;
+
+        using (var stream = new StreamReader(path))
+        {
+            testingData = JsonConvert.DeserializeObject<List<float[]>>(stream.ReadToEnd());
+        }
+
+        return testingData;
+    }
+
     public override void BeginTraining()
     {
         base.BeginTraining();
@@ -99,11 +118,29 @@ public class WallAdjusterNeuralNetwork : NeuralNetworkLearner
     public override void Test()
     {
         base.Test();
-        for (int j = 0; j < Inputs.Count; j++)
+
+        if (!string.IsNullOrEmpty(testingDataPath))
         {
-            Debug.Log(net.FeedForward(Inputs[j])[0]);
+            List<float[]> testingData = LoadTestingData(testingDataPath);
+            for (int j = 0; j < testingData.Count; j++)
+            {
+                float output = net.FeedForward(testingData[j])[0];
+                Debug.Log(string.Format("[{0}] -> {1} -> {2}",
+                    string.Join(", ",testingData[j]), output,
+                    Mathf.RoundToInt(output)));
+            }
         }
-        Debug.Log(net.FeedForward(new float[] { 0, 0, 0, 1, 0, 1, 1, 1 })[0]);
-        Debug.Log(net.FeedForward(new float[] { 0, 0, 0, .9f, 0, 1, 1, 1 })[0]);
+        else
+        {
+            float[] i1 = new float[] { 0, 0, 0, 1, 0, 1, 1, 1 };
+            float[] i2 = new float[] { 0, 0, 0, .9f, 0, 1, 1, 1 };
+
+            Debug.Log(string.Format("[{0}] -> {1} -> {2}",
+                string.Join(", ", i1), net.FeedForward(i1)[0],
+                Mathf.RoundToInt(net.FeedForward(i1)[0])));
+            Debug.Log(string.Format("[{0}] -> {1} -> {2}",
+                string.Join(", ", i2), net.FeedForward(i2)[0],
+                Mathf.RoundToInt(net.FeedForward(i2)[0])));
+        }
     }
 }

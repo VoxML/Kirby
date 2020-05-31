@@ -70,16 +70,16 @@ public class NeuralNetworkLearner : MonoBehaviour
                 GUILayout.MaxWidth(200));
             GUILayout.EndHorizontal();
 
+            if (GUILayout.Button("Save Model"))
+            {
+                ((NeuralNetworkLearner)target).SaveNet();
+            }
+
             if (GUILayout.Button("Train and Test"))
             {
                 ((NeuralNetworkLearner)target).BeginTraining();
                 ((NeuralNetworkLearner)target).EndTraining();
                 ((NeuralNetworkLearner)target).Test();
-            }
-
-            if (GUILayout.Button("Save"))
-            {
-                ((NeuralNetworkLearner)target).SaveNet();
             }
         }
     }

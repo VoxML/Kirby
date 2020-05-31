@@ -1,5 +1,7 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public static class Backpropagate
 {
@@ -125,6 +127,12 @@ public static class Backpropagate
         return k / (1.0f + k);
     }
 
+    public static float softmax(float[] vector, int index, float bias)
+    {
+        float k = (float)Math.Exp(vector[index] + bias);
+        return k / vector.Select(v => (float)Math.Exp(v + bias)).Sum();
+    }
+
     public static float tanh(float x)
     {
         return (float)Math.Tanh(x);
@@ -139,6 +147,7 @@ public static class Backpropagate
     {
         return (0 >= x) ? 0.01f * x : x;
     }
+
 
     public static float sigmoidDyDx(float x)
     {

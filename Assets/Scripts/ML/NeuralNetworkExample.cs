@@ -18,7 +18,7 @@ public class NeuralNetworkExample : NeuralNetworkLearner
     // Start is called before the first frame update
     void Start()
     {
-        layers = new int[4] { 8, 16, 8, 1 };
+        layers = new int[4] { 3, 3, 3, 1 };
         activations = new string[3] { "leakyRelu", "leakyRelu", "leakyRelu" };
         base.Start();
     }

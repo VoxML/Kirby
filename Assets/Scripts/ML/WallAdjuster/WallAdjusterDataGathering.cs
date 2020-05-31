@@ -19,6 +19,8 @@ public class WallAdjusterDataGathering : MonoBehaviour
     public List<float[]> trainingVectors = new List<float[]>();
     public string trainingDataPath;
 
+    public string testingDataPath;
+
 #if UNITY_EDITOR
     [CustomEditor(typeof(WallAdjusterDataGathering))]
     public class WallAdjusterDataGatheringEditor : Editor
@@ -53,13 +55,28 @@ public class WallAdjusterDataGathering : MonoBehaviour
             }
 
             GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Save As Testing Data"))
+            {
+                ((WallAdjusterDataGathering)target).SaveAsTestingData(((WallAdjusterDataGathering)target).sampleMapPath);
+            }
+            ((WallAdjusterDataGathering)target).testingDataPath = GUILayout.TextField(((WallAdjusterDataGathering)target).testingDataPath,
+                GUILayout.MaxWidth(200));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Training Data Path", GUILayout.Width(120));
             ((WallAdjusterDataGathering)target).trainingDataPath = GUILayout.TextField(((WallAdjusterDataGathering)target).trainingDataPath,
                 GUILayout.MaxWidth(200));
             GUILayout.EndHorizontal();
+
             if (GUILayout.Button("Save Training Data"))
             {
                 ((WallAdjusterDataGathering)target).SaveTrainingData(((WallAdjusterDataGathering)target).trainingDataPath);
+            }
+
+            if (GUILayout.Button("Load Training Data"))
+            {
+                ((WallAdjusterDataGathering)target).LoadTrainingData(((WallAdjusterDataGathering)target).trainingDataPath);
             }
         }
     }
@@ -290,6 +307,46 @@ public class WallAdjusterDataGathering : MonoBehaviour
         {
             stream.Write(JsonConvert.SerializeObject(trainingVectors));
             stream.Close();
+        }
+    }
+
+    void LoadTrainingData(string path)
+    {
+        using (var stream = new StreamReader(path))
+        {
+            trainingVectors = JsonConvert.DeserializeObject<List<float[]>>(stream.ReadToEnd());
+        }
+
+        foreach (float[] vector in trainingVectors)
+        {
+            Debug.Log(string.Format("Loaded training vector with input [{0}], output [{1}]",
+                string.Join(", ", vector.Take(8).ToArray()), string.Join(", ", new float[] { vector.Last() })));
+        }
+    }
+
+    void SaveAsTestingData(string path)
+    {
+        using (var stream = new StreamReader(path))
+        {
+            sampleMap = JsonConvert.DeserializeObject<MapUpdate>(stream.ReadToEnd()); ;
+        }
+
+        if (MapUpdate.Validate(sampleMap))
+        {
+            sampleMap.Log();
+
+            List<float[]> testingVectors = new List<float[]>();
+
+            foreach (List<float> line in sampleMap.data)
+            {
+                testingVectors.Add(line.ToArray());
+            }
+
+            using (var stream = new StreamWriter(testingDataPath))
+            {
+                stream.Write(JsonConvert.SerializeObject(testingVectors));
+                stream.Close();
+            }
         }
     }
 }

@@ -158,6 +158,7 @@ public class NeuralNetwork
         {
             neurons[0][i] = inputs[i];
         }
+
         for (int i = 1; i < layers.Length; i++)
         {
             int layer = i - 1;
