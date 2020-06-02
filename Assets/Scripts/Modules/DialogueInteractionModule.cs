@@ -20,8 +20,6 @@ public class DialogueInteractionModule : ModuleBase
 {
     MapUpdater mapUpdater;
 
-    AgentOutputController agentOutput;
-
     // Use this for initialization
     void Start()
     {
@@ -37,9 +35,7 @@ public class DialogueInteractionModule : ModuleBase
         {
             mapUpdater.MapInited += StartAttending;
         }
-
-        agentOutput = GameObject.Find("RoboStandIn").GetComponentInChildren<AgentOutputController>();
-
+        
         DataStore.Subscribe("user:isEngaged", CheckEngagement);
     }
 
@@ -61,11 +57,11 @@ public class DialogueInteractionModule : ModuleBase
     {
         if (DataStore.GetBoolValue(key))
         {
-            agentOutput.outputString = "Hello.";
+            SetValue("kirby:speech", "Hello.", string.Empty);
         }
         else
         {
-            agentOutput.outputString = "Goodbye.";
+            SetValue("kirby:speech", "Goodbye.", string.Empty);
         }
     }
 }
