@@ -239,6 +239,6 @@ public class RedisPublisher : RedisInterface
 
         // halt subscriber processing while bridge is reset
         subscriber.processing = false;
-        WriteCommand(string.Format("set {0} 1", resetKey));
+        WriteCommand(string.Format("set {0} 1", string.Format("{0}/{1}", namespacePrefix, resetKey)));
     }
 }
