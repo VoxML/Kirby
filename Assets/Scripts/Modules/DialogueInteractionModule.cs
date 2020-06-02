@@ -3,8 +3,10 @@ This script manages the dialogue state between Kirby and the user
 
 Reads:      
 
-Writes:     kirby:isListening (BoolValue, whether or not Kirby is listening
+Writes:     kirby:isAttending:speech (BoolValue, whether or not Kirby is attending
                 to human speech
+            kirby:isAttending:gesture (BoolValue, whether or not Kirby is attending
+                to human gesture               
 */
 
 using UnityEngine;
@@ -33,7 +35,7 @@ public class DialogueInteractionModule : ModuleBase
         }
         else
         {
-            mapUpdater.MapInited += StartListening;
+            mapUpdater.MapInited += StartAttending;
         }
 
         agentOutput = GameObject.Find("RoboStandIn").GetComponentInChildren<AgentOutputController>();
@@ -48,9 +50,10 @@ public class DialogueInteractionModule : ModuleBase
     }
 
     // callback from MapUpdated when map inited for first time
-    void StartListening(object sender, EventArgs e)
+    void StartAttending(object sender, EventArgs e)
     {
-        SetValue("kirby:isListening", true, string.Empty);
+        SetValue("kirby:isAttending:speech", true, string.Empty);
+        SetValue("kirby:isAttending:gesture", true, string.Empty);
     }
 
     // callback when user:isEngaged changes

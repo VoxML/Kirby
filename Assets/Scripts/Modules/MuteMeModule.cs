@@ -46,7 +46,7 @@ public class MuteMeModule : ModuleBase
         // user is speaking
         if (DataStore.GetBoolValue(key))
         {
-            if (DataStore.GetBoolValue("kirby:isListening") &&
+            if (DataStore.GetBoolValue("kirby:isAttending:speech") &&
                 DataStore.GetBoolValue("user:isMuted"))
             {
                 outputDisplay.SetText(string.Format("You are muted. Hold \"{0}\" to unmute.",muteToggle.ToString()), TextDisplayMode.Persistent);
