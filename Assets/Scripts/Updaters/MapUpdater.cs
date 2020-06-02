@@ -84,11 +84,13 @@ public class MapUpdater : MonoBehaviour
             outputDisplay.SetText("Waiting for Map...", TextDisplayMode.Persistent);
             if (publisher.usingRejson)
             {
-                publisher.WriteCommand(string.Format("json.lpop {0}", publisher.mapKey));
+                publisher.WriteCommand(string.Format("json.lpop {0}",
+                    string.Format("{0}/{1}", publisher.namespacePrefix, publisher.mapKey)));
             }
             else
             {
-                publisher.WriteCommand(string.Format("lpop {0}", publisher.mapKey));
+                publisher.WriteCommand(string.Format("lpop {0}",
+                    string.Format("{0}/{1}", publisher.namespacePrefix, publisher.mapKey)));
             }
         }
     }

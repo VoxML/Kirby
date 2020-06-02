@@ -17,6 +17,8 @@ public class RedisPublisher : RedisInterface
 
     OutputDisplay outputDisplay;
 
+    public string namespacePrefix;
+
     // keys
     public string mapKey;
     public string roboKey;
@@ -161,7 +163,7 @@ public class RedisPublisher : RedisInterface
 
                     requestKey = lastEvent.Content.Split()[1];
 
-                    if (!string.IsNullOrEmpty(mapKey) && (requestKey == mapKey))
+                    if (!string.IsNullOrEmpty(mapKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, mapKey)))
                     {
                         MapUpdate mapUpdate = JsonConvert.DeserializeObject<MapUpdate>(response);
 
@@ -171,7 +173,7 @@ public class RedisPublisher : RedisInterface
                             mapUpdater.UpdateMap(mapUpdate);
                         }
                     }
-                    else if (!string.IsNullOrEmpty(roboKey) && (requestKey == roboKey))
+                    else if (!string.IsNullOrEmpty(roboKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, roboKey)))
                     {
                         RoboUpdate roboUpdate = JsonConvert.DeserializeObject<RoboUpdate>(response);
 
@@ -181,10 +183,10 @@ public class RedisPublisher : RedisInterface
                             roboUpdater.UpdateRobot(roboUpdate);
                         }
                     }
-                    else if (!string.IsNullOrEmpty(fiducialKey) && (requestKey == fiducialKey))
+                    else if (!string.IsNullOrEmpty(fiducialKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, fiducialKey)))
                     {
                     }
-                    else if (!string.IsNullOrEmpty(resetKey) && (requestKey == resetKey))
+                    else if (!string.IsNullOrEmpty(resetKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, resetKey)))
                     {
                         if (Convert.ToInt32(response) == 0)
                         {
@@ -192,7 +194,7 @@ public class RedisPublisher : RedisInterface
                             BroadcastMessage("DatabaseFlushed", SendMessageOptions.DontRequireReceiver);
                         }
                     }
-                    else if (!string.IsNullOrEmpty(cmdKey) && (requestKey == cmdKey))
+                    else if (!string.IsNullOrEmpty(cmdKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, cmdKey)))
                     {
                     }
                 }
