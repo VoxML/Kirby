@@ -50,6 +50,11 @@ public class DialogueInteractionModule : ModuleBase
     {
         SetValue("kirby:isAttending:speech", true, string.Empty);
         SetValue("kirby:isAttending:gesture", true, string.Empty);
+
+        if (DataStore.GetBoolValue("user:isEngaged"))
+        {
+            SetValue("kirby:speech", "I'm ready to go.", string.Empty);
+        }
     }
 
     // callback when user:isEngaged changes
@@ -57,7 +62,15 @@ public class DialogueInteractionModule : ModuleBase
     {
         if (DataStore.GetBoolValue(key))
         {
-            SetValue("kirby:speech", "Hello.", string.Empty);
+            if (DataStore.GetBoolValue("kirby:isAttending:speech") &&
+                DataStore.GetBoolValue("kirby:isAttending:gesture"))
+            { 
+                SetValue("kirby:speech", "Hello. I'm ready to go.", string.Empty);
+            }
+            else
+            {
+                SetValue("kirby:speech", "Hello. Hold on, please.", string.Empty);
+            }
         }
         else
         {

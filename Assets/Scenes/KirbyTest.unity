@@ -939,6 +939,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3450caeff3264e0195edd59915ec2f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MacFemaleVoice: 24
+  MacMaleVoice: 1
   role: 1
   Gender: 1
 --- !u!1001 &366083344
