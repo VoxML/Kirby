@@ -42,7 +42,8 @@ public class CommandInput : MonoBehaviour
             // take the input message, turn it into a Redis command and post it
             Debug.Log(string.Format("Got input \"{0}\"", message));
 
-            string command = string.Format("rpush {0} \"{1}\"", redisPublisher.cmdKey, message);
+            string command = string.Format("rpush {0} \"{1}\"", string.Format("{0}/{1}",
+                redisPublisher.namespacePrefix, redisPublisher.cmdKey), message);
             Debug.Log(string.Format("Posting message {0} to Redis", command));
             redisPublisher.WriteCommand(command);
         }
@@ -52,7 +53,8 @@ public class CommandInput : MonoBehaviour
     {
         Debug.Log(string.Format("Got input \"{0}\"", message));
 
-        string command = string.Format("rpush {0} \"{1}\"", redisPublisher.cmdKey, message);
+        string command = string.Format("rpush {0} \"{1}\"", string.Format("{0}/{1}",
+                redisPublisher.namespacePrefix, redisPublisher.cmdKey), message);
         Debug.Log(string.Format("Posting message {0} to Redis", command));
         redisPublisher.WriteCommand(command);
     }

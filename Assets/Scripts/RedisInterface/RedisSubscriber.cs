@@ -111,9 +111,9 @@ public class RedisSubscriber : RedisInterface
                 Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, command: {1}", key, cmd));
 
                 // changes to resetKey might mean we have to start listening
-                if (processing || key == publisher.resetKey)
+                if (processing || key == string.Format("{0}/{1}", publisher.namespacePrefix, publisher.resetKey))
                 { 
-                    if (key != publisher.cmdKey)
+                    if (key != string.Format("{0}/{1}", publisher.namespacePrefix, publisher.cmdKey))
                     {
                         if (usingRejson)
                         {
