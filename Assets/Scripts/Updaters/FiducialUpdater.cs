@@ -15,4 +15,9 @@ public class FiducialUpdater : MonoBehaviour
     {
         
     }
+
+    public void UpdateFiducial(FiducialUpdate update)
+    {
+
+    }
 }

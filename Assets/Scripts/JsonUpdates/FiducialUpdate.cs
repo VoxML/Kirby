@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 using Newtonsoft.Json;
 
@@ -65,6 +67,23 @@ public class FiducialUpdate
         frame = string.Empty;
         dict = -1;
         data = new List<FiducialData>();
+    }
+
+    public void Log()
+    {
+        // print the contents of the map update to the console
+        Debug.Log(string.Format("Value of \"fid_count\" in jsonObj = {0}", this.fidCount));
+        Debug.Log(string.Format("Value of \"frame\" in jsonObj = {0}", this.frame));
+        Debug.Log(string.Format("Value of \"dict\" in jsonObj = {0}", this.dict));
+        Debug.Log(string.Format("Value of \"data\" in jsonObj = {0}", string.Format("[{0}]",
+            string.Join(",", this.data.Select(l => string.Format("{{ pose : {0}, fid : {1} }",
+                string.Format("{{ location : {0}, orientation : {1} }", l.pose.location, l.pose.orientation), l.fid))))));
+    }
+
+    public static bool Validate(FiducialUpdate fid)
+    {
+        return (!((fid.fidCount == -1) && (string.IsNullOrEmpty(fid.frame)) &&
+            (fid.dict == -1) && (fid.data.Count == 0)));
     }
 }
 
