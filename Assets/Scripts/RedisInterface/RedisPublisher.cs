@@ -14,6 +14,7 @@ public class RedisPublisher : RedisInterface
 
     MapUpdater mapUpdater;
     RoboUpdater roboUpdater;
+    FiducialUpdater fidUpdater;
 
     OutputDisplay outputDisplay;
 
@@ -58,6 +59,7 @@ public class RedisPublisher : RedisInterface
 
         mapUpdater = gameObject.GetComponent<MapUpdater>();
         roboUpdater = gameObject.GetComponent<RoboUpdater>();
+        fidUpdater = gameObject.GetComponent<FiducialUpdater>();
     }
 
     // Update is called once per frame
@@ -185,6 +187,13 @@ public class RedisPublisher : RedisInterface
                     }
                     else if (!string.IsNullOrEmpty(fiducialKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, fiducialKey)))
                     {
+                        FiducialUpdate fidUpdate = JsonConvert.DeserializeObject<FiducialUpdate>(response);
+
+                        if (FiducialUpdate.Validate(fidUpdate))
+                        {
+                            fidUpdate.Log();
+                            fidUpdater.UpdateFiducial(fidUpdate);
+                        }
                     }
                     else if (!string.IsNullOrEmpty(resetKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, resetKey)))
                     {
