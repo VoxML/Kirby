@@ -140,6 +140,7 @@ Assets/VoxSimPlatform/FlashbackRecorder*
 Assets/VoxSimPlatform/GracesGames*
 Assets/VoxSimPlatform/SimpleFileBrowser* 
 Assets/VoxSimPlatform/Editor\ Default\ Resources/crosstales*
+Assets/Editor\ Default\ Resources/crosstales*
 Assets/VoxSimPlatform/Plugins/ConsoleE*
 
 # ignore _TerrainAutoUpgrade
