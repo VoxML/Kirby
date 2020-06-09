@@ -11,6 +11,10 @@ public class RedisSubscriber : RedisInterface
 
     OutputDisplay outputDisplay;
 
+    public bool subscribed = false;
+
+    public bool ignoreResetNotification = true;
+
     public bool processing = false;
 
     // Start is called before the first frame update
@@ -69,7 +73,6 @@ public class RedisSubscriber : RedisInterface
                     if (string.Equals(response, "OK"))
                     {
                         authenticated = true;
-                        WriteCommand("psubscribe \'__key*__:*\'");
                         outputDisplay.SetText("Subscriber authenticated.");
                         BroadcastMessage("SubscriberAuthenticated", SendMessageOptions.DontRequireReceiver);
                     }
@@ -106,58 +109,84 @@ public class RedisSubscriber : RedisInterface
                     json
                 */
                 List<string> lines = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                string key = lines.Take(lines.FindIndex(l => l.StartsWith("*"))-2).Last().Split(':')[1];
-                string cmd = lines.Take(lines.FindIndex(l => l.StartsWith("*"))).Last();
-                Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, command: {1}", key, cmd));
+                string key = string.Empty;
+                string cmd = string.Empty;
+
+                if (lines.FindIndex(l => l.StartsWith("__keyspace")) != -1)
+                {
+                    key = lines[lines.FindIndex(l => l.StartsWith("__keyspace"))].Split(':')[1];
+                    cmd = lines.Last();
+                    Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, command: {1}", key, cmd));
+                }
 
                 // changes to resetKey might mean we have to start listening
                 if (processing || key == string.Format("{0}/{1}", publisher.namespacePrefix, publisher.resetKey))
-                { 
-                    if (key != string.Format("{0}/{1}", publisher.namespacePrefix, publisher.cmdKey))
+                {
+                    if (!ignoreResetNotification)
                     {
-                        if (usingRejson)
+                        if (key != string.Format("{0}/{1}", publisher.namespacePrefix, publisher.cmdKey))
                         {
-                            switch (cmd)
+                            if (usingRejson)
                             {
-                                case "set":
-                                    publisher.WriteCommand(string.Format("json.get {0}", key));
-                                    break;
+                                switch (cmd)
+                                {
+                                    case "set":
+                                        publisher.WriteCommand(string.Format("json.get {0}", key));
+                                        break;
 
-                                case "rpush":
-                                    publisher.WriteCommand(string.Format("json.lpop {0}", key));
-                                    break;
+                                    case "rpush":
+                                        publisher.WriteCommand(string.Format("json.lpop {0}", key));
+                                        break;
 
-                                default:
-                                    break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                switch (cmd)
+                                {
+                                    case "set":
+                                        publisher.WriteCommand(string.Format("get {0}", key));
+                                        break;
+
+                                    case "rpush":
+                                        publisher.WriteCommand(string.Format("lpop {0}", key));
+                                        break;
+
+                                    default:
+                                        break;
+                                }
                             }
                         }
-                        else
-                        {
-                            switch (cmd)
-                            {
-                                case "set":
-                                    publisher.WriteCommand(string.Format("get {0}", key));
-                                    break;
-
-                                case "rpush":
-                                    publisher.WriteCommand(string.Format("lpop {0}", key));
-                                    break;
-
-                                default:
-                                    break;
-                            }
-                        }
+                    }
+                    else
+                    {
+                        ignoreResetNotification = false;
                     }
                 }
                 break;
 
             // arrays
             case '*':
+                if (!subscribed)
+                {
+                    subscribed = true;
+                    outputDisplay.SetText("Subscribed to notifications.");
+                    BroadcastMessage("SubscribedToNotifications", SendMessageOptions.DontRequireReceiver);
+                }
                 break;
 
             default:
                 break;
         }
+    }
+
+    public void SubscriberAuthenticated()
+    {
+        Debug.Log("RedisSubscriber: picked up message SubscriberAuthenticated");
+        outputDisplay.SetText("Subscribing to notifications...");
+        WriteCommand(string.Format("psubscribe \'__key*__:{0}/*\'", publisher.namespacePrefix));
     }
 
     public void DatabaseFlushed()

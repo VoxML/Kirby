@@ -95,9 +95,9 @@ public class RedisPublisher : RedisInterface
     */
     }
 
-    public void SubscriberAuthenticated()
+    public void SubscribedToNotifications()
     {
-        Debug.Log("RedisPublisher: picked up message SubscriberAuthenticated");
+        Debug.Log("RedisPublisher: picked up message SubscribedToNotifications");
 
         ResetBridge();
     }
