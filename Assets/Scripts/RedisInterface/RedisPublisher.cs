@@ -14,6 +14,7 @@ public class RedisPublisher : RedisInterface
 
     MapUpdater mapUpdater;
     RoboUpdater roboUpdater;
+    LogUpdater logUpdater;
 
     OutputDisplay outputDisplay;
 
@@ -25,6 +26,7 @@ public class RedisPublisher : RedisInterface
     public string fiducialKey;
     public string resetKey;
     public string cmdKey;
+    public string logKey;
 
     List<string> validReceiveCommands = new List<string>()
     {
@@ -171,6 +173,16 @@ public class RedisPublisher : RedisInterface
                         {
                             mapUpdate.Log();
                             mapUpdater.UpdateMap(mapUpdate);
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(logKey) && requestKey == string.Format("{0}/{1}", namespacePrefix, logKey))
+                    {
+                        LogUpdate logUpdate = JsonConvert.DeserializeObject<LogUpdate>(response);
+
+                        if (LogUpdate.Validate(logUpdate))
+                        {
+                            logUpdate.Log();
+                            logUpdater.UpdateLog(logUpdate);
                         }
                     }
                     else if (!string.IsNullOrEmpty(roboKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, roboKey)))
