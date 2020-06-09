@@ -14,11 +14,8 @@ public class RedisPublisher : RedisInterface
 
     MapUpdater mapUpdater;
     RoboUpdater roboUpdater;
-<<<<<<< HEAD
     FiducialUpdater fidUpdater;
-=======
     LogUpdater logUpdater;
->>>>>>> 5a972c588a4a085d824c76c2b6e22d495a284dfc
 
     OutputDisplay outputDisplay;
 
