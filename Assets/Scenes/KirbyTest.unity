@@ -1963,9 +1963,10 @@ MonoBehaviour:
   namespacePrefix: Kirby
   mapKey: Map
   roboKey: Odom
-  fiducialKey: Fid
+  fiducialKey: Fiducials
   resetKey: Bridge_Reset
   cmdKey: Cmd
+  logKey: Log
 --- !u!4 &941503512
 Transform:
   m_ObjectHideFlags: 0
@@ -2007,6 +2008,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   authenticated: 0
   usingRejson: 0
+  subscribed: 0
+  ignoreResetNotification: 1
   processing: 0
 --- !u!114 &941503515
 MonoBehaviour:

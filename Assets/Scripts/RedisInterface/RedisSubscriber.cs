@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using VoxSimPlatform.Network;
 
@@ -186,7 +187,14 @@ public class RedisSubscriber : RedisInterface
     {
         Debug.Log("RedisSubscriber: picked up message SubscriberAuthenticated");
         outputDisplay.SetText("Subscribing to notifications...");
-        WriteCommand(string.Format("psubscribe \'__key*__:{0}/*\'", publisher.namespacePrefix));
+
+        // get all keys defined in the publisher (all field names that end in "Key")
+        List<string> keyNames = publisher.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
+
+        // generate a single psubscribe commmand (psubscribe '__key*__:<ns>/<key1>' '__key*__:<ns>/<key2>'...)
+        WriteCommand(string.Format("psubscribe {0}",string.Format(string.Join(" ",
+            keyNames.Select(k => string.Format("\'__key*__:{0}/{1}\'", publisher.namespacePrefix,
+            (string)publisher.GetType().GetField(k).GetValue(publisher)))))));
     }
 
     public void DatabaseFlushed()
