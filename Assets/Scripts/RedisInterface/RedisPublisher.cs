@@ -22,6 +22,9 @@ public class RedisPublisher : RedisInterface
     public string namespacePrefix;
 
     // keys
+    // no other field in this class should end in "Key"
+    //  this will cause problems in generating the "psubscribe"
+    //  command in the subscriber
     public string mapKey;
     public string roboKey;
     public string fiducialKey;
