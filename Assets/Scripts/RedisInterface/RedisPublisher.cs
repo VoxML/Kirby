@@ -50,15 +50,8 @@ public class RedisPublisher : RedisInterface
 
         if (redisSocket != null)
         {
-            // try authentication
-            if (!authenticated)
-            {
-                outputDisplay.SetText("Authenticating publisher...", TextDisplayMode.Persistent);
-                WriteCommand("auth ROSlab134");
-            }
+            redisSocket.UpdateReceived += ReceivedMessage;
         }
-
-        redisSocket.UpdateReceived += ReceivedMessage;
 
         subscriber = gameObject.GetComponent<RedisSubscriber>();
 
@@ -102,6 +95,17 @@ public class RedisPublisher : RedisInterface
     {
         Debug.Log("RedisPublisher: picked up message SubscribedToNotifications");
 
+        // try authentication
+        if (!authenticated)
+        {
+            outputDisplay.SetText("Authenticating publisher...", TextDisplayMode.Persistent);
+            WriteCommand("auth ROSlab134");
+        }
+    }
+
+    public void PublisherAuthenticated()
+    {
+        Debug.Log("RedisPublisher: picked up message PublisherAuthenticated");
         ResetBridge();
     }
 

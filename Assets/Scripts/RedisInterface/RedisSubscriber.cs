@@ -30,6 +30,13 @@ public class RedisSubscriber : RedisInterface
 
         if (redisSocket != null)
         {
+            // try authentication
+            if (!authenticated)
+            {
+                outputDisplay.SetText("Authenticating subscriber...", TextDisplayMode.Persistent);
+                WriteCommand("auth ROSlab134");
+            }
+
             redisSocket.UpdateReceived += ReceivedUpdate;
         }
 
@@ -42,18 +49,24 @@ public class RedisSubscriber : RedisInterface
 
     }
 
-    public void PublisherAuthenticated()
+    public void SubscriberAuthenticated()
     {
-        Debug.Log("RedisPSubscriber: picked up message PublisherAuthenticated");
-        if (redisSocket != null)
-        {
-            // try authentication
-            if (!authenticated)
-            {
-                outputDisplay.SetText("Authenticating subscriber...", TextDisplayMode.Persistent);
-                WriteCommand("auth ROSlab134");
-            }
-        }
+        Debug.Log("RedisSubscriber: picked up message SubscriberAuthenticated");
+        outputDisplay.SetText("Subscribing to notifications...");
+
+        // get all keys defined in the publisher (all field names that end in "Key")
+        List<string> keyNames = publisher.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
+
+        // generate a single psubscribe commmand (psubscribe '__key*__:<ns>/<key1>' '__key*__:<ns>/<key2>'...)
+        WriteCommand(string.Format("psubscribe {0}", string.Format(string.Join(" ",
+            keyNames.Select(k => string.Format("\'__key*__:{0}/{1}\'", publisher.namespacePrefix,
+            (string)publisher.GetType().GetField(k).GetValue(publisher)))))));
+    }
+
+    public void DatabaseFlushed()
+    {
+        Debug.Log("RedisSubscriber: picked up message DatabaseFlushed");
+        processing = true;
     }
 
     public void ReceivedUpdate(object sender, EventArgs e)
@@ -181,25 +194,5 @@ public class RedisSubscriber : RedisInterface
             default:
                 break;
         }
-    }
-
-    public void SubscriberAuthenticated()
-    {
-        Debug.Log("RedisSubscriber: picked up message SubscriberAuthenticated");
-        outputDisplay.SetText("Subscribing to notifications...");
-
-        // get all keys defined in the publisher (all field names that end in "Key")
-        List<string> keyNames = publisher.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
-
-        // generate a single psubscribe commmand (psubscribe '__key*__:<ns>/<key1>' '__key*__:<ns>/<key2>'...)
-        WriteCommand(string.Format("psubscribe {0}",string.Format(string.Join(" ",
-            keyNames.Select(k => string.Format("\'__key*__:{0}/{1}\'", publisher.namespacePrefix,
-            (string)publisher.GetType().GetField(k).GetValue(publisher)))))));
-    }
-
-    public void DatabaseFlushed()
-    {
-        Debug.Log("RedisSubscriber: picked up message DatabaseFlushed");
-        processing = true;
     }
 }
