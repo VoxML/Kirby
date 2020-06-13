@@ -2052,6 +2052,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6508fc3f099f647b2b3623be67359dce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  presetMaterials:
+  - {fileID: 2100000, guid: 633385c3bab9141eea463b0ff6c9997c, type: 2}
+  - {fileID: 2100000, guid: 768d0dad19bb24b3090403c19219b343, type: 2}
+  - {fileID: 2100000, guid: 9ce7c99a9fdf2440597e6a8d0342686b, type: 2}
+  - {fileID: 2100000, guid: e3090717a120647c0b7a73e181f4c758, type: 2}
+  - {fileID: 2100000, guid: 3fba03f9be3334be0a161b60d75e457c, type: 2}
+  fiducials: {fileID: 0}
 --- !u!1 &958546869
 GameObject:
   m_ObjectHideFlags: 0

@@ -76,8 +76,10 @@ public class FiducialUpdate
         Debug.Log(string.Format("Value of \"frame\" in jsonObj = {0}", this.frame));
         Debug.Log(string.Format("Value of \"dict\" in jsonObj = {0}", this.dict));
         Debug.Log(string.Format("Value of \"data\" in jsonObj = {0}", string.Format("[{0}]",
-            string.Join(",", this.data.Select(l => string.Format("{{ pose : {0}, fid : {1} }",
-                string.Format("{{ location : {0}, orientation : {1} }", l.pose.location, l.pose.orientation), l.fid))))));
+            string.Join(",", this.data.Select(l => string.Format("{{pose : {0}, fid : {1}}}",
+                string.Format("{{location : [{0}], orientation : [{1}]}}",
+                    string.Join(",", l.pose.location.Select(ll => ll.ToString())),
+                    string.Join(",", l.pose.orientation.Select(ll => ll.ToString()))), l.fid))))));
     }
 
     public static bool Validate(FiducialUpdate fid)
