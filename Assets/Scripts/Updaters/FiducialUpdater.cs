@@ -9,16 +9,39 @@ public class FiducialUpdater : MonoBehaviour
 
     public GameObject fiducials;
 
+    RedisPublisher publisher;
+
+    bool inited = false;
+
     // Start is called before the first frame update
     void Start()
     {
         fiducials = new GameObject("Fiducials");
+        publisher = gameObject.GetComponent<RedisPublisher>();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void DatabaseFlushed()
+    {
+        Debug.Log("FiducialUpdater: picked up message DatabaseFlushed");
+        if (!inited)
+        {
+            if (publisher.usingRejson)
+            {
+                publisher.WriteCommand(string.Format("json.get {0}",
+                    string.Format("{0}/{1}", publisher.namespacePrefix, publisher.fiducialKey)));
+            }
+            else
+            {
+                publisher.WriteCommand(string.Format("get {0}",
+                    string.Format("{0}/{1}", publisher.namespacePrefix, publisher.fiducialKey)));
+            }
+        }
     }
 
     public void UpdateFiducial(FiducialUpdate update)
@@ -79,9 +102,9 @@ public class FiducialUpdater : MonoBehaviour
                 }
                 fidObj.transform.eulerAngles = rot;
 
-                if (presetMaterials.Count > i)
+                if (presetMaterials.Count > update.data[i].fid)
                 {
-                    fidObj.GetComponent<Renderer>().material = presetMaterials[i];
+                    fidObj.GetComponent<Renderer>().material = presetMaterials[update.data[i].fid];
                 }
 
                 fidObj.name = string.Format("Fiducial_{0}", update.data[i].fid);
