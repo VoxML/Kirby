@@ -104,7 +104,7 @@ public class FiducialUpdater : MonoBehaviour
 
                 if (presetMaterials.Count > update.data[i].fid)
                 {
-                    fidObj.GetComponent<Renderer>().material = presetMaterials[update.data[i].fid];
+                    fidObj.GetComponent<Renderer>().material = presetMaterials[update.data[i].fid-1];
                 }
 
                 fidObj.name = string.Format("Fiducial_{0}", update.data[i].fid);
