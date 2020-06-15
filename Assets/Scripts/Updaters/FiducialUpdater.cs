@@ -9,7 +9,7 @@ public class FiducialUpdater : MonoBehaviour
 
     public GameObject fiducials;
 
-    RedisPublisher publisher;
+    RedisPublisherManager manager;
 
     bool inited = false;
 
@@ -17,7 +17,7 @@ public class FiducialUpdater : MonoBehaviour
     void Start()
     {
         fiducials = new GameObject("Fiducials");
-        publisher = gameObject.GetComponent<RedisPublisher>();
+        manager = gameObject.GetComponent<RedisPublisherManager>();
     }
 
     // Update is called once per frame
@@ -31,15 +31,15 @@ public class FiducialUpdater : MonoBehaviour
         Debug.Log("FiducialUpdater: picked up message DatabaseFlushed");
         if (!inited)
         {
-            if (publisher.usingRejson)
+            if (manager.publishers[manager.fiducialKey].usingRejson)
             {
-                publisher.WriteCommand(string.Format("json.get {0}",
-                    string.Format("{0}/{1}", publisher.namespacePrefix, publisher.fiducialKey)));
+                manager.publishers[manager.fiducialKey].WriteCommand(string.Format("json.get {0}",
+                    string.Format("{0}/{1}", manager.namespacePrefix, manager.fiducialKey)));
             }
             else
             {
-                publisher.WriteCommand(string.Format("get {0}",
-                    string.Format("{0}/{1}", publisher.namespacePrefix, publisher.fiducialKey)));
+                manager.publishers[manager.fiducialKey].WriteCommand(string.Format("get {0}",
+                    string.Format("{0}/{1}", manager.namespacePrefix, manager.fiducialKey)));
             }
         }
     }

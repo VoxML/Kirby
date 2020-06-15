@@ -10,6 +10,7 @@ public class RedisPublisher : RedisInterface
 {
     RedisEventArgs lastEvent = null;
 
+    RedisPublisherManager manager;
     RedisSubscriber subscriber;
 
     MapUpdater mapUpdater;
@@ -18,19 +19,8 @@ public class RedisPublisher : RedisInterface
     LogUpdater logUpdater;
 
     OutputDisplay outputDisplay;
-
-    public string namespacePrefix;
-
-    // keys
-    // no other field in this class should end in "Key"
-    //  this will cause problems in generating the "psubscribe"
-    //  command in the subscriber
-    public string mapKey;
-    public string roboKey;
-    public string fiducialKey;
-    public string resetKey;
-    public string cmdKey;
-    public string logKey;
+    
+    public string publisherKey;
 
     List<string> validReceiveCommands = new List<string>()
     {
@@ -43,70 +33,80 @@ public class RedisPublisher : RedisInterface
     {
         base.Start();
 
+        Debug.Log(string.Format("Creating {0}RedisPublisher", publisherKey));
+
         //TODO: route this through VoxSim OutputController
         outputDisplay = GameObject.Find("OutputDisplay").GetComponent<OutputDisplay>();
 
-        redisSocket = (RedisSocket)commBridge.GetComponent<CommunicationsBridge>().FindSocketConnectionByLabel("RedisPublisher");
+        redisSocket = (RedisSocket)commBridge.GetComponent<CommunicationsBridge>().
+            FindSocketConnectionByLabel("RedisPublisher");
+
+        string address = redisSocket.Address;
+        int port = redisSocket.Port;
+
+        // close and reopen to get dedicated connecton
+        if (redisSocket != null)
+        {
+            //commBridge.GetComponent<CommunicationsBridge>().SocketConnections.RemoveAt(
+            //    commBridge.GetComponent<CommunicationsBridge>().SocketConnections.IndexOf(redisSocket));
+            //redisSocket.Close();
+        }
+
+        redisSocket = (RedisSocket)commBridge.GetComponent<CommunicationsBridge>().
+            ConnectSocket(address, port, typeof(RedisSocket));
+        redisSocket.Label = string.Format("{0}RedisPublisher", publisherKey);
+        commBridge.GetComponent<CommunicationsBridge>().SocketConnections.Add(redisSocket);
+
+        // add socket's IOClientType component to CommunicationsBridge
+        commBridge.AddComponent(redisSocket.IOClientType);
 
         if (redisSocket != null)
         {
             redisSocket.UpdateReceived += ReceivedMessage;
         }
 
+        manager = gameObject.GetComponent<RedisPublisherManager>();
         subscriber = gameObject.GetComponent<RedisSubscriber>();
 
         mapUpdater = gameObject.GetComponent<MapUpdater>();
         roboUpdater = gameObject.GetComponent<RoboUpdater>();
         fidUpdater = gameObject.GetComponent<FiducialUpdater>();
+
+        if (!authenticated)
+        {
+            WriteCommand("auth ROSlab134");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-    /* 
-        // to set set json val
-        JsonKeyValue jsonObj = new JsonKeyValue();
-        jsonObj.key = "value";
+        /* 
+            // to set set json val
+            JsonKeyValue jsonObj = new JsonKeyValue();
+            jsonObj.key = "value";
 
-        string json = JsonUtility.ToJson(jsonObj);
+            string json = JsonUtility.ToJson(jsonObj);
 
-        if (usingRejson)
-        {
-            WriteCommand(string.Format("json.set {0} . '{1}'", mapKey, json));
-        }
-        else
-        {
-            WriteCommand(string.Format("set {0} '{1}'", mapKey, json));
-        }
-        
-        // to get json val
-        if (usingRejson)
-        {
-            WriteCommand(string.Format("json.get {0}", mapKey));
-        }
-        else
-        {
-            WriteCommand(string.Format("get {0}", mapKey));
-        }
-    */
-    }
+            if (usingRejson)
+            {
+                WriteCommand(string.Format("json.set {0} . '{1}'", mapKey, json));
+            }
+            else
+            {
+                WriteCommand(string.Format("set {0} '{1}'", mapKey, json));
+            }
 
-    public void SubscribedToNotifications()
-    {
-        Debug.Log("RedisPublisher: picked up message SubscribedToNotifications");
-
-        // try authentication
-        if (!authenticated)
-        {
-            outputDisplay.SetText("Authenticating publisher...", TextDisplayMode.Persistent);
-            WriteCommand("auth ROSlab134");
-        }
-    }
-
-    public void PublisherAuthenticated()
-    {
-        Debug.Log("RedisPublisher: picked up message PublisherAuthenticated");
-        ResetBridge();
+            // to get json val
+            if (usingRejson)
+            {
+                WriteCommand(string.Format("json.get {0}", mapKey));
+            }
+            else
+            {
+                WriteCommand(string.Format("get {0}", mapKey));
+            }
+        */
     }
 
     public void WriteCommand(string messageToSend)
@@ -127,7 +127,7 @@ public class RedisPublisher : RedisInterface
 
         if (lastEvent != null)
         {
-            Debug.Log(string.Format("RedisPublisher: Received response to: {0}", lastEvent.Content));
+            Debug.Log(string.Format("RedisPublisher({0}): Received response to: {1}", publisherKey, lastEvent.Content));
         }
 
         string response = string.Empty;
@@ -136,14 +136,13 @@ public class RedisPublisher : RedisInterface
             // simple strings
             case '+':
                 response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('+');
-                Debug.Log(string.Format("RedisPublisher: Got simple string response from Redis: {0}", response));
+                Debug.Log(string.Format("RedisPublisher({0}): Got simple string response from Redis: {1}", publisherKey, response));
 
                 if (!authenticated)
                 {
                     if (string.Equals(response, "OK"))
                     {
                         authenticated = true;
-                        outputDisplay.SetText("Publisher authenticated.");
                         BroadcastMessage("PublisherAuthenticated", SendMessageOptions.DontRequireReceiver);
                     }
                 }
@@ -169,12 +168,12 @@ public class RedisPublisher : RedisInterface
                     }
 
                     response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[2];
-                    Debug.Log(string.Format("RedisPublisher: Got bulk string response from Redis (responding to \"{0}\", size {1}): {2}",
-                        lastEvent.Content, size, response));
+                    Debug.Log(string.Format("RedisPublisher({0}): Got bulk string response from Redis (responding to \"{1}\", size {2}): {3}",
+                        publisherKey, lastEvent.Content, size, response));
 
                     requestKey = lastEvent.Content.Split()[1];
 
-                    if (!string.IsNullOrEmpty(mapKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, mapKey)))
+                    if (!string.IsNullOrEmpty(manager.mapKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.mapKey)))
                     {
                         MapUpdate mapUpdate = JsonConvert.DeserializeObject<MapUpdate>(response);
 
@@ -184,7 +183,7 @@ public class RedisPublisher : RedisInterface
                             mapUpdater.UpdateMap(mapUpdate);
                         }
                     }
-                    else if (!string.IsNullOrEmpty(logKey) && requestKey == string.Format("{0}/{1}", namespacePrefix, logKey))
+                    else if (!string.IsNullOrEmpty(manager.logKey) && requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.logKey))
                     {
                         LogUpdate logUpdate = JsonConvert.DeserializeObject<LogUpdate>(response);
 
@@ -194,7 +193,7 @@ public class RedisPublisher : RedisInterface
                             logUpdater.UpdateLog(logUpdate);
                         }
                     }
-                    else if (!string.IsNullOrEmpty(roboKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, roboKey)))
+                    else if (!string.IsNullOrEmpty(manager.roboKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.roboKey)))
                     {
                         RoboUpdate roboUpdate = JsonConvert.DeserializeObject<RoboUpdate>(response);
 
@@ -204,7 +203,7 @@ public class RedisPublisher : RedisInterface
                             roboUpdater.UpdateRobot(roboUpdate);
                         }
                     }
-                    else if (!string.IsNullOrEmpty(fiducialKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, fiducialKey)))
+                    else if (!string.IsNullOrEmpty(manager.fiducialKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.fiducialKey)))
                     {
                         FiducialUpdate fidUpdate = JsonConvert.DeserializeObject<FiducialUpdate>(response);
 
@@ -214,7 +213,7 @@ public class RedisPublisher : RedisInterface
                             fidUpdater.UpdateFiducial(fidUpdate);
                         }
                     }
-                    else if (!string.IsNullOrEmpty(resetKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, resetKey)))
+                    else if (!string.IsNullOrEmpty(manager.resetKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.resetKey)))
                     {
                         if (Convert.ToInt32(response) == 0)
                         {
@@ -222,7 +221,7 @@ public class RedisPublisher : RedisInterface
                             BroadcastMessage("DatabaseFlushed", SendMessageOptions.DontRequireReceiver);
                         }
                     }
-                    else if (!string.IsNullOrEmpty(cmdKey) && (requestKey == string.Format("{0}/{1}", namespacePrefix, cmdKey)))
+                    else if (!string.IsNullOrEmpty(manager.cmdKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.cmdKey)))
                     {
                     }
                 }
@@ -259,14 +258,5 @@ public class RedisPublisher : RedisInterface
         }
 
         return valid;
-    }
-
-    public void ResetBridge()
-    {
-        outputDisplay.SetText("Flushing database...", TextDisplayMode.Persistent);
-
-        // halt subscriber processing while bridge is reset
-        subscriber.processing = false;
-        WriteCommand(string.Format("set {0} 1", string.Format("{0}/{1}", namespacePrefix, resetKey)));
     }
 }

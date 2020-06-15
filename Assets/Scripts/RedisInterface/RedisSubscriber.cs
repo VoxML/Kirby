@@ -8,7 +8,7 @@ using VoxSimPlatform.Network;
 
 public class RedisSubscriber : RedisInterface
 {
-    RedisPublisher publisher;
+    RedisPublisherManager manager;
 
     OutputDisplay outputDisplay;
 
@@ -40,7 +40,7 @@ public class RedisSubscriber : RedisInterface
             redisSocket.UpdateReceived += ReceivedUpdate;
         }
 
-        publisher = gameObject.GetComponent<RedisPublisher>();
+        manager = gameObject.GetComponent<RedisPublisherManager>();
     }
 
     // Update is called once per frame
@@ -54,13 +54,13 @@ public class RedisSubscriber : RedisInterface
         Debug.Log("RedisSubscriber: picked up message SubscriberAuthenticated");
         outputDisplay.SetText("Subscribing to notifications...");
 
-        // get all keys defined in the publisher (all field names that end in "Key")
-        List<string> keyNames = publisher.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
+        // get all keys defined in the publisher manager (all field names that end in "Key")
+        List<string> keyNames = manager.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
 
         // generate a single psubscribe commmand (psubscribe '__key*__:<ns>/<key1>' '__key*__:<ns>/<key2>'...)
         WriteCommand(string.Format("psubscribe {0}", string.Format(string.Join(" ",
-            keyNames.Select(k => string.Format("\'__key*__:{0}/{1}\'", publisher.namespacePrefix,
-            (string)publisher.GetType().GetField(k).GetValue(publisher)))))));
+            keyNames.Select(k => string.Format("\'__key*__:{0}/{1}\'", manager.namespacePrefix,
+            (string)manager.GetType().GetField(k).GetValue(manager)))))));
     }
 
     public void DatabaseFlushed()
@@ -123,33 +123,35 @@ public class RedisSubscriber : RedisInterface
                     json
                 */
                 List<string> lines = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                string key = string.Empty;
+                string longKey = string.Empty;
+                string shortKey = string.Empty;
                 string cmd = string.Empty;
 
                 if (lines.FindIndex(l => l.StartsWith("__keyspace")) != -1)
                 {
-                    key = lines[lines.FindIndex(l => l.StartsWith("__keyspace"))].Split(':')[1];
+                    longKey = lines[lines.FindIndex(l => l.StartsWith("__keyspace"))].Split(':')[1];
+                    shortKey = longKey.Replace(string.Format("{0}/", manager.namespacePrefix), string.Empty).Trim();
                     cmd = lines.Last();
-                    Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, command: {1}", key, cmd));
+                    Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, command: {1}", longKey, cmd));
                 }
 
                 // changes to resetKey might mean we have to start listening
-                if (processing || key == string.Format("{0}/{1}", publisher.namespacePrefix, publisher.resetKey))
+                if (processing || longKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.resetKey))
                 {
                     if (!ignoreResetNotification)
                     {
-                        if (key != string.Format("{0}/{1}", publisher.namespacePrefix, publisher.cmdKey))
+                        if (longKey != string.Format("{0}/{1}", manager.namespacePrefix, manager.cmdKey))
                         {
                             if (usingRejson)
                             {
                                 switch (cmd)
                                 {
                                     case "set":
-                                        publisher.WriteCommand(string.Format("json.get {0}", key));
+                                        manager.publishers[shortKey].WriteCommand(string.Format("json.get {0}", longKey));
                                         break;
 
                                     case "rpush":
-                                        publisher.WriteCommand(string.Format("json.lpop {0}", key));
+                                        manager.publishers[shortKey].WriteCommand(string.Format("json.lpop {0}", longKey));
                                         break;
 
                                     default:
@@ -161,11 +163,11 @@ public class RedisSubscriber : RedisInterface
                                 switch (cmd)
                                 {
                                     case "set":
-                                        publisher.WriteCommand(string.Format("get {0}", key));
+                                        manager.publishers[shortKey].WriteCommand(string.Format("get {0}", longKey));
                                         break;
 
                                     case "rpush":
-                                        publisher.WriteCommand(string.Format("lpop {0}", key));
+                                        manager.publishers[shortKey].WriteCommand(string.Format("lpop {0}", longKey));
                                         break;
 
                                     default:

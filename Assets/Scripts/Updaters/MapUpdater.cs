@@ -38,7 +38,7 @@ public class MapUpdater : MonoBehaviour
 
     public bool keepRosCoords;
 
-    RedisPublisher publisher;
+    RedisPublisherManager manager;
     OutputDisplay outputDisplay;
 
     MapUpdate curMap;
@@ -53,7 +53,7 @@ public class MapUpdater : MonoBehaviour
         mapSegments = new List<MapSegment>();
         map = new GameObject("Map");
 
-        publisher = gameObject.GetComponent<RedisPublisher>();
+        manager = gameObject.GetComponent<RedisPublisherManager>();
 
         //TODO: route this through VoxSim OutputController
         outputDisplay = GameObject.Find("OutputDisplay").GetComponent<OutputDisplay>();
@@ -82,15 +82,15 @@ public class MapUpdater : MonoBehaviour
         if (!inited)
         {
             outputDisplay.SetText("Waiting for Map...", TextDisplayMode.Persistent);
-            if (publisher.usingRejson)
+            if (manager.publishers[manager.mapKey].usingRejson)
             {
-                publisher.WriteCommand(string.Format("json.lpop {0}",
-                    string.Format("{0}/{1}", publisher.namespacePrefix, publisher.mapKey)));
+                manager.publishers[manager.mapKey].WriteCommand(string.Format("json.lpop {0}",
+                    string.Format("{0}/{1}", manager.namespacePrefix, manager.mapKey)));
             }
             else
             {
-                publisher.WriteCommand(string.Format("lpop {0}",
-                    string.Format("{0}/{1}", publisher.namespacePrefix, publisher.mapKey)));
+                manager.publishers[manager.mapKey].WriteCommand(string.Format("lpop {0}",
+                    string.Format("{0}/{1}", manager.namespacePrefix, manager.mapKey)));
             }
         }
     }

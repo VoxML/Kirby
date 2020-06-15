@@ -6,7 +6,7 @@ using VoxSimPlatform.Agent;
 
 public class CommandInput : MonoBehaviour
 {
-    RedisPublisher redisPublisher;
+    RedisPublisherManager redisPublisherManager;
 
     public InputController inputController;
 
@@ -21,8 +21,8 @@ public class CommandInput : MonoBehaviour
 
         inputController.InputReceived += PostMessage;
 
-        redisPublisher = gameObject.GetComponent<RedisPublisher>();
-        if (redisPublisher == null)
+        redisPublisherManager = gameObject.GetComponent<RedisPublisherManager>();
+        if (redisPublisherManager == null)
         {
             Debug.LogWarning("CommandInput.Start: Could not find RedisPublisher.  Expect errors!");
         }
@@ -43,9 +43,9 @@ public class CommandInput : MonoBehaviour
             Debug.Log(string.Format("Got input \"{0}\"", message));
 
             string command = string.Format("rpush {0} \"{1}\"", string.Format("{0}/{1}",
-                redisPublisher.namespacePrefix, redisPublisher.cmdKey), message);
+                redisPublisherManager.namespacePrefix, redisPublisherManager.cmdKey), message);
             Debug.Log(string.Format("Posting message {0} to Redis", command));
-            redisPublisher.WriteCommand(command);
+            redisPublisherManager.publishers[redisPublisherManager.cmdKey].WriteCommand(command);
         }
     }
 
@@ -54,8 +54,8 @@ public class CommandInput : MonoBehaviour
         Debug.Log(string.Format("Got input \"{0}\"", message));
 
         string command = string.Format("rpush {0} \"{1}\"", string.Format("{0}/{1}",
-                redisPublisher.namespacePrefix, redisPublisher.cmdKey), message);
+                redisPublisherManager.namespacePrefix, redisPublisherManager.cmdKey), message);
         Debug.Log(string.Format("Posting message {0} to Redis", command));
-        redisPublisher.WriteCommand(command);
+        redisPublisherManager.publishers[redisPublisherManager.cmdKey].WriteCommand(command);
     }
 }
