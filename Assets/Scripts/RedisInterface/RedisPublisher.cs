@@ -71,6 +71,7 @@ public class RedisPublisher : RedisInterface
         mapUpdater = gameObject.GetComponent<MapUpdater>();
         roboUpdater = gameObject.GetComponent<RoboUpdater>();
         fidUpdater = gameObject.GetComponent<FiducialUpdater>();
+        logUpdater = gameObject.GetComponent<LogUpdater>();
 
         if (!authenticated)
         {
@@ -186,12 +187,16 @@ public class RedisPublisher : RedisInterface
                     else if (!string.IsNullOrEmpty(manager.logKey) && requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.logKey))
                     {
                         LogUpdate logUpdate = JsonConvert.DeserializeObject<LogUpdate>(response);
-
+                        Debug.Log("there is a logUpdate");
                         if (LogUpdate.Validate(logUpdate))
                         {
                             logUpdate.Log();
+                            Debug.Log("logUpdate.Log()");
                             logUpdater.UpdateLog(logUpdate);
+                            Debug.Log("logUpdater.UpdateLog(logUpdate)");
+
                         }
+                        Debug.Log("it's invalidLogUpdate");
                     }
                     else if (!string.IsNullOrEmpty(manager.roboKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.roboKey)))
                     {
