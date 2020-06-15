@@ -1961,7 +1961,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   authenticated: 0
   usingRejson: 0
-  namespacePrefix: Kirby
   publisherKey: 
 --- !u!4 &941503512
 Transform:
