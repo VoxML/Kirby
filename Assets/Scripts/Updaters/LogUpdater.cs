@@ -11,7 +11,6 @@ public class LogUpdater : MonoBehaviour
 
     LogUpdate log;
     KirbySpeechModule speech;
-    OutputDisplay output;
 
     // Use this for initialization
     void Start()
@@ -31,6 +30,5 @@ public class LogUpdater : MonoBehaviour
     {
         //Debug.Log("made it into UpdateLog");
         DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(update.message), speech, string.Empty);
-        output.SetText(update.message);
     }
 }
