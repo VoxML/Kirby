@@ -2080,7 +2080,7 @@ MonoBehaviour:
   roboKey: Odom
   fiducialKey: Fiducials
   resetKey: Bridge_Reset
-  cmdKey: Cmd
+  cmdKey: Kirby
   logKey: Feedback
 --- !u!114 &941503519
 MonoBehaviour:
