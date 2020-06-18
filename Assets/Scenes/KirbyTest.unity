@@ -2081,7 +2081,7 @@ MonoBehaviour:
   fiducialKey: Fiducials
   resetKey: Bridge_Reset
   cmdKey: Kirby
-  logKey: Feedback
+  logKey: Kirby_Feedback
 --- !u!114 &941503519
 MonoBehaviour:
   m_ObjectHideFlags: 0
