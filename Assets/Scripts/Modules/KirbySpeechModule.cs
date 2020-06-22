@@ -34,7 +34,7 @@ public class KirbySpeechModule : ModuleBase
     {
     }
 
-    // callback when user:isEngaged changes
+    // callback when kirby:speech changes
     void Speak(string key, DataStore.IValue value)
     {
         if (!string.IsNullOrEmpty(DataStore.GetStringValue(key)))

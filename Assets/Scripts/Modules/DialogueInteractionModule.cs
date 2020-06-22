@@ -37,6 +37,14 @@ public class DialogueInteractionModule : ModuleBase
         }
         
         DataStore.Subscribe("user:isEngaged", CheckEngagement);
+        DataStore.Subscribe("user:intent:isPushLeft", CheckPushLeft);
+        DataStore.Subscribe("user:intent:isPushRight", CheckPushRight);
+        DataStore.Subscribe("user:intent:isServoLeft", CheckServoLeft);
+        DataStore.Subscribe("user:intent:isServoRight", CheckServoRight);
+        DataStore.Subscribe("user:intent:isServoBack", CheckServoBack);
+        DataStore.Subscribe("user:intent:isPosack", CheckPosack);
+        DataStore.Subscribe("user:intent:isNegack", CheckNegack);
+        DataStore.Subscribe("user:intent:isNevermind", CheckNevermind);
     }
 
     // Update is called once per frame
@@ -76,5 +84,53 @@ public class DialogueInteractionModule : ModuleBase
         {
             SetValue("kirby:speech", "Goodbye.", string.Empty);
         }
+    }
+
+    // callback when user:intent:isPushLeft changes
+    void CheckPushLeft(string key, DataStore.IValue value)
+    {
+        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
+    }
+
+    // callback when user:intent:isPushRight changes
+    void CheckPushRight(string key, DataStore.IValue value)
+    {
+        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
+    }
+
+    // callback when user:intent:isServoLeft changes
+    void CheckServoLeft(string key, DataStore.IValue value)
+    {
+        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
+    }
+
+    // callback when user:intent:isServoRight changes
+    void CheckServoRight(string key, DataStore.IValue value)
+    {
+        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
+    }
+
+    // callback when user:intent:isServoBack changes
+    void CheckServoBack(string key, DataStore.IValue value)
+    {
+        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
+    }
+
+    // callback when user:intent:isPosack changes
+    void CheckPosack(string key, DataStore.IValue value)
+    {
+        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
+    }
+
+    // callback when user:intent:isNegack changes
+    void CheckNegack(string key, DataStore.IValue value)
+    {
+        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
+    }
+
+    // callback when user:intent:isNevermind changes
+    void CheckNevermind(string key, DataStore.IValue value)
+    {
+        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
     }
 }
