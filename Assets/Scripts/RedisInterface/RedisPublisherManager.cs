@@ -77,10 +77,13 @@ public class RedisPublisherManager : MonoBehaviour
 
         foreach (string key in keyNames)
         {
-            RedisPublisher publisher = gameObject.AddComponent<RedisPublisher>();
-            publisher.publisherKey = (string)this.GetType().GetField(key).GetValue(this);
+            if (!string.IsNullOrEmpty(key))
+            { 
+                RedisPublisher publisher = gameObject.AddComponent<RedisPublisher>();
+                publisher.publisherKey = (string)this.GetType().GetField(key).GetValue(this);
 
-            publishers[publisher.publisherKey] = publisher;
+                publishers[publisher.publisherKey] = publisher;
+            }
         }
     }
 
