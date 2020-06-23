@@ -37,8 +37,6 @@ public class DialogueInteractionModule : ModuleBase
         }
         
         DataStore.Subscribe("user:isEngaged", CheckEngagement);
-        DataStore.Subscribe("user:intent:isPushLeft", CheckPushLeft);
-        DataStore.Subscribe("user:intent:isPushRight", CheckPushRight);
         DataStore.Subscribe("user:intent:isServoLeft", CheckServoLeft);
         DataStore.Subscribe("user:intent:isServoRight", CheckServoRight);
         DataStore.Subscribe("user:intent:isServoBack", CheckServoBack);
@@ -84,18 +82,6 @@ public class DialogueInteractionModule : ModuleBase
         {
             SetValue("kirby:speech", "Goodbye.", string.Empty);
         }
-    }
-
-    // callback when user:intent:isPushLeft changes
-    void CheckPushLeft(string key, DataStore.IValue value)
-    {
-        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
-    }
-
-    // callback when user:intent:isPushRight changes
-    void CheckPushRight(string key, DataStore.IValue value)
-    {
-        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
     }
 
     // callback when user:intent:isServoLeft changes
