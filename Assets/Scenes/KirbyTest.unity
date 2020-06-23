@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465934, g: 0.49642956, b: 0.5748249, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -988,6 +988,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comment: 
   display: {fileID: 0}
+  rotateSpeed: 5
 --- !u!1001 &366083344
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1283,6 +1284,8 @@ MonoBehaviour:
   cursorSensitivity: 0.025
   cursorToggleAllowed: 1
   cursorToggleButton: 27
+  cameraPosOrigin: {x: 0, y: 0, z: 0}
+  cameraRotOrigin: {x: 0, y: 0, z: 0, w: 0}
   panSpeed: 0.1
 --- !u!1 &538056673 stripped
 GameObject:
@@ -3596,13 +3599,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comment: 
   display: {fileID: 0}
-  servoLeftTimeToStart: 50
-  servoLeftTimeToStop: 200
-  servoRightTimeToStart: 50
-  servoRightTimeToStop: 200
-  servoBackTimeToStart: 200
-  servoBackTimeToStop: 200
-  logChanges: 1
+  servoLeftTimeToStart: 0
+  servoLeftTimeToStop: 0
+  servoRightTimeToStart: 0
+  servoRightTimeToStop: 0
+  servoBackTimeToStart: 0
+  servoBackTimeToStop: 0
+  logChanges: 0
 --- !u!1 &1991202302
 GameObject:
   m_ObjectHideFlags: 0

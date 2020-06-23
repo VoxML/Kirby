@@ -10,15 +10,21 @@ Writes:     kirby:isAttending:speech (BoolValue, whether or not Kirby is attendi
 */
 
 using UnityEngine;
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.Timers;
 
 using VoxSimPlatform.Core;
+using VoxSimPlatform.Global;
 
 public class MoveCameraModule : ModuleBase
 {
+    public float rotateSpeed;
     GameObject camera;
+    Vector3 cameraLookAt;
+
+    Timer checkServoTimer;
+    public int checkServoTimerTime;
+
+    bool rotate;
 
     // Use this for initialization
     void Start()
@@ -31,18 +37,59 @@ public class MoveCameraModule : ModuleBase
             Debug.LogError("MoveCameraModule.Start: Could not find main camera.  Expect errors!");
         }
 
+        cameraLookAt = default;
+
         DataStore.Subscribe("user:intent:isClaw", EnterCameraMoveMode);
         DataStore.Subscribe("user:intent:isPosack", ExitCameraMoveMode);
         DataStore.Subscribe("user:intent:isServoLeft", RotateLeft);
         DataStore.Subscribe("user:intent:isServoRight", RotateRight);
         DataStore.Subscribe("user:intent:isServoBack", RotateBack);
         DataStore.Subscribe("user:intent:isNevermind", ReturnToHome);
+
+        checkServoTimer = new Timer(checkServoTimerTime);
+        checkServoTimer.Elapsed += CheckServo;
+        checkServoTimer.Enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (rotate)
+        {
+            checkServoTimer.Interval = checkServoTimerTime;
+            checkServoTimer.Enabled = true;
+
+            if (cameraLookAt == default)
+            {
+                cameraLookAt = camera.transform.position + camera.transform.forward;
+            }
+
+            if (DataStore.GetBoolValue("user:intent:isServoLeft"))
+            { 
+                Debug.Log(string.Format("Rotating camera: Left; look at {0}",
+                    GlobalHelper.VectorToParsable(cameraLookAt)));
+                camera.transform.LookAt(cameraLookAt);
+                camera.transform.Translate(Vector3.left * Time.deltaTime * rotateSpeed);
+            }
+            else if (DataStore.GetBoolValue("user:intent:isServoRight"))
+            {
+                Debug.Log(string.Format("Rotating camera: Right; look at {0}",
+                    GlobalHelper.VectorToParsable(cameraLookAt)));
+                camera.transform.LookAt(cameraLookAt);
+                camera.transform.Translate(Vector3.right * Time.deltaTime * rotateSpeed);
+            }
+            if (DataStore.GetBoolValue("user:intent:isServoBack"))
+            {
+                Debug.Log(string.Format("Rotating camera: Back; look at {0}",
+                    GlobalHelper.VectorToParsable(cameraLookAt)));
+                camera.transform.LookAt(cameraLookAt);
+                camera.transform.Translate(Vector3.up * Time.deltaTime * rotateSpeed);
+            }
+        }
+        else
+        {
+            cameraLookAt = default;
+        }
     }
 
     // callback when user:intent:isClaw changes
@@ -70,7 +117,15 @@ public class MoveCameraModule : ModuleBase
     {
         if (DataStore.GetBoolValue("user:isMovingCamera"))
         {
-            Debug.Log("Rotating camera: Left");
+            if (DataStore.GetBoolValue(key))
+            {
+                checkServoTimer.Enabled = true;
+            }
+            else
+            {
+                checkServoTimer.Enabled = false;
+                rotate = false;
+            }
         }
     }
 
@@ -79,7 +134,15 @@ public class MoveCameraModule : ModuleBase
     {
         if (DataStore.GetBoolValue("user:isMovingCamera"))
         {
-            Debug.Log("Rotating camera: Right");
+            if (DataStore.GetBoolValue(key))
+            {
+                checkServoTimer.Enabled = true;
+            }
+            else
+            {
+                checkServoTimer.Enabled = false;
+                rotate = false;
+            }
         }
     }
 
@@ -88,7 +151,15 @@ public class MoveCameraModule : ModuleBase
     {
         if (DataStore.GetBoolValue("user:isMovingCamera"))
         {
-            Debug.Log("Rotating camera: Back");
+            if (DataStore.GetBoolValue(key))
+            {
+                checkServoTimer.Enabled = true;
+            }
+            else
+            {
+                checkServoTimer.Enabled = false;
+                rotate = false;
+            }
         }
     }
 
@@ -102,6 +173,19 @@ public class MoveCameraModule : ModuleBase
 
             camera.transform.position = cameraMovementScript.cameraPosOrigin;
             camera.transform.rotation = cameraMovementScript.cameraRotOrigin;
+        }
+    }
+
+    void CheckServo(object sender, ElapsedEventArgs e)
+    {
+        checkServoTimer.Enabled = false;
+        checkServoTimer.Interval = checkServoTimerTime;
+
+        if (DataStore.GetBoolValue("user:intent:isServoLeft") ||
+            DataStore.GetBoolValue("user:intent:isServoRight") ||
+            DataStore.GetBoolValue("user:intent:isServoBack"))
+        {
+            rotate = true;
         }
     }
 }
