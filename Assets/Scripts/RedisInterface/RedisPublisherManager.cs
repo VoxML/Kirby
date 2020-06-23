@@ -73,26 +73,37 @@ public class RedisPublisherManager : MonoBehaviour
     public void CreatePublishers()
     {
         // get all keys defined (all field names that end in "Key")
-        List<string> keyNames = this.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
+        List<string> keyVarNames = this.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
 
-        foreach (string key in keyNames)
+        foreach (string key in keyVarNames)
         {
-            if (!string.IsNullOrEmpty(key))
+            string keyName = (string)this.GetType().GetField(key).GetValue(this);
+            if (!string.IsNullOrEmpty(keyName))
             { 
                 RedisPublisher publisher = gameObject.AddComponent<RedisPublisher>();
-                publisher.publisherKey = (string)this.GetType().GetField(key).GetValue(this);
+                publisher.publisherKey = keyName;
 
                 publishers[publisher.publisherKey] = publisher;
             }
         }
+
+        Debug.Log(string.Format("Created {0} publishers", publishers.Count));
     }
 
     public void TriggerResetBridge()
     {
-        outputDisplay.SetText("Flushing database...", TextDisplayMode.Persistent);
+        if (!string.IsNullOrEmpty(resetKey))
+        { 
+            outputDisplay.SetText("Flushing database...", TextDisplayMode.Persistent);
 
-        // halt subscriber processing while bridge is reset
-        subscriber.processing = false;
-        publishers[resetKey].WriteCommand(string.Format("set {0} 1", string.Format("{0}/{1}", namespacePrefix, resetKey)));
+            // halt subscriber processing while bridge is reset
+            subscriber.processing = false;
+            publishers[resetKey].WriteCommand(string.Format("set {0} 1", string.Format("{0}/{1}", namespacePrefix, resetKey)));
+        }
+        else
+        {
+            outputDisplay.SetText(string.Empty);
+            Debug.Log("RedisPublisherManager.TriggerResetBridge: No value for resetKey variable given!");
+        }
     }
 }

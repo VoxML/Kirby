@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.4465934, g: 0.49642956, b: 0.5748249, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -988,7 +988,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comment: 
   display: {fileID: 0}
-  rotateSpeed: 5
+  rotateSpeed: 0.5
+  checkServoTimerTime: 200
 --- !u!1001 &366083344
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2491,20 +2492,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Perception Architecture
       objectReference: {fileID: 0}
+    - target: {fileID: 1976664117030755811, guid: 6d2b93719b5aeb44cadd686a6fb09507,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1976664117030755812, guid: 6d2b93719b5aeb44cadd686a6fb09507,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12511.673
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1976664117030755812, guid: 6d2b93719b5aeb44cadd686a6fb09507,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4085.312
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1976664117030755812, guid: 6d2b93719b5aeb44cadd686a6fb09507,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9651.893
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1976664117030755812, guid: 6d2b93719b5aeb44cadd686a6fb09507,
         type: 3}
@@ -3599,12 +3605,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comment: 
   display: {fileID: 0}
-  servoLeftTimeToStart: 0
-  servoLeftTimeToStop: 0
-  servoRightTimeToStart: 0
-  servoRightTimeToStop: 0
-  servoBackTimeToStart: 0
-  servoBackTimeToStop: 0
+  servoLeftTimeToStart: 50
+  servoLeftTimeToStop: 200
+  servoRightTimeToStart: 50
+  servoRightTimeToStop: 200
+  servoBackTimeToStart: 200
+  servoBackTimeToStop: 200
   logChanges: 0
 --- !u!1 &1991202302
 GameObject:
