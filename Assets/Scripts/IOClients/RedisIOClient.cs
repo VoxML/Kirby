@@ -29,7 +29,11 @@ public class RedisIOClient : MonoBehaviour
             clientNames.Contains(s.Label)).Select(s => s.Label).ToList();
         
         _redisSocket = (RedisSocket)commBridge.FindSocketConnectionByType(typeof(RedisIOClient), exclusions);
-        socketName = _redisSocket.Label;
+
+        if (_redisSocket != null)
+        {
+            socketName = _redisSocket.Label;
+        }
     }
 
     // Update is called once per frame
