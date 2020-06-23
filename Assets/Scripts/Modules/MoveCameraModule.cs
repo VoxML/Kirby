@@ -14,21 +14,21 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using VoxSimPlatform.Agent;
+using VoxSimPlatform.Core;
 
 public class MoveCameraModule : ModuleBase
 {
-    CameraManager cameraManager;
+    GameObject camera;
 
     // Use this for initialization
     void Start()
     {
         base.Start();
 
-        cameraManager = GameObject.Find("CameraManager").GetComponent<CameraManager>();
-        if (cameraManager == null)
+        camera = GameObject.FindGameObjectWithTag("MainCamera");
+        if (camera == null)
         {
-            Debug.LogError("SwitchCamerasModule.Start: Could not find CameraManager.  Expect errors!");
+            Debug.LogError("MoveCameraModule.Start: Could not find main camera.  Expect errors!");
         }
 
         DataStore.Subscribe("user:intent:isClaw", EnterCameraMoveMode);
@@ -36,12 +36,13 @@ public class MoveCameraModule : ModuleBase
         DataStore.Subscribe("user:intent:isServoLeft", RotateLeft);
         DataStore.Subscribe("user:intent:isServoRight", RotateRight);
         DataStore.Subscribe("user:intent:isServoBack", RotateBack);
+        DataStore.Subscribe("user:intent:isNevermind", ReturnToHome);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     // callback when user:intent:isClaw changes
@@ -57,7 +58,7 @@ public class MoveCameraModule : ModuleBase
     // callback when user:intent:isPosack changes
     void ExitCameraMoveMode(string key, DataStore.IValue value)
     {
-        if (DataStore.GetBoolValue(key))
+        if (!DataStore.GetBoolValue(key))
         {
             SetValue("user:isMovingCamera", false, string.Empty);
             Debug.Log("Exiting camera move mode");
@@ -69,6 +70,7 @@ public class MoveCameraModule : ModuleBase
     {
         if (DataStore.GetBoolValue("user:isMovingCamera"))
         {
+            Debug.Log("Rotating camera: Left");
         }
     }
 
@@ -77,6 +79,7 @@ public class MoveCameraModule : ModuleBase
     {
         if (DataStore.GetBoolValue("user:isMovingCamera"))
         {
+            Debug.Log("Rotating camera: Right");
         }
     }
 
@@ -85,6 +88,20 @@ public class MoveCameraModule : ModuleBase
     {
         if (DataStore.GetBoolValue("user:isMovingCamera"))
         {
+            Debug.Log("Rotating camera: Back");
+        }
+    }
+
+    // callback when user:intent:isNevermind changes
+    void ReturnToHome(string key, DataStore.IValue value)
+    {
+        if (DataStore.GetBoolValue("user:isMovingCamera"))
+        {
+            Debug.Log("Returning camera to home");
+            GhostFreeRoamCamera cameraMovementScript = camera.GetComponent<GhostFreeRoamCamera>();
+
+            camera.transform.position = cameraMovementScript.cameraPosOrigin;
+            camera.transform.rotation = cameraMovementScript.cameraRotOrigin;
         }
     }
 }

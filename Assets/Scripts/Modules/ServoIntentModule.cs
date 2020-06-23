@@ -1,6 +1,14 @@
-﻿public class ServoIntentModule : ModuleBase
+﻿using UnityEngine;
+
+public class ServoIntentModule : ModuleBase
 {
-	private ServoLeftStateMachine servoLeftStateMachine;
+    // for tuning
+    public int servoLeftTimeToStart, servoLeftTimeToStop;
+    public int servoRightTimeToStart, servoRightTimeToStop;
+    public int servoBackTimeToStart, servoBackTimeToStop;
+    public bool logChanges;
+
+    private ServoLeftStateMachine servoLeftStateMachine;
 	private ServoRightStateMachine servoRightStateMachine;
 	private ServoBackStateMachine servoBackStateMachine;
 
@@ -8,9 +16,9 @@
     {
 		base.Start();
 
-		servoLeftStateMachine = new ServoLeftStateMachine();
-		servoRightStateMachine = new ServoRightStateMachine();
-		servoBackStateMachine = new ServoBackStateMachine();
+		servoLeftStateMachine = new ServoLeftStateMachine(servoLeftTimeToStart, servoLeftTimeToStop);
+		servoRightStateMachine = new ServoRightStateMachine(servoRightTimeToStart, servoRightTimeToStop);
+		servoBackStateMachine = new ServoBackStateMachine(servoBackTimeToStart, servoBackTimeToStop);
 	}
 
 	private void Update()
@@ -26,7 +34,12 @@
 					DataStore.SetValue("user:intent:isServoRight", DataStore.BoolValue.False, this, "stopped servo right with left hand");
 					break;
 			}
-		}
+
+            if (logChanges)
+            {
+                Debug.Log(string.Format("Servo right state change: {0}", DataStore.GetBoolValue("user:intent:isServoRight")));
+            }
+        }
 
 		if (servoLeftStateMachine.Evaluate())
 		{
@@ -39,7 +52,12 @@
 					DataStore.SetValue("user:intent:isServoLeft", DataStore.BoolValue.False, this, "stopped servo left with right hand");
 					break;
 			}
-		}
+
+            if (logChanges)
+            {
+                Debug.Log(string.Format("Servo left state change: {0}", DataStore.GetBoolValue("user:intent:isServoLeft")));
+            }
+        }
 
 		if (servoBackStateMachine.Evaluate())
 		{
@@ -52,6 +70,11 @@
 					DataStore.SetValue("user:intent:isServoBack", DataStore.BoolValue.False, this, "stopped servo back");
 					break;
 			}
-		}
+
+            if (logChanges)
+            {
+                Debug.Log(string.Format("Servo back state change: {0}", DataStore.GetBoolValue("user:intent:isServoBack")));
+            }
+        }
 	}
 }

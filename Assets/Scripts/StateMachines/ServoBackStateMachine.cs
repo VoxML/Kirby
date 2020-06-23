@@ -6,7 +6,7 @@
 
 public class ServoBackStateMachine : RuleStateMachine<ServoBackState>
 {
-	public ServoBackStateMachine()
+	public ServoBackStateMachine(int timeToStart, int timeToStop)
 	{
 		SetTransitionRule(ServoBackState.ServoBackStop, ServoBackState.ServoBackStart, new TimedRule(() =>
 		{
@@ -19,7 +19,7 @@ public class ServoBackStateMachine : RuleStateMachine<ServoBackState>
 				return rightHandGesture == "beckon" || leftHandGesture == "beckon";
 			}
 			return false;
-		}, 300));
+		}, timeToStart));
 
 		SetTransitionRule(ServoBackState.ServoBackStart, ServoBackState.ServoBackStop, new TimedRule(() =>
 		{
@@ -33,6 +33,6 @@ public class ServoBackStateMachine : RuleStateMachine<ServoBackState>
 				string leftHandGesture = DataStore.GetStringValue("user:hands:left");
 				return rightHandGesture != "beckon" && leftHandGesture != "beckon";
 			}
-		}, 100));
+		}, timeToStop));
 	}
 }

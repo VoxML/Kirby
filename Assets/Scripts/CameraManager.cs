@@ -15,7 +15,7 @@ public class CameraManager : MonoBehaviour
         {
             curMainCamera.depth = -1;
             curMainCamera.targetTexture = null;
-            curSecondCamera.gameObject.tag = "MainCamera";
+            curMainCamera.gameObject.tag = "MainCamera";
         }
 
         if (curSecondCamera != null)

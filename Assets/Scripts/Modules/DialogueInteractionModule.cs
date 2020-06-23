@@ -48,7 +48,7 @@ public class DialogueInteractionModule : ModuleBase
     // Update is called once per frame
     void Update()
     {
-
+       
     }
 
     // callback from MapUpdated when map inited for first time
@@ -87,19 +87,16 @@ public class DialogueInteractionModule : ModuleBase
     // callback when user:intent:isServoLeft changes
     void CheckServoLeft(string key, DataStore.IValue value)
     {
-        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
     }
 
     // callback when user:intent:isServoRight changes
     void CheckServoRight(string key, DataStore.IValue value)
     {
-        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
     }
 
     // callback when user:intent:isServoBack changes
     void CheckServoBack(string key, DataStore.IValue value)
     {
-        Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
     }
 
     // callback when user:intent:isPosack changes
