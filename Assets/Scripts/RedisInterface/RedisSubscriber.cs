@@ -106,79 +106,120 @@ public class RedisSubscriber : RedisInterface
                 /*
                     $8
                     pmessage
-                    $10
-                    __key* __:*
-                    $19
-                    __keyspace@0__:json
-                    $3
-                    set
+                    $29
+                    __key*__:Kirby/Kirby_Feedback
+                    $35
+                    __keyspace@0__:Kirby/Kirby_Feedback
+                    $5
+                    rpush   <--
+
+                    $8
+                    pmessage
+                    $29
+                    __key*__:Kirby/Kirby_Feedback
+                    $35
+                    __keyspace@0__:Kirby/Kirby_Feedback
+                    $4
+                    lpop    <--
                     *4
                     $8
                     pmessage
-                    $10
-                    __key* __:*
-                    $18
-                    __keyevent@0__:set
+                    $29
+                    __key*__:Kirby/Kirby_Feedback
+                    $35
+                    __keyspace@0__:Kirby/Kirby_Feedback
+                    $3
+                    del     <--
+
+                    $8
+                    pmessage
+                    $29
+                    __key*__:Kirby/Kirby_Feedback
+                    $35
+                    __keyspace@0__:Kirby/Kirby_Feedback
+                    $5
+                    rpush   <--
+                    *4
+                    $8
+                    pmessage
+                    $19
+                    __key*__:Kirby/Odom
+                    $25
+                    __keyspace@0__:Kirby/Odom
+                    $3
+                    set     <--
+                    *4
+                    $8
+                    pmessage
+                    $29
+                    __key*__:Kirby/Kirby_Feedback
+                    $35
+                    __keyspace@0__:Kirby/Kirby_Feedback
                     $4
-                    json
+                    lpop    <--
+
                 */
-                List<string> lines = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                string longKey = string.Empty;
-                string shortKey = string.Empty;
-                string cmd = string.Empty;
-
-                if (lines.FindIndex(l => l.StartsWith("__keyspace")) != -1)
+                List<string> blocks = raw.Split(new string[] { "*" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                foreach (string block in blocks)
                 {
-                    longKey = lines[lines.FindIndex(l => l.StartsWith("__keyspace"))].Split(':')[1];
-                    shortKey = longKey.Replace(string.Format("{0}/", manager.namespacePrefix), string.Empty).Trim();
-                    cmd = lines.Last();
-                    Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, command: {1}", longKey, cmd));
-                }
+                    List<string> lines = block.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    string longKey = string.Empty;
+                    string shortKey = string.Empty;
+                    string cmd = string.Empty;
 
-                // changes to resetKey might mean we have to start listening
-                if (processing || longKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.resetKey))
-                {
-                    if (!ignoreResetNotification)
+                    if (lines.FindIndex(l => l.StartsWith("__keyspace")) != -1)
                     {
-                        if (longKey != string.Format("{0}/{1}", manager.namespacePrefix, manager.cmdKey))
+                        longKey = lines[lines.FindIndex(l => l.StartsWith("__keyspace"))].Split(':')[1];
+                        shortKey = longKey.Replace(string.Format("{0}/", manager.namespacePrefix), string.Empty).Trim();
+                        cmd = lines.Last();
+                        Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, command: {1}", longKey, cmd));
+                    }
+
+                    // changes to resetKey might mean we have to start listening
+                    if (processing || longKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.resetKey))
+                    {
+                        if (!ignoreResetNotification)
                         {
-                            if (usingRejson)
+                            if (longKey != string.Format("{0}/{1}", manager.namespacePrefix, manager.cmdKey))
                             {
-                                switch (cmd)
+                                if (usingRejson)
                                 {
-                                    case "set":
-                                        manager.publishers[shortKey].WriteCommand(string.Format("json.get {0}", longKey));
-                                        break;
+                                    switch (cmd)
+                                    {
+                                        case "set":
+                                            manager.publishers[shortKey].WriteCommand(string.Format("json.get {0}", longKey));
+                                            break;
 
-                                    case "rpush":
-                                        manager.publishers[shortKey].WriteCommand(string.Format("json.lpop {0}", longKey));
-                                        break;
+                                        case "rpush":
+                                            manager.publishers[shortKey].WriteCommand(string.Format("json.lpop {0}", longKey));
+                                            break;
 
-                                    default:
-                                        break;
+                                        default:
+                                            break;
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                switch (cmd)
+                                else
                                 {
-                                    case "set":
-                                        manager.publishers[shortKey].WriteCommand(string.Format("get {0}", longKey));
-                                        break;
+                                    switch (cmd)
+                                    {
+                                        case "set":
+                                            manager.publishers[shortKey].WriteCommand(string.Format("get {0}", longKey));
+                                            break;
 
-                                    case "rpush":
-                                        manager.publishers[shortKey].WriteCommand(string.Format("lpop {0}", longKey));
-                                        break;
+                                        case "rpush":
+                                            manager.publishers[shortKey].WriteCommand(string.Format("lpop {0}", longKey));
+                                            break;
 
-                                    default:
-                                        break;
+                                        default:
+                                            break;
+                                    }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        ignoreResetNotification = false;
+                        else
+                        {
+                            ignoreResetNotification = false;
+                        }
                     }
                 }
                 break;
