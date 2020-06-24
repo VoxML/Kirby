@@ -28,7 +28,7 @@ public class LogUpdater : MonoBehaviour
 
     public void UpdateLog(LogUpdate update)
     {
-        //Debug.Log("made it into UpdateLog");
-        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(update.message), speech, string.Empty);
+        Debug.Log("kirby should be talking");
+        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(update.code), speech, string.Empty);
     }
 }

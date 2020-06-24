@@ -187,7 +187,7 @@ public class RedisPublisher : RedisInterface
                     else if (!string.IsNullOrEmpty(manager.logKey) && requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.logKey))
                     {
                         LogUpdate logUpdate = JsonConvert.DeserializeObject<LogUpdate>(response);
-                        Debug.Log("there is a logUpdate");
+                        //Debug.Log("there is a logUpdate");
                         if (LogUpdate.Validate(logUpdate))
                         {
                             logUpdate.Log();
@@ -195,8 +195,7 @@ public class RedisPublisher : RedisInterface
                             logUpdater.UpdateLog(logUpdate);
                             //Debug.Log("logUpdater.UpdateLog(logUpdate)");
 
-                        } else
-                        { Debug.Log("it's invalidLogUpdate"); }
+                        } 
                         
                     }
                     else if (!string.IsNullOrEmpty(manager.roboKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.roboKey)))
