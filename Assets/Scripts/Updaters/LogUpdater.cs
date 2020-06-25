@@ -29,6 +29,83 @@ public class LogUpdater : MonoBehaviour
     public void UpdateLog(LogUpdate update)
     {
         Debug.Log("kirby should be talking");
-        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(update.code), speech, string.Empty);
+        string output = "";
+        switch (update.code)
+        {
+            case "READY":
+                output = "I have nothing to do";
+                break;
+            case "INVALID":
+                output = "I don't understand";
+                break;
+            case "PAUSED":
+                output = "Ok, I paused";
+                break;
+            case "RESTARTING":
+                output = "Ok, let's go";
+                break;
+            case "CANCELLED_GOAL":
+                output = "Ok, cancelled";
+                break;
+            case "CANCELLED_ALL":
+                output = "Ok, I cancelled everything";
+                break;
+            case "FORWARD":
+                output = "Sure!";
+                break;
+            case "GO_TO":
+                output = "O.K.!";
+                break;
+            case "ESTIMATE_ROTATION":
+                output = "Ok, turning";
+                break;
+            case "VERIFY_ROTATION":
+                output = "";
+                break;
+            case "GO_BACK":
+                output = "Ok I'll go back to where I was";
+                break;
+            case "SUCCESS_FORWARD":
+                output = "I went forward";
+                break;
+            case "SUCCESS_GO_TO":
+                output = "I made it";
+                break;
+            case "SUCCESS_ESTIMATE_ROTATION":
+                output = "";
+                break;
+            case "SUCCESS_VERIFY_ROTATION":
+                output = "finished";
+                break;
+            case "SUCCESS_GO_BACK":
+                output = "Ok, I made it back";
+                break;
+            case "UNREACHABLE":
+                output = "I can't get there";
+                break;
+            case "STRAYED":
+                output = "Help, I moved but I couldn't make it to my goal.";
+                break;
+            case "HELP":
+                output = "Do you want me to keep going from here or go back to " +
+                    "where I was?";
+                break;
+            case "PATROL":
+                output = "I'll explore";
+                break;
+            case "PLAN_LOOP":
+                output = "I'm planning where to explore next";
+                break;
+            case "COMPLETED_LOOP":
+                output = "I've done some exploration";
+                break;
+            case "STOP_PATROL":
+                output = "OK I'll stop exploring";
+                break;
+            case "FINISH_PATROL":
+                output = "I've explored as much as I can";
+                break;
+        }
+        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
     }
 }
