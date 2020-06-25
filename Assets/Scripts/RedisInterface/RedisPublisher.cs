@@ -43,15 +43,7 @@ public class RedisPublisher : RedisInterface
 
         string address = redisSocket.Address;
         int port = redisSocket.Port;
-
-        // close and reopen to get dedicated connecton
-        if (redisSocket != null)
-        {
-            //commBridge.GetComponent<CommunicationsBridge>().SocketConnections.RemoveAt(
-            //    commBridge.GetComponent<CommunicationsBridge>().SocketConnections.IndexOf(redisSocket));
-            //redisSocket.Close();
-        }
-
+        
         redisSocket = (RedisSocket)commBridge.GetComponent<CommunicationsBridge>().
             ConnectSocket(address, port, typeof(RedisSocket));
         redisSocket.Label = string.Format("{0}RedisPublisher", publisherKey);
@@ -123,7 +115,7 @@ public class RedisPublisher : RedisInterface
     public void ReceivedMessage(object sender, EventArgs e)
     {
         string raw = ((RedisEventArgs)e).Content;
-        char type = GetResponseType(((RedisEventArgs)e).Content);
+        char type = GetResponseType(raw);
         string requestKey = string.Empty;
 
         if (lastEvent != null)
@@ -187,13 +179,10 @@ public class RedisPublisher : RedisInterface
                     else if (!string.IsNullOrEmpty(manager.logKey) && requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.logKey))
                     {
                         LogUpdate logUpdate = JsonConvert.DeserializeObject<LogUpdate>(response);
-                        //Debug.Log("there is a logUpdate");
                         if (LogUpdate.Validate(logUpdate))
                         {
                             logUpdate.Log();
-                            //Debug.Log("logUpdate.Log()");
                             logUpdater.UpdateLog(logUpdate);
-                            //Debug.Log("logUpdater.UpdateLog(logUpdate)");
 
                         } 
                         
@@ -230,7 +219,6 @@ public class RedisPublisher : RedisInterface
                     {
                     }
                 }
-
                 break;
 
             // arrays
@@ -238,6 +226,22 @@ public class RedisPublisher : RedisInterface
                 break;
 
             default:
+                if (raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length > 1)
+                {
+                    Debug.Log("Default response type");
+
+                    //if (!IsValidResponseEvent(lastEvent))
+                    //{
+                    //    return;
+                    //}
+
+                    response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1];
+                    Debug.Log(string.Format("RedisPublisher({0}): Got untyped response from Redis (responding to \"{1}\"): {2}",
+                        publisherKey, lastEvent.Content, response));
+
+                    requestKey = lastEvent.Content.Split()[1];
+
+                }
                 break;
         }
 

@@ -3,8 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using VoxSimPlatform.Network;
+
 public class RedisPublisherManager : MonoBehaviour
 {
+    CommunicationsBridge commBridge;
     RedisSubscriber subscriber;
 
     OutputDisplay outputDisplay;
@@ -31,6 +34,7 @@ public class RedisPublisherManager : MonoBehaviour
     {
         //TODO: route this through VoxSim OutputController
         outputDisplay = GameObject.Find("OutputDisplay").GetComponent<OutputDisplay>();
+        commBridge = GameObject.Find("CommunicationsBridge").GetComponent<CommunicationsBridge>();
 
         subscriber = gameObject.GetComponent<RedisSubscriber>();
 
@@ -67,6 +71,16 @@ public class RedisPublisherManager : MonoBehaviour
     public void AllPublishersAuthenticated()
     {
         Debug.Log("RedisPublisherManager: picked up message AllPublishersAuthenticated");
+
+        //List<RedisIOClient> obsoletePublishers = commBridge.GetComponents<RedisIOClient>().Where(s => s.socketName == "RedisPublisher").ToList();
+        //for (int i = 0; i < obsoletePublishers.Count; i++)
+        //{
+        //    Destroy(obsoletePublishers[i]);
+        //}
+
+        //RedisSocket redisSocket = (RedisSocket)commBridge.FindSocketConnectionByLabel("RedisPublisher");
+        //redisSocket.Close();
+
         TriggerResetBridge();
     }
 
@@ -79,7 +93,9 @@ public class RedisPublisherManager : MonoBehaviour
         {
             string keyName = (string)this.GetType().GetField(key).GetValue(this);
             if (!string.IsNullOrEmpty(keyName))
-            { 
+            {
+                Debug.Log(string.Format("Creating RedisIOClient for key \"{0}\"", keyName));
+
                 RedisPublisher publisher = gameObject.AddComponent<RedisPublisher>();
                 publisher.publisherKey = keyName;
 

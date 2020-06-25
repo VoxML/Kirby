@@ -49,11 +49,21 @@ public class RedisInterface : MonoBehaviour
 
         if (first.StartsWith("unknown command"))
         {
-            type = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1][0];
+            string[] content = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            if (content.Length > 1)
+            {
+                if (content[1].Length > 0)
+                { 
+                    type = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1][0];
+                }
+            }
         }
         else
         {
-            type = first[0];
+            if (first.Length > 0)
+            { 
+                type = first[0];
+            }
         }
 
         return type;

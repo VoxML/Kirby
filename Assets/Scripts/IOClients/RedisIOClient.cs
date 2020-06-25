@@ -7,6 +7,8 @@ using VoxSimPlatform.Network;
 
 public class RedisIOClient : MonoBehaviour
 {
+    //bool destroyThis = false;
+
     CommunicationsBridge commBridge;
 
     RedisSocket _redisSocket;
@@ -34,6 +36,27 @@ public class RedisIOClient : MonoBehaviour
         {
             socketName = _redisSocket.Label;
         }
+
+        if (!string.IsNullOrEmpty(socketName))
+        {
+            Debug.Log(string.Format("Created RedisIOClient for {0}", socketName));
+        }
+        else
+        {
+            // if there's no name assigned to this socket, it should be deleted
+            //  (Kirby-implementation specific quirk due to the RedisPublisherManager)
+            //foreach (KeyValuePair<string,System.Type> kv in commBridge.tryAgainSockets)
+            //{
+            //    Debug.Log(string.Format("RedisIOClient {0} : {1}", kv.Key, kv.Value));
+            //}
+            //commBridge.tryAgainSockets.Remove(_redisSocket.Address);
+            //foreach (KeyValuePair<string, System.Type> kv in commBridge.tryAgainSockets)
+            //{
+            //    Debug.Log(string.Format("RedisIOClient {0} : {1}", kv.Key, kv.Value));
+            //}
+            //Debug.Log(string.Format("Going to destroy RedisIOClient for {0}", socketName));
+            ////destroyThis = true;
+        }
     }
 
     // Update is called once per frame
@@ -55,8 +78,8 @@ public class RedisIOClient : MonoBehaviour
                 string inputFromRedis = _redisSocket.GetMessage();
                 if (inputFromRedis != "")
                 {
-                    Debug.Log(string.Format("Received message: {0}",inputFromRedis));
-                    Debug.Log(_redisSocket.HowManyLeft() + " messages left.");
+                    Debug.Log(string.Format("{0} received message: {1}", socketName, inputFromRedis));
+                    Debug.Log(string.Format("{0} messages left on {1}", _redisSocket.HowManyLeft(), socketName));
                     _redisSocket.OnUpdateReceived(this, new RedisEventArgs(RedisEventType.Response,inputFromRedis));
                 }
             }
@@ -69,4 +92,12 @@ public class RedisIOClient : MonoBehaviour
             }
         }
     }
+
+    //void LateUpdate()
+    //{
+    //    if (destroyThis)
+    //    {
+    //        Destroy(this);
+    //    }
+    //}
 }

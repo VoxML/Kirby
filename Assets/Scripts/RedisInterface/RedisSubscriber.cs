@@ -80,7 +80,7 @@ public class RedisSubscriber : RedisInterface
             // simple strings
             case '+':
                 response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('+');
-                Debug.Log(string.Format("RedisSubscriber: Got simple string response from Redis: {0}", response));
+                Debug.Log(string.Format("RedisSubscriber: Got simple string update from Redis: {0}", response));
 
                 if (!authenticated)
                 {
@@ -172,7 +172,7 @@ public class RedisSubscriber : RedisInterface
                         longKey = lines[lines.FindIndex(l => l.StartsWith("__keyspace"))].Split(':')[1];
                         shortKey = longKey.Replace(string.Format("{0}/", manager.namespacePrefix), string.Empty).Trim();
                         cmd = lines.Last();
-                        Debug.Log(string.Format("RedisSubscriber: Got bulk string response from Redis: key: {0}, command: {1}", longKey, cmd));
+                        Debug.Log(string.Format("RedisSubscriber: Got bulk string update from Redis: key: {0}, command: {1}", longKey, cmd));
                     }
 
                     // changes to resetKey might mean we have to start listening
