@@ -78,9 +78,11 @@ public class NLUModule : ModuleBase
 
             string commands = MapLanguageToCommands(DataStore.GetStringValue(key));
 
-            commandInput.inputController.inputString = commands;
-            commandInput.PostMessage(commandInput.inputController.inputString);
-            clearSpeechTimer.Enabled = true;
+            if (commands != string.Empty) {
+                commandInput.inputController.inputString = commands;
+                commandInput.PostMessage(commandInput.inputController.inputString);
+                clearSpeechTimer.Enabled = true;
+            }
         }
     }
 
@@ -107,7 +109,6 @@ public class NLUModule : ModuleBase
         else if ((input == "patrol") || (input == "explore"))
         {
             output = PatrolCommand(input);
-
         }
 
         Debug.Log(string.Format("Mapped \"{0}\" to \"{1}\"", input, output));

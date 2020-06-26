@@ -133,7 +133,7 @@ public class DialogueInteractionModule : ModuleBase
     {
         //if (DataStore.GetBoolValue("kirby:isAttending:gesture"))
         //{
-            Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetVector3Value(key)));
+        //    Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetVector3Value(key)));
         //}
     }
 }
