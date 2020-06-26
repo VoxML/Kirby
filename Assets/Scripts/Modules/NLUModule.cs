@@ -101,7 +101,7 @@ public class NLUModule : ModuleBase
             output = GoToThatCommand(input);
 
         }
-        else if (input == "patrol") || (input == "explore"))
+        else if ((input == "patrol") || (input == "explore"))
         {
             output = PatrolCommand(input);
 
