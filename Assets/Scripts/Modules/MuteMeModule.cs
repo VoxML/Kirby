@@ -10,7 +10,7 @@ public class MuteMeModule : ModuleBase
 {
     public bool mutedByDefault;
 
-    [Tooltip("Press and hold this key to unmute")]
+    [Tooltip("Press and hold this key to (un)mute")]
     public KeyCode muteToggle;
     
     public OutputDisplay outputDisplay;
@@ -35,6 +35,18 @@ public class MuteMeModule : ModuleBase
             else
             {
                 SetValue("user:isMuted", true, string.Empty);
+            }
+        }
+        else
+        {
+            if (Input.GetKey(muteToggle))
+            {
+                SetValue("user:isMuted", true, string.Empty);
+}
+            else
+            {
+                SetValue("user:isMuted", false, string.Empty);
+                outputDisplay.Clear();
             }
         }
     }

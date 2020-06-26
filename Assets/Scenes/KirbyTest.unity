@@ -612,7 +612,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comment: 
   display: {fileID: 0}
-  mutedByDefault: 1
+  mutedByDefault: 0
   muteToggle: 32
   outputDisplay: {fileID: 54073172}
 --- !u!1 &170076733
@@ -1848,7 +1848,7 @@ MonoBehaviour:
   comment: 
   display: {fileID: 0}
   kirbyManager: {fileID: 941503510}
-  speechInputDisplay: {fileID: 0}
+  speechInputDisplay: {fileID: 1274097911}
   clearSpeechTime: 2500
   testingMode: 1
 --- !u!4 &827585306 stripped
@@ -2787,7 +2787,7 @@ MonoBehaviour:
   outputString: 
   outputWidth: 375
   outputMaxWidth: 375
-  outputHeight: 20
+  outputHeight: 25
   outputMargin: 0
   outputRect:
     serializedVersion: 2

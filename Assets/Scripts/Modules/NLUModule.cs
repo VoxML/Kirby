@@ -58,9 +58,12 @@ public class NLUModule : ModuleBase
     {
         if (!string.IsNullOrEmpty(DataStore.GetStringValue(key)))
         {
+            // testingMode turns off the requirement that kirby:isAttendingSpeech
+            //  be true to proceed (so you can test speech commands without
+            //  having to be hooked up to the whole system
             if (!testingMode)
-            { 
-                if (!DataStore.GetBoolValue("kirby:isListening"))
+            {
+                if (!DataStore.GetBoolValue("kirby:isAttendingSpeech"))
                 {
                     return;
                 }
