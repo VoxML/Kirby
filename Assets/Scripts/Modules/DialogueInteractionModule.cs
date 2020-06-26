@@ -43,6 +43,8 @@ public class DialogueInteractionModule : ModuleBase
         DataStore.Subscribe("user:intent:isPosack", CheckPosack);
         DataStore.Subscribe("user:intent:isNegack", CheckNegack);
         DataStore.Subscribe("user:intent:isNevermind", CheckNevermind);
+        DataStore.Subscribe("user:lastPointedAt:name", PointedAtObject);
+        DataStore.Subscribe("user:lastPointedAt:position", PointedAtLocation);
     }
 
     // Update is called once per frame
@@ -115,5 +117,23 @@ public class DialogueInteractionModule : ModuleBase
     void CheckNevermind(string key, DataStore.IValue value)
     {
         Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetBoolValue(key)));
+    }
+
+    // callback when user:lastPointedAt:name changes
+    void PointedAtObject(string key, DataStore.IValue value)
+    {
+        //if (DataStore.GetBoolValue("kirby:isAttending:gesture"))
+        //{
+            Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetStringValue(key)));
+        //}
+    }
+
+    // callback when user:lastPointedAt:location changes
+    void PointedAtLocation(string key, DataStore.IValue value)
+    {
+        //if (DataStore.GetBoolValue("kirby:isAttending:gesture"))
+        //{
+            Debug.Log(string.Format("{0}: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, DataStore.GetVector3Value(key)));
+        //}
     }
 }

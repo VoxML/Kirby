@@ -15,7 +15,6 @@ public class MuteMeModule : ModuleBase
     
     public OutputDisplay outputDisplay;
 
-
     // Start is called before the first frame update
     void Start()
     {
