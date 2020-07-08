@@ -39,7 +39,7 @@ public class LogUpdater : MonoBehaviour
                 output = "I don't understand";
                 break;
             case "PAUSED":
-                output = "Ok, I paused";
+                output = "paused";
                 break;
             case "RESTARTING":
                 output = "Ok, let's go";
@@ -66,10 +66,10 @@ public class LogUpdater : MonoBehaviour
                 output = "Ok I'll go back to where I was";
                 break;
             case "SUCCESS_FORWARD":
-                output = "I went forward";
+                output = "Made it!";
                 break;
             case "SUCCESS_GO_TO":
-                output = "I made it";
+                output = "Ok, I'm here";
                 break;
             case "SUCCESS_ESTIMATE_ROTATION":
                 output = "";
