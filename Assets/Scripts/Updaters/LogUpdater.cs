@@ -63,7 +63,7 @@ public class LogUpdater : MonoBehaviour
                 output = "";
                 break;
             case "GO_BACK":
-                output = "Ok I'll go back to where I was";
+                output = "Ok, I'll go back to where I was";
                 break;
             case "SUCCESS_FORWARD":
                 output = "Made it!";
