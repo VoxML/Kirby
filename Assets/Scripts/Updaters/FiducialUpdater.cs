@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using VoxSimPlatform.Vox;
+
 public class FiducialUpdater : MonoBehaviour
 {
     public List<Material> presetMaterials;
@@ -11,6 +13,8 @@ public class FiducialUpdater : MonoBehaviour
 
     RedisPublisherManager manager;
 
+    VoxemeInit voxemeInit;
+
     bool inited = false;
 
     // Start is called before the first frame update
@@ -18,6 +22,8 @@ public class FiducialUpdater : MonoBehaviour
     {
         fiducials = new GameObject("Fiducials");
         manager = gameObject.GetComponent<RedisPublisherManager>();
+
+        voxemeInit = GameObject.Find("VoxWorld").GetComponent<VoxemeInit>();
     }
 
     // Update is called once per frame
@@ -110,6 +116,12 @@ public class FiducialUpdater : MonoBehaviour
                 fidObj.name = string.Format("Fiducial_{0}", update.data[i].fid);
 
                 fidObj.transform.parent = fiducials.transform;
+
+                // add voxeme
+                fidObj.AddComponent<Voxeme>();
+
+                // reinitialize voxemes
+                voxemeInit.InitializeVoxemes();
             }
         }
     }
