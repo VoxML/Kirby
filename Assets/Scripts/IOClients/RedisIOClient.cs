@@ -78,7 +78,7 @@ public class RedisIOClient : MonoBehaviour
                 string inputFromRedis = _redisSocket.GetMessage();
                 if (inputFromRedis != "")
                 {
-                    Debug.Log(string.Format("{0} received message: {1}", socketName, inputFromRedis));
+                    Debug.Log(string.Format("{0} received message: {1} (size {2})", socketName, inputFromRedis, inputFromRedis.Length));
                     Debug.Log(string.Format("{0} messages left on {1}", _redisSocket.HowManyLeft(), socketName));
                     _redisSocket.OnUpdateReceived(this, new RedisEventArgs(RedisEventType.Response,inputFromRedis));
                 }

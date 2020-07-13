@@ -69,22 +69,31 @@ public class FiducialUpdater : MonoBehaviour
 
             if (fidObj != null)
             {
-                // fiducial object with this ID already exists
-                Vector3 coords = new Vector3(-update.data[i].pose.location[1],
-                    update.data[i].pose.location[2], update.data[i].pose.location[0]);
+                Voxeme fidObjVox = fidObj.GetComponent<Voxeme>();
 
-                Vector3 rot = new Vector3(update.data[i].pose.orientation[1] * Mathf.Rad2Deg,
-                    update.data[i].pose.location[0] * Mathf.Rad2Deg, update.data[i].pose.location[2] * Mathf.Rad2Deg);
-
-                if (update.frame == "odom")
+                if (fidObjVox != null)
                 {
-                    fidObj.transform.position = coords;
-                }
-                else if (update.frame == "camera")
-                {
+                    // fiducial object with this ID already exists
+                    Vector3 coords = new Vector3(-update.data[i].pose.location[1],
+                        update.data[i].pose.location[2], update.data[i].pose.location[0]);
 
+                    Vector3 rot = new Vector3(update.data[i].pose.orientation[1] * Mathf.Rad2Deg,
+                        update.data[i].pose.location[0] * Mathf.Rad2Deg, update.data[i].pose.location[2] * Mathf.Rad2Deg);
+
+                    if (update.frame == "odom")
+                    {
+                        fidObjVox.targetPosition = coords;
+                    }
+                    else if (update.frame == "camera")
+                    {
+
+                    }
+                    fidObjVox.targetRotation = coords;
                 }
-                fidObj.transform.eulerAngles = rot;
+                else
+                {
+                    Debug.LogWarningFormat("FiducialUpdater.UpdateFiducial: {0} has no voxeme component!", fidObj.name);
+                }
             }
             else
             {

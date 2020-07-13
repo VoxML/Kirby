@@ -67,47 +67,30 @@ public class RedisPublisher : RedisInterface
 
         if (!authenticated)
         {
-            WriteCommand("auth ROSlab134");
+            WriteAuthentication("auth ROSlab134");
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        /* 
-            // to set set json val
-            JsonKeyValue jsonObj = new JsonKeyValue();
-            jsonObj.key = "value";
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            WriteCommand("set foo bar");
+        }
 
-            string json = JsonUtility.ToJson(jsonObj);
-
-            if (usingRejson)
-            {
-                WriteCommand(string.Format("json.set {0} . '{1}'", mapKey, json));
-            }
-            else
-            {
-                WriteCommand(string.Format("set {0} '{1}'", mapKey, json));
-            }
-
-            // to get json val
-            if (usingRejson)
-            {
-                WriteCommand(string.Format("json.get {0}", mapKey));
-            }
-            else
-            {
-                WriteCommand(string.Format("get {0}", mapKey));
-            }
-        */
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            WriteCommand("get foo");
+        }
     }
 
     public void WriteCommand(string messageToSend)
     {
-        if (lastEvent == null)
-        {
-            lastEvent = new RedisEventArgs(RedisEventType.Command, messageToSend);
-        }
+        //if (lastEvent == null)
+        //{
+        lastEvent = new RedisEventArgs(RedisEventType.Command, messageToSend);
+        //}
 
         base.WriteCommand(messageToSend);
     }
@@ -228,7 +211,7 @@ public class RedisPublisher : RedisInterface
             default:
                 if (raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length > 1)
                 {
-                    Debug.Log("Default response type");
+                    Debug.Log(string.Format("Untyped response: lastEvent = {0}", lastEvent));
 
                     //if (!IsValidResponseEvent(lastEvent))
                     //{
@@ -245,7 +228,7 @@ public class RedisPublisher : RedisInterface
                 break;
         }
 
-        lastEvent = null;
+        //lastEvent = null;
     }
 
     bool IsValidResponseEvent(RedisEventArgs ev)
