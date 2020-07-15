@@ -34,7 +34,7 @@ public class RedisSubscriber : RedisInterface
             if (!authenticated)
             {
                 outputDisplay.SetText("Authenticating subscriber...", TextDisplayMode.Persistent);
-                WriteCommand("auth ROSlab134");
+                WriteAuthentication("auth ROSlab134");
             }
 
             redisSocket.UpdateReceived += ReceivedUpdate;
@@ -159,6 +159,8 @@ public class RedisSubscriber : RedisInterface
                     lpop    <--
 
                 */
+
+
                 List<string> blocks = raw.Split(new string[] { "*" }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 foreach (string block in blocks)
                 {
@@ -167,7 +169,17 @@ public class RedisSubscriber : RedisInterface
                     string shortKey = string.Empty;
                     string cmd = string.Empty;
 
-                    if (lines.FindIndex(l => l.StartsWith("__keyspace")) != -1)
+                    if (lines.FindIndex(l => l.StartsWith("psubscribe")) != -1)
+                    {
+                        if (!subscribed)
+                        {
+                            subscribed = true;
+                            outputDisplay.SetText("Subscribed to notifications.");
+                            BroadcastMessage("SubscribedToNotifications", SendMessageOptions.DontRequireReceiver);
+                            return;
+                        }
+                    }
+                    else if (lines.FindIndex(l => l.StartsWith("__keyspace")) != -1)
                     {
                         longKey = lines[lines.FindIndex(l => l.StartsWith("__keyspace"))].Split(':')[1];
                         shortKey = longKey.Replace(string.Format("{0}/", manager.namespacePrefix), string.Empty).Trim();
@@ -231,6 +243,7 @@ public class RedisSubscriber : RedisInterface
                     subscribed = true;
                     outputDisplay.SetText("Subscribed to notifications.");
                     BroadcastMessage("SubscribedToNotifications", SendMessageOptions.DontRequireReceiver);
+                    return;
                 }
                 break;
 

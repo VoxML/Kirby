@@ -12,6 +12,7 @@ public class RedisPublisherManager : MonoBehaviour
 
     OutputDisplay outputDisplay;
 
+    List<string> publisherkeyVarNames;
     int numAuthenticatedPublishers;
 
     public Dictionary<string, RedisPublisher> publishers;
@@ -40,6 +41,7 @@ public class RedisPublisherManager : MonoBehaviour
 
         publishers = new Dictionary<string, RedisPublisher>();
 
+        publisherkeyVarNames = this.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
         numAuthenticatedPublishers = 0;
     }
 
@@ -54,7 +56,7 @@ public class RedisPublisherManager : MonoBehaviour
         Debug.Log("RedisPublisherManager: picked up message SubscribedToNotifications");
 
         outputDisplay.SetText("Creating publishers...", TextDisplayMode.Persistent);
-        CreatePublishers();
+        CreatePublisher(publisherkeyVarNames[numAuthenticatedPublishers]);
     }
 
     public void PublisherAuthenticated()
@@ -62,9 +64,13 @@ public class RedisPublisherManager : MonoBehaviour
         Debug.Log("RedisPublisherManager: picked up message PublisherAuthenticated");
         numAuthenticatedPublishers++;
 
-        if (numAuthenticatedPublishers == publishers.Count)
+        if (numAuthenticatedPublishers == publisherkeyVarNames.Count)
         {
             BroadcastMessage("AllPublishersAuthenticated");
+        }
+        else
+        {
+            CreatePublisher(publisherkeyVarNames[numAuthenticatedPublishers]);
         }
     }
 
@@ -84,23 +90,18 @@ public class RedisPublisherManager : MonoBehaviour
         TriggerResetBridge();
     }
 
-    public void CreatePublishers()
+    public void CreatePublisher(string keyVarName)
     {
-        // get all keys defined (all field names that end in "Key")
-        List<string> keyVarNames = this.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
-
-        foreach (string key in keyVarNames)
+        if (!string.IsNullOrEmpty(keyVarName))
         {
-            string keyName = (string)this.GetType().GetField(key).GetValue(this);
-            if (!string.IsNullOrEmpty(keyName))
-            {
-                Debug.Log(string.Format("Creating RedisIOClient for key \"{0}\"", keyName));
+            string keyName = (string)this.GetType().GetField(keyVarName).GetValue(this);
 
-                RedisPublisher publisher = gameObject.AddComponent<RedisPublisher>();
-                publisher.publisherKey = keyName;
+            Debug.Log(string.Format("Creating RedisPublisher for key \"{0}\"", keyName));
 
-                publishers[publisher.publisherKey] = publisher;
-            }
+            RedisPublisher publisher = gameObject.AddComponent<RedisPublisher>();
+            publisher.publisherKey = keyName;
+
+            publishers[publisher.publisherKey] = publisher;
         }
 
         Debug.Log(string.Format("Created {0} publishers", publishers.Count));

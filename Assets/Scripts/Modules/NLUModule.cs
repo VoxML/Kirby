@@ -93,22 +93,34 @@ public class NLUModule : ModuleBase
         clearSpeech = true;
     }
 
-    string MapLanguageToCommands(string input)
+    string MapLanguageToCommands(string rawInput)
     {
         string output = string.Empty;
+        string input = rawInput.ToLower();
 
         if ((input == "go here") || (input == "go there"))
         {
             output = GoToCommand(input);
         }
-        else if (input == "go to that one")
+        else if ((input == "go to that one") || (input == "go to the green box"))
         {
             output = GoToThatCommand(input);
-
+        }
+        else if (input == "go forward")
+        {
+            output = GoForwardCommand(input);
+        }
+        else if ((input == "turn left") || (input == "turn right"))
+        {
+            output = TurnCommand(input);
         }
         else if ((input == "patrol") || (input == "explore"))
         {
             output = PatrolCommand(input);
+        }
+        else if ((input == "cancel") || (input == "cancel all"))
+        {
+            output = CancelCommand(input);
         }
 
         Debug.Log(string.Format("Mapped \"{0}\" to \"{1}\"", input, output));
@@ -140,10 +152,33 @@ public class NLUModule : ModuleBase
     {
         string command = string.Empty;
 
-        if (!string.IsNullOrEmpty(DataStore.GetStringValue("user:lastPointedAt:name")))
+        if (input == "go to the green box")
         {
-            // go to object
+            command = string.Format("go to -0.1218702 1.049688");
         }
+        else if (DataStore.GetVector3Value("user:lastPointedAt:position") != default)
+        {
+            // go to location
+            Vector3 position = DataStore.GetVector3Value("user:lastPointedAt:position");
+            List<string> coords = new List<string>();
+            coords.Add(position.z.ToString());
+            coords.Add((-position.x).ToString());
+            command = string.Format("go to {0} {1}", coords[0], coords[1]);
+        }
+
+        return command;
+    }
+
+    string GoForwardCommand(string input)
+    {
+        string command = input;
+
+        return command;
+    }
+
+    string TurnCommand(string input)
+    {
+        string command = input;
 
         return command;
     }
@@ -151,6 +186,13 @@ public class NLUModule : ModuleBase
     string PatrolCommand(string input)
     {
         string command = "patrol";
+
+        return command;
+    }
+
+    string CancelCommand(string input)
+    {
+        string command = input;
 
         return command;
     }

@@ -46,7 +46,6 @@ public class MuteMeModule : ModuleBase
             else
             {
                 SetValue("user:isMuted", false, string.Empty);
-                outputDisplay.Clear();
             }
         }
     }

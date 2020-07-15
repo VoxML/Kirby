@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -30,11 +31,35 @@ public class RedisInterface : MonoBehaviour
 
     public virtual void WriteCommand(string messageToSend)
     {
-        // take a message to sent to Redis, turn it into a properly formatted bulk string, and send it
+        // take a message to send to Redis, turn it into a properly formatted bulk string, and send it
+        //string[] msgStrings = messageToSend.Split();
+        //List<string> bulkedMsgStrings = new List<string>();
+        //for (int i = 0; i < msgStrings.Length; i++)
+        //{
+        //    bulkedMsgStrings.Add(string.Format("${0}\r\n{1}\r\n", msgStrings[i].Length, msgStrings[i]));
+        //}
+
+        //string bulkedMsg = string.Join(string.Empty, bulkedMsgStrings);
+
+        //string arrayString = string.Format("*{0}\r\n{1}", msgStrings.Length, bulkedMsg);
+
+        //Debug.Log(string.Format("Writing array command \"{0}\" to Redis", arrayString.Replace("\r", "\\r").Replace("\n", "\\n")));
+        //byte[] bytes = Encoding.ASCII.GetBytes(arrayString).ToArray<byte>();
+        //redisSocket.Write(bytes);
+
         string bulkString = string.Format("${0}\r\n{1}\r\n", messageToSend.Length.ToString(), messageToSend);
         Debug.Log(string.Format("Writing bulk string command \"{0}\" to Redis", bulkString.Replace("\r","\\r").Replace("\n", "\\n")));
         byte[] bytes = Encoding.ASCII.GetBytes(bulkString).ToArray<byte>();
         redisSocket.Write(bytes);
+    }
+
+    public virtual void WriteAuthentication(string messageToSend)
+    {
+        WriteCommand(messageToSend);
+        //string bulkString = string.Format("${0}\r\n{1}\r\n", messageToSend.Length.ToString(), messageToSend);
+        //Debug.Log(string.Format("Writing bulk string command \"{0}\" to Redis", bulkString.Replace("\r", "\\r").Replace("\n", "\\n")));
+        //byte[] bytes = Encoding.ASCII.GetBytes(bulkString).ToArray<byte>();
+        //redisSocket.Write(bytes);
     }
 
     protected char GetResponseType(string raw)
