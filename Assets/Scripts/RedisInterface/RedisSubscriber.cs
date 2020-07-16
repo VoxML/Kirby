@@ -30,6 +30,9 @@ public class RedisSubscriber : RedisInterface
 
         if (redisSocket != null)
         {
+            redisSocket.UseSizeHeader = UseSizeHeader;
+            redisSocket.VerboseDebugOutput = VerboseDebugOutput;
+
             // try authentication
             if (!authenticated)
             {
@@ -55,10 +58,11 @@ public class RedisSubscriber : RedisInterface
         outputDisplay.SetText("Subscribing to notifications...");
 
         // get all keys defined in the publisher manager (all field names that end in "Key")
-        List<string> keyNames = manager.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
+        List<string> keyNames = manager.GetType().GetFields().Where(f => f.Name.EndsWith("Key") &&
+            (string)manager.GetType().GetField(f.Name).GetValue(manager) != string.Empty).Select(f => f.Name).ToList();
 
         // generate a single psubscribe commmand (psubscribe '__key*__:<ns>/<key1>' '__key*__:<ns>/<key2>'...)
-        WriteCommand(string.Format("psubscribe {0}", string.Format(string.Join(" ",
+        WriteBulkStringCommand(string.Format("psubscribe {0}", string.Format(string.Join(" ",
             keyNames.Select(k => string.Format("\'__key*__:{0}/{1}\'", manager.namespacePrefix,
             (string)manager.GetType().GetField(k).GetValue(manager)))))));
     }
@@ -73,13 +77,15 @@ public class RedisSubscriber : RedisInterface
     {
         string raw = ((RedisEventArgs)e).Content;
         char type = GetResponseType(((RedisEventArgs)e).Content);
+        List<string> blocks = new List<string>();
 
         string response = string.Empty;
         switch (type)
         {
             // simple strings
             case '+':
-                response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('+');
+                response = raw.TrimStart('+').Trim();
+                //response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('+');
                 Debug.Log(string.Format("RedisSubscriber: Got simple string update from Redis: {0}", response));
 
                 if (!authenticated)
@@ -161,7 +167,7 @@ public class RedisSubscriber : RedisInterface
                 */
 
 
-                List<string> blocks = raw.Split(new string[] { "*" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                blocks = raw.Split(new string[] { "*" }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 foreach (string block in blocks)
                 {
                     List<string> lines = block.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -199,11 +205,11 @@ public class RedisSubscriber : RedisInterface
                                     switch (cmd)
                                     {
                                         case "set":
-                                            manager.publishers[shortKey].WriteCommand(string.Format("json.get {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.get {0}", longKey));
                                             break;
 
                                         case "rpush":
-                                            manager.publishers[shortKey].WriteCommand(string.Format("json.lpop {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.lpop {0}", longKey));
                                             break;
 
                                         default:
@@ -215,11 +221,11 @@ public class RedisSubscriber : RedisInterface
                                     switch (cmd)
                                     {
                                         case "set":
-                                            manager.publishers[shortKey].WriteCommand(string.Format("get {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("get {0}", longKey));
                                             break;
 
                                         case "rpush":
-                                            manager.publishers[shortKey].WriteCommand(string.Format("lpop {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("lpop {0}", longKey));
                                             break;
 
                                         default:
@@ -238,12 +244,78 @@ public class RedisSubscriber : RedisInterface
 
             // arrays
             case '*':
-                if (!subscribed)
+                blocks = raw.Split(new string[] { "*" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                foreach (string block in blocks)
                 {
-                    subscribed = true;
-                    outputDisplay.SetText("Subscribed to notifications.");
-                    BroadcastMessage("SubscribedToNotifications", SendMessageOptions.DontRequireReceiver);
-                    return;
+                    List<string> lines = block.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    string longKey = string.Empty;
+                    string shortKey = string.Empty;
+                    string cmd = string.Empty;
+
+                    if (lines.FindIndex(l => l.StartsWith("psubscribe")) != -1)
+                    {
+                        if (!subscribed)
+                        {
+                            subscribed = true;
+                            outputDisplay.SetText("Subscribed to notifications.");
+                            BroadcastMessage("SubscribedToNotifications", SendMessageOptions.DontRequireReceiver);
+                            return;
+                        }
+                    }
+                    else if (lines.FindIndex(l => l.StartsWith("__keyspace")) != -1)
+                    {
+                        longKey = lines[lines.FindIndex(l => l.StartsWith("__keyspace"))].Split(':')[1];
+                        shortKey = longKey.Replace(string.Format("{0}/", manager.namespacePrefix), string.Empty).Trim();
+                        cmd = lines.Last();
+                        Debug.Log(string.Format("RedisSubscriber: Got bulk string update from Redis: key: {0}, command: {1}", longKey, cmd));
+                    }
+
+                    // changes to resetKey might mean we have to start listening
+                    if (processing || longKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.resetKey))
+                    {
+                        if (!ignoreResetNotification)
+                        {
+                            if (longKey != string.Format("{0}/{1}", manager.namespacePrefix, manager.cmdKey))
+                            {
+                                if (usingRejson)
+                                {
+                                    switch (cmd)
+                                    {
+                                        case "set":
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.get {0}", longKey));
+                                            break;
+
+                                        case "rpush":
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.lpop {0}", longKey));
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    switch (cmd)
+                                    {
+                                        case "set":
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("get {0}", longKey));
+                                            break;
+
+                                        case "rpush":
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("lpop {0}", longKey));
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            ignoreResetNotification = false;
+                        }
+                    }
                 }
                 break;
 

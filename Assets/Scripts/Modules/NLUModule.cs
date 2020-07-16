@@ -53,6 +53,20 @@ public class NLUModule : ModuleBase
         }
     }
 
+    void OnGUI()
+    {
+        Event e = Event.current;
+        if (e.keyCode == KeyCode.Return)
+        {
+            if (speechInputDisplay.outputString != string.Empty)
+            {
+                Debug.Log(string.Format("Setting user:speech to \"{0}\"", speechInputDisplay.outputString.Trim()));
+                SetValue("user:speech", speechInputDisplay.outputString.Trim(), string.Empty);
+                speechInputDisplay.outputString = string.Empty;
+            }
+        }
+    }
+
     // callback when user:speech changes
     void ParseLanguageInput(string key, DataStore.IValue value)
     {
@@ -102,7 +116,7 @@ public class NLUModule : ModuleBase
         {
             output = GoToCommand(input);
         }
-        else if ((input == "go to that one") || (input == "go to the green box"))
+        else if (input == "go to that one")
         {
             output = GoToThatCommand(input);
         }
@@ -134,6 +148,20 @@ public class NLUModule : ModuleBase
         if (!string.IsNullOrEmpty(DataStore.GetStringValue("user:lastPointedAt:name")))
         {
             // go to object
+
+            // get object
+            GameObject targetObj = GameObject.Find(DataStore.GetStringValue("user:lastPointedAt:name"));
+
+            // get offset from Kirby to object
+            Vector3 offset = targetObj.transform.position - DataStore.GetVector3Value("kirby:position");
+            offset = new Vector3(offset.x, 0.0f, offset.z);
+            offset = offset.normalized * .125f;
+
+            Vector3 position = targetObj.transform.position + offset;
+            List<string> coords = new List<string>();
+            coords.Add(position.z.ToString());
+            coords.Add((-position.x).ToString());
+            command = string.Format("go to {0} {1}", coords[0], coords[1]);
         }
         else if (DataStore.GetVector3Value("user:lastPointedAt:position") != default)
         {
@@ -152,14 +180,19 @@ public class NLUModule : ModuleBase
     {
         string command = string.Empty;
 
-        if (input == "go to the green box")
+        if (!string.IsNullOrEmpty(DataStore.GetStringValue("user:lastPointedAt:name")))
         {
-            command = string.Format("go to -0.1218702 1.049688");
-        }
-        else if (DataStore.GetVector3Value("user:lastPointedAt:position") != default)
-        {
-            // go to location
-            Vector3 position = DataStore.GetVector3Value("user:lastPointedAt:position");
+            // go to object
+
+            // get object
+            GameObject targetObj = GameObject.Find(DataStore.GetStringValue("user:lastPointedAt:name"));
+
+            // get offset from Kirby to object
+            Vector3 offset = targetObj.transform.position-DataStore.GetVector3Value("kirby:position");
+            offset = new Vector3(offset.x, 0.0f, offset.z);
+            offset = offset.normalized * .125f;
+
+            Vector3 position = targetObj.transform.position+offset;
             List<string> coords = new List<string>();
             coords.Add(position.z.ToString());
             coords.Add((-position.x).ToString());
