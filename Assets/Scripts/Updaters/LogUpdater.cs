@@ -28,60 +28,59 @@ public class LogUpdater : MonoBehaviour
 
     public void UpdateLog(LogUpdate update)
     {
-        Debug.Log("kirby should be talking");
         string output = "";
         switch (update.code)
         {
             case "READY":
-                output = "I have nothing to do";
+                output = "I have nothing to do.";
                 break;
             case "INVALID":
-                output = "I don't understand";
+                output = "I don't understand.";
                 break;
             case "PAUSED":
-                output = "paused";
+                output = "Okay, I'll wait.";
                 break;
             case "RESTARTING":
-                output = "Ok, let's go";
+                output = "Okay, let's go.";
                 break;
             case "CANCELLED_GOAL":
-                output = "Ok, cancelled";
+                output = "Okay, cancelling that.";
                 break;
             case "CANCELLED_ALL":
-                output = "Ok, I cancelled everything";
+                output = "Okay, I cancelled everything.";
                 break;
             case "FORWARD":
                 output = "Sure!";
                 break;
             case "GO_TO":
-                output = "O.K.!";
+                output = "Okay!";
                 break;
             case "ESTIMATE_ROTATION":
-                output = "Ok, turning";
+                output = "Okay, turning";
                 break;
             case "VERIFY_ROTATION":
                 output = "";
                 break;
             case "GO_BACK":
-                output = "Ok, I'll go back to where I was";
+                output = "Okay, I'll go back to where I was.";
                 break;
             case "SUCCESS_FORWARD":
                 output = "Made it!";
                 break;
             case "SUCCESS_GO_TO":
-                output = "Ok, I'm here";
+                output = "Okay, I'm here.";
                 break;
             case "SUCCESS_ESTIMATE_ROTATION":
                 output = "";
                 break;
             case "SUCCESS_VERIFY_ROTATION":
-                output = "finished";
+                output = "I finished.";
                 break;
             case "SUCCESS_GO_BACK":
-                output = "Ok, I made it back";
+                output = "Okay, I made it back.";
                 break;
             case "UNREACHABLE":
-                output = "I can't get there";
+                output = "I can't get there.";
                 break;
             case "STRAYED":
                 output = "Help, I moved but I couldn't make it to my goal.";
@@ -91,19 +90,19 @@ public class LogUpdater : MonoBehaviour
                     "where I was?";
                 break;
             case "PATROL":
-                output = "I'll explore";
+                output = "I'll explore.";
                 break;
             case "PLAN_LOOP":
-                output = "I'm planning where to explore next";
+                output = "I'm planning where to explore next.";
                 break;
             case "COMPLETED_LOOP":
-                output = "I've done some exploration";
+                output = "I've done some exploration.";
                 break;
             case "STOP_PATROL":
-                output = "OK I'll stop exploring";
+                output = "Okay, I'll stop exploring.";
                 break;
             case "FINISH_PATROL":
-                output = "I've explored as much as I can";
+                output = "I've explored as much as I can.";
                 break;
         }
         DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);

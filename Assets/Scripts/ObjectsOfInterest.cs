@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectsOfInterest : MonoBehaviour
 {
-    Dictionary<GameObject, Vector3> objects;
+    public Dictionary<GameObject, Vector3> objects;
     // Start is called before the first frame update
     void Start()
     {
