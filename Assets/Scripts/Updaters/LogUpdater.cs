@@ -36,7 +36,7 @@ public class LogUpdater : MonoBehaviour
                 output = "I have nothing to do";
                 break;
             case "INVALID":
-                output = "I don't understand";
+                output = update.message;
                 break;
             case "PAUSED":
                 output = "paused";
@@ -104,6 +104,14 @@ public class LogUpdater : MonoBehaviour
                 break;
             case "FINISH_PATROL":
                 output = "I've explored as much as I can";
+                break;
+            case "DEBUG":
+                Debug.Log("waypoint:" + update.message);
+                output = update.message;
+                break;
+            case "QUEUE":
+                Debug.Log("Kirby's Queue " + update.message);
+                output = update.message;
                 break;
         }
         DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
