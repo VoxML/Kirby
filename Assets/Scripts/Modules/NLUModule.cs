@@ -148,6 +148,20 @@ public class NLUModule : ModuleBase
         if (!string.IsNullOrEmpty(DataStore.GetStringValue("user:lastPointedAt:name")))
         {
             // go to object
+
+            // get object
+            GameObject targetObj = GameObject.Find(DataStore.GetStringValue("user:lastPointedAt:name"));
+
+            // get offset from Kirby to object
+            Vector3 offset = targetObj.transform.position - DataStore.GetVector3Value("kirby:position");
+            offset = new Vector3(offset.x, 0.0f, offset.z);
+            offset = offset.normalized * .125f;
+
+            Vector3 position = targetObj.transform.position + offset;
+            List<string> coords = new List<string>();
+            coords.Add(position.z.ToString());
+            coords.Add((-position.x).ToString());
+            command = string.Format("go to {0} {1}", coords[0], coords[1]);
         }
         else if (DataStore.GetVector3Value("user:lastPointedAt:position") != default)
         {
