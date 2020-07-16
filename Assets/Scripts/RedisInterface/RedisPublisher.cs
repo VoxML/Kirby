@@ -19,7 +19,7 @@ public class RedisPublisher : RedisInterface
     LogUpdater logUpdater;
 
     OutputDisplay outputDisplay;
-    
+
     public string publisherKey;
 
     List<string> validReceiveCommands = new List<string>()
@@ -47,6 +47,8 @@ public class RedisPublisher : RedisInterface
         redisSocket = (RedisSocket)commBridge.GetComponent<CommunicationsBridge>().
             ConnectSocket(address, port, typeof(RedisSocket));
         redisSocket.Label = string.Format("{0}RedisPublisher", publisherKey);
+        redisSocket.UseSizeHeader = UseSizeHeader;
+        redisSocket.VerboseDebugOutput = VerboseDebugOutput;
         commBridge.GetComponent<CommunicationsBridge>().SocketConnections.Add(redisSocket);
 
         // add socket's IOClientType component to CommunicationsBridge
@@ -76,23 +78,33 @@ public class RedisPublisher : RedisInterface
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            WriteCommand("set foo bar");
+            WriteArrayCommand("set foo bar");
         }
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            WriteCommand("get foo");
+            WriteArrayCommand("get foo");
         }
     }
 
-    public void WriteCommand(string messageToSend)
+    public void WriteArrayCommand(string messageToSend)
     {
         //if (lastEvent == null)
         //{
         lastEvent = new RedisEventArgs(RedisEventType.Command, messageToSend);
         //}
 
-        base.WriteCommand(messageToSend);
+        base.WriteArrayCommand(messageToSend);
+    }
+
+    public void WriteBulkStringCommand(string messageToSend)
+    {
+        //if (lastEvent == null)
+        //{
+        lastEvent = new RedisEventArgs(RedisEventType.Command, messageToSend);
+        //}
+
+        base.WriteBulkStringCommand(messageToSend);
     }
 
     public void ReceivedMessage(object sender, EventArgs e)
@@ -103,7 +115,7 @@ public class RedisPublisher : RedisInterface
 
         if (lastEvent != null)
         {
-            Debug.Log(string.Format("RedisPublisher({0}): Received response to: {1}", publisherKey, lastEvent.Content));
+            Debug.Log(string.Format("RedisPublisher({0}): Received response to \"{1}\": {2}", publisherKey, lastEvent.Content, raw));
         }
 
         string response = string.Empty;
@@ -111,7 +123,8 @@ public class RedisPublisher : RedisInterface
         {
             // simple strings
             case '+':
-                response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('+');
+                response = raw.TrimStart('+').Trim();
+                //response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('+');
                 Debug.Log(string.Format("RedisPublisher({0}): Got simple string response from Redis: {1}", publisherKey, response));
 
                 if (!authenticated)
@@ -136,14 +149,14 @@ public class RedisPublisher : RedisInterface
             case '$':
                 string size = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('$');
 
-                if (raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length > 2)
+                if (raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length > 1)
                 {
                     if (!IsValidResponseEvent(lastEvent))
                     {
                         return;
                     }
 
-                    response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[2];
+                    response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1];
                     Debug.Log(string.Format("RedisPublisher({0}): Got bulk string response from Redis (responding to \"{1}\", size {2}): {3}",
                         publisherKey, lastEvent.Content, size, response));
 
@@ -168,7 +181,6 @@ public class RedisPublisher : RedisInterface
                             logUpdater.UpdateLog(logUpdate);
 
                         } 
-                        
                     }
                     else if (!string.IsNullOrEmpty(manager.roboKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.roboKey)))
                     {
@@ -209,22 +221,127 @@ public class RedisPublisher : RedisInterface
                 break;
 
             default:
-                if (raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length > 1)
+                Debug.Log(string.Format("Untyped response: lastEvent = {0}", lastEvent.Content));
+
+                requestKey = lastEvent.Content.Split()[1];
+
+                if (!IsValidResponseEvent(lastEvent))
                 {
-                    Debug.Log(string.Format("Untyped response: lastEvent = {0}", lastEvent));
+                    return;
+                }
 
-                    //if (!IsValidResponseEvent(lastEvent))
-                    //{
-                    //    return;
-                    //}
+                if (!string.IsNullOrEmpty(manager.mapKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.mapKey)))
+                {
+                    // Map is rpush (a list)
+                    if (raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length > 1)
+                    {
+                        response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1];
+                        Debug.Log(string.Format("RedisPublisher({0}): Got untyped response from Redis (responding to \"{1}\"): {2}",
+                            publisherKey, lastEvent.Content, response));
 
-                    response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1];
+                        MapUpdate mapUpdate = JsonConvert.DeserializeObject<MapUpdate>(response);
+
+                        if (MapUpdate.Validate(mapUpdate))
+                        {
+                            mapUpdate.Log();
+                            mapUpdater.UpdateMap(mapUpdate);
+                        }
+                    }
+                }
+                else if (!string.IsNullOrEmpty(manager.logKey) && requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.logKey))
+                {
+                    // Kirby_Feedback is rpush (a list)
+                    if (raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length > 1)
+                    {
+                        response = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1];
+                        Debug.Log(string.Format("RedisPublisher({0}): Got untyped response from Redis (responding to \"{1}\"): {2}",
+                            publisherKey, lastEvent.Content, response));
+
+                        LogUpdate logUpdate = JsonConvert.DeserializeObject<LogUpdate>(response);
+                        if (LogUpdate.Validate(logUpdate))
+                        {
+                            logUpdate.Log();
+                            logUpdater.UpdateLog(logUpdate);
+
+                        }
+                    }
+                }
+                else if (!string.IsNullOrEmpty(manager.roboKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.roboKey)))
+                {
+                    // Odom is set
+                    response = raw.Trim();
                     Debug.Log(string.Format("RedisPublisher({0}): Got untyped response from Redis (responding to \"{1}\"): {2}",
                         publisherKey, lastEvent.Content, response));
 
-                    requestKey = lastEvent.Content.Split()[1];
+                    RoboUpdate roboUpdate;
 
+                    try
+                    {
+                        roboUpdate = JsonConvert.DeserializeObject<RoboUpdate>(response);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarningFormat(ex.Message);
+                        return;
+                    }
+
+                    if (RoboUpdate.Validate(roboUpdate))
+                    {
+                        roboUpdate.Log();
+                        roboUpdater.UpdateRobot(roboUpdate);
+                    }
                 }
+                else if (!string.IsNullOrEmpty(manager.fiducialKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.fiducialKey)))
+                {
+                    // Fiducials is set
+                    response = raw.Trim();
+                    Debug.Log(string.Format("RedisPublisher({0}): Got untyped response from Redis (responding to \"{1}\"): {2}",
+                        publisherKey, lastEvent.Content, response));
+
+
+                    FiducialUpdate fidUpdate;
+
+                    try
+                    {
+                        fidUpdate = JsonConvert.DeserializeObject<FiducialUpdate>(response);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarningFormat(ex.Message);
+                        return;
+                    }
+
+                    if (FiducialUpdate.Validate(fidUpdate))
+                    {
+                        fidUpdate.Log();
+                        fidUpdater.UpdateFiducial(fidUpdate);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(manager.resetKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.resetKey)))
+                {
+                    // Bridge_Reset is set
+                    response = raw.Trim();
+                    Debug.Log(string.Format("RedisPublisher({0}): Got untyped response from Redis (responding to \"{1}\"): {2}",
+                        publisherKey, lastEvent.Content, response));
+
+                    try
+                    {
+                        if (Convert.ToInt32(response) == 0)
+                        {
+                            outputDisplay.SetText("Databased flushed.");
+                            BroadcastMessage("DatabaseFlushed", SendMessageOptions.DontRequireReceiver);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarningFormat(ex.Message);
+                    }
+                    
+                }
+                else if (!string.IsNullOrEmpty(manager.cmdKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.cmdKey)))
+                {
+                }
+
                 break;
         }
 

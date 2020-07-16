@@ -39,12 +39,12 @@ public class FiducialUpdater : MonoBehaviour
         {
             if (manager.publishers[manager.fiducialKey].usingRejson)
             {
-                manager.publishers[manager.fiducialKey].WriteCommand(string.Format("json.get {0}",
+                manager.publishers[manager.fiducialKey].WriteArrayCommand(string.Format("json.get {0}",
                     string.Format("{0}/{1}", manager.namespacePrefix, manager.fiducialKey)));
             }
             else
             {
-                manager.publishers[manager.fiducialKey].WriteCommand(string.Format("get {0}",
+                manager.publishers[manager.fiducialKey].WriteArrayCommand(string.Format("get {0}",
                     string.Format("{0}/{1}", manager.namespacePrefix, manager.fiducialKey)));
             }
         }

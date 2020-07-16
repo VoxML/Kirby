@@ -12,7 +12,7 @@ public class RedisPublisherManager : MonoBehaviour
 
     OutputDisplay outputDisplay;
 
-    List<string> publisherkeyVarNames;
+    List<string> publisherKeyVarNames;
     int numAuthenticatedPublishers;
 
     public Dictionary<string, RedisPublisher> publishers;
@@ -41,7 +41,8 @@ public class RedisPublisherManager : MonoBehaviour
 
         publishers = new Dictionary<string, RedisPublisher>();
 
-        publisherkeyVarNames = this.GetType().GetFields().Where(f => f.Name.EndsWith("Key")).Select(f => f.Name).ToList();
+        publisherKeyVarNames = this.GetType().GetFields().Where(f => f.Name.EndsWith("Key") &&
+            (string)this.GetType().GetField(f.Name).GetValue(this) != string.Empty).Select(f => f.Name).ToList();
         numAuthenticatedPublishers = 0;
     }
 
@@ -56,7 +57,7 @@ public class RedisPublisherManager : MonoBehaviour
         Debug.Log("RedisPublisherManager: picked up message SubscribedToNotifications");
 
         outputDisplay.SetText("Creating publishers...", TextDisplayMode.Persistent);
-        CreatePublisher(publisherkeyVarNames[numAuthenticatedPublishers]);
+        CreatePublisher(publisherKeyVarNames[numAuthenticatedPublishers]);
     }
 
     public void PublisherAuthenticated()
@@ -64,13 +65,13 @@ public class RedisPublisherManager : MonoBehaviour
         Debug.Log("RedisPublisherManager: picked up message PublisherAuthenticated");
         numAuthenticatedPublishers++;
 
-        if (numAuthenticatedPublishers == publisherkeyVarNames.Count)
+        if (numAuthenticatedPublishers == publisherKeyVarNames.Count)
         {
             BroadcastMessage("AllPublishersAuthenticated");
         }
         else
         {
-            CreatePublisher(publisherkeyVarNames[numAuthenticatedPublishers]);
+            CreatePublisher(publisherKeyVarNames[numAuthenticatedPublishers]);
         }
     }
 
@@ -115,7 +116,7 @@ public class RedisPublisherManager : MonoBehaviour
 
             // halt subscriber processing while bridge is reset
             subscriber.processing = false;
-            publishers[resetKey].WriteCommand(string.Format("set {0} 1", string.Format("{0}/{1}", namespacePrefix, resetKey)));
+            publishers[resetKey].WriteArrayCommand(string.Format("set {0} 1", string.Format("{0}/{1}", namespacePrefix, resetKey)));
         }
         else
         {
