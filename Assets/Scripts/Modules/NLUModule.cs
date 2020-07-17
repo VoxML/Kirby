@@ -180,6 +180,7 @@ public class NLUModule : ModuleBase
     {
         string command = string.Empty;
 
+        Debug.Log(string.Format("GoToThatCommand: user:lastPointedAt:name = {0}", DataStore.GetStringValue("user:lastPointedAt:name")));
         if (!string.IsNullOrEmpty(DataStore.GetStringValue("user:lastPointedAt:name")))
         {
             // go to object

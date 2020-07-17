@@ -23,6 +23,7 @@ public class FiducialUpdater : MonoBehaviour
     void Start()
     {
         fiducials = new GameObject("Fiducials");
+        fiducials.layer = LayerMask.NameToLayer("Objects");
         manager = gameObject.GetComponent<RedisPublisherManager>();
 
         voxemeInit = GameObject.Find("VoxWorld").GetComponent<VoxemeInit>();
@@ -129,6 +130,7 @@ public class FiducialUpdater : MonoBehaviour
                 fidObj.name = string.Format("Fiducial_{0}", update.data[i].fid);
 
                 fidObj.transform.parent = fiducials.transform;
+                fidObj.layer = fiducials.layer;
 
                 // add voxeme
                 fidObj.AddComponent<Voxeme>();

@@ -116,7 +116,7 @@ public class PointingStateMachine : RuleStateMachine<PointingState>
 				Vector3 pos = DataStore.GetVector3Value("user:pointPos");
                 float radius = (MarkerObj.transform.localScale.x + MarkerObj.transform.localScale.y);
 
-                var currentPointedAtObject = GlobalHelper.FindTargetByLocation(pos, radius, LayerMask.GetMask("Blocks"));
+                var currentPointedAtObject = GlobalHelper.FindTargetByLocation(pos, radius, LayerMask.GetMask("Objects"));
 
 				bool makeTransition = false;
 
