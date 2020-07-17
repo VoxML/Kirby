@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.4465934, g: 0.49642956, b: 0.5748249, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2090,6 +2090,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   authenticated: 0
   usingRejson: 0
+  useSizeHeader: 0
+  verboseDebugOutput: 0
   publisherKey: 
 --- !u!4 &941503512
 Transform:
@@ -2134,6 +2136,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   authenticated: 0
   usingRejson: 0
+  useSizeHeader: 0
+  verboseDebugOutput: 0
   subscribed: 0
   ignoreResetNotification: 1
   processing: 0
@@ -2207,7 +2211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c3058fcd0ed7440cac1e926bbd9fbc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  namespacePrefix: Nikhil
+  namespacePrefix: Kirby
   mapKey: Map
   roboKey: Odom
   fiducialKey: Fiducials

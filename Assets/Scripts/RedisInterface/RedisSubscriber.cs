@@ -37,7 +37,7 @@ public class RedisSubscriber : RedisInterface
             if (!authenticated)
             {
                 outputDisplay.SetText("Authenticating subscriber...", TextDisplayMode.Persistent);
-                WriteAuthentication("auth ROSlab134");
+                WriteAuthentication("auth \"ROSlab134\"");
             }
 
             redisSocket.UpdateReceived += ReceivedUpdate;
@@ -205,11 +205,11 @@ public class RedisSubscriber : RedisInterface
                                     switch (cmd)
                                     {
                                         case "set":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.get {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.get \"{0}\"", longKey));
                                             break;
 
                                         case "rpush":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.lpop {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.lpop \"{0}\"", longKey));
                                             break;
 
                                         default:
@@ -221,11 +221,11 @@ public class RedisSubscriber : RedisInterface
                                     switch (cmd)
                                     {
                                         case "set":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("get {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("get \"{0}\"", longKey));
                                             break;
 
                                         case "rpush":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("lpop {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("lpop \"{0}\"", longKey));
                                             break;
 
                                         default:
@@ -282,11 +282,11 @@ public class RedisSubscriber : RedisInterface
                                     switch (cmd)
                                     {
                                         case "set":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.get {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.get \"{0}\"", longKey));
                                             break;
 
                                         case "rpush":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.lpop {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.lpop \"{0}\"", longKey));
                                             break;
 
                                         default:
@@ -298,11 +298,11 @@ public class RedisSubscriber : RedisInterface
                                     switch (cmd)
                                     {
                                         case "set":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("get {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("get \"{0}\"", longKey));
                                             break;
 
                                         case "rpush":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("lpop {0}", longKey));
+                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("lpop \"{0}\"", longKey));
                                             break;
 
                                         default:

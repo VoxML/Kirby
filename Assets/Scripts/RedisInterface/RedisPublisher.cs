@@ -69,7 +69,7 @@ public class RedisPublisher : RedisInterface
 
         if (!authenticated)
         {
-            WriteAuthentication("auth ROSlab134");
+            WriteAuthentication("auth \"ROSlab134\"");
         }
     }
 
@@ -78,12 +78,12 @@ public class RedisPublisher : RedisInterface
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            WriteArrayCommand("set foo bar");
+            WriteArrayCommand("set foo \"bar\"");
         }
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            WriteArrayCommand("get foo");
+            WriteArrayCommand("get \"foo\"");
         }
     }
 
@@ -143,11 +143,13 @@ public class RedisPublisher : RedisInterface
 
             // integers
             case ':':
+                response = raw.TrimStart(':').Trim();
+                Debug.Log(string.Format("RedisPublisher({0}): Got integer response from Redis: {1}", publisherKey, response));
                 break;
 
             // bulk strings
             case '$':
-                string size = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[1].TrimStart('$');
+                string size = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[0].TrimStart('$');
 
                 if (raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length > 1)
                 {
@@ -160,46 +162,72 @@ public class RedisPublisher : RedisInterface
                     Debug.Log(string.Format("RedisPublisher({0}): Got bulk string response from Redis (responding to \"{1}\", size {2}): {3}",
                         publisherKey, lastEvent.Content, size, response));
 
-                    requestKey = lastEvent.Content.Split()[1];
+                    requestKey = lastEvent.Content.Split()[1].Replace("\"",string.Empty);
 
                     if (!string.IsNullOrEmpty(manager.mapKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.mapKey)))
                     {
-                        MapUpdate mapUpdate = JsonConvert.DeserializeObject<MapUpdate>(response);
-
-                        if (MapUpdate.Validate(mapUpdate))
+                        try
                         {
-                            mapUpdate.Log();
-                            mapUpdater.UpdateMap(mapUpdate);
+                            MapUpdate mapUpdate = JsonConvert.DeserializeObject<MapUpdate>(response);
+
+                            if (MapUpdate.Validate(mapUpdate))
+                            {
+                                mapUpdate.Log();
+                                mapUpdater.UpdateMap(mapUpdate);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarningFormat("RedisPublisher.ReceivedMessage: {0}", ex.Message);
                         }
                     }
                     else if (!string.IsNullOrEmpty(manager.logKey) && requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.logKey))
                     {
-                        LogUpdate logUpdate = JsonConvert.DeserializeObject<LogUpdate>(response);
-                        if (LogUpdate.Validate(logUpdate))
+                        try
                         {
-                            logUpdate.Log();
-                            logUpdater.UpdateLog(logUpdate);
+                            LogUpdate logUpdate = JsonConvert.DeserializeObject<LogUpdate>(response);
+                            if (LogUpdate.Validate(logUpdate))
+                            {
+                                logUpdate.Log();
+                                logUpdater.UpdateLog(logUpdate);
 
-                        } 
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarningFormat("RedisPublisher.ReceivedMessage: {0}", ex.Message);
+                        }
                     }
                     else if (!string.IsNullOrEmpty(manager.roboKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.roboKey)))
                     {
-                        RoboUpdate roboUpdate = JsonConvert.DeserializeObject<RoboUpdate>(response);
-
-                        if (RoboUpdate.Validate(roboUpdate))
+                        try
                         {
-                            roboUpdate.Log();
-                            roboUpdater.UpdateRobot(roboUpdate);
+                            RoboUpdate roboUpdate = JsonConvert.DeserializeObject<RoboUpdate>(response);
+                            if (RoboUpdate.Validate(roboUpdate))
+                            {
+                                roboUpdate.Log();
+                                roboUpdater.UpdateRobot(roboUpdate);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarningFormat("RedisPublisher.ReceivedMessage: {0}", ex.Message);
                         }
                     }
                     else if (!string.IsNullOrEmpty(manager.fiducialKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.fiducialKey)))
                     {
-                        FiducialUpdate fidUpdate = JsonConvert.DeserializeObject<FiducialUpdate>(response);
-
-                        if (FiducialUpdate.Validate(fidUpdate))
+                        try
                         {
-                            fidUpdate.Log();
-                            fidUpdater.UpdateFiducial(fidUpdate);
+                            FiducialUpdate fidUpdate = JsonConvert.DeserializeObject<FiducialUpdate>(response);
+                            if (FiducialUpdate.Validate(fidUpdate))
+                            {
+                                fidUpdate.Log();
+                                fidUpdater.UpdateFiducial(fidUpdate);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarningFormat("RedisPublisher.ReceivedMessage: {0}", ex.Message);
                         }
                     }
                     else if (!string.IsNullOrEmpty(manager.resetKey) && (requestKey == string.Format("{0}/{1}", manager.namespacePrefix, manager.resetKey)))

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 using Newtonsoft.Json;
 using VoxSimPlatform.Network;
@@ -56,14 +57,15 @@ public class RedisInterface : MonoBehaviour
     public virtual void WriteArrayCommand(string messageToSend)
     {
         // take a message to send to Redis, turn it into a properly formatted array, and send it
-        string[] msgStrings = messageToSend.Split();
+        Regex re = new Regex("(?=.+\") (?<!\".+)");
+        string[] msgStrings = re.Split(messageToSend);
         List<string> bulkedMsgStrings = new List<string>();
         for (int i = 0; i < msgStrings.Length; i++)
         {
-            bulkedMsgStrings.Add(string.Format("${0}\r\n{1}\r\n", msgStrings[i].Length, msgStrings[i]));
+            bulkedMsgStrings.Add(string.Format("${0}\r\n{1}\r\n", msgStrings[i].Length-msgStrings[i].Count<char>(c => c == '\"'), msgStrings[i]));
         }
 
-        string bulkedMsg = string.Join(string.Empty, bulkedMsgStrings);
+        string bulkedMsg = string.Join(string.Empty, bulkedMsgStrings).Replace("\"","");
 
         string arrayString = string.Format("*{0}\r\n{1}", msgStrings.Length, bulkedMsg);
 
