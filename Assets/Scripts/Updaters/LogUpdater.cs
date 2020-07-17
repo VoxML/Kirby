@@ -104,6 +104,12 @@ public class LogUpdater : MonoBehaviour
             case "FINISH_PATROL":
                 output = "I've explored as much as I can.";
                 break;
+            case "DEBUG":
+                output = update.message;
+                break;
+            case "QUEUE":
+                output = update.message;
+                break;
         }
         DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
     }
