@@ -37,5 +37,9 @@
     <Scale>&lt;agent</Scale>
     <Movable>true</Movable>
   </Embodiment>
-  <Attributes />
+  <Attributes>
+    <Attrs>
+      <Attr Value="yellow" />
+    </Attrs>
+  </Attributes>
 </VoxML>
