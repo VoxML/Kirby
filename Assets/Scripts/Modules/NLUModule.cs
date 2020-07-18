@@ -132,6 +132,10 @@ public class NLUModule : ModuleBase
         {
             output = PatrolCommand(input);
         }
+        else if (input == "stop")
+        {
+            output = StopCommand(input);
+        }
         else if ((input == "cancel") || (input == "cancel all"))
         {
             output = CancelCommand(input);
@@ -189,7 +193,7 @@ public class NLUModule : ModuleBase
             GameObject targetObj = GameObject.Find(DataStore.GetStringValue("user:lastPointedAt:name"));
 
             // get offset from Kirby to object
-            Vector3 offset = targetObj.transform.position-DataStore.GetVector3Value("kirby:position");
+            Vector3 offset = DataStore.GetVector3Value("kirby:position")-targetObj.transform.position;
             offset = new Vector3(offset.x, 0.0f, offset.z);
             offset = offset.normalized * .125f;
 
@@ -220,6 +224,22 @@ public class NLUModule : ModuleBase
     string PatrolCommand(string input)
     {
         string command = "patrol";
+
+        return command;
+    }
+
+    string StopCommand(string input)
+    {
+        string command = string.Empty;
+
+        if (DataStore.GetBoolValue("kirby:isPatrolling"))
+        {
+            command = "stop patrol";
+        }
+        else
+        {
+            command = "stop";
+        }
 
         return command;
     }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465934, g: 0.49642956, b: 0.5748249, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3514,6 +3514,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1659851436}
   - component: {fileID: 1659851437}
+  - component: {fileID: 1659851439}
+  - component: {fileID: 1659851438}
   m_Layer: 0
   m_Name: DialogueInteractionModule
   m_TagString: Untagged
@@ -3549,6 +3551,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comment: 
   display: {fileID: 0}
+  stateMachine: {fileID: 1659851438}
+--- !u!114 &1659851438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659851435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15ae1bcc050d74f1badff423ccea4665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scenarioController: {fileID: 0}
+--- !u!114 &1659851439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659851435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ab6887d5598b48098363537d785af28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1726070814 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7832359473366798374, guid: 47ccd4022dbf6442d9e0fac591c61779,

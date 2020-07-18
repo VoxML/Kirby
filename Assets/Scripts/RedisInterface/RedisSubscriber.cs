@@ -62,8 +62,8 @@ public class RedisSubscriber : RedisInterface
             (string)manager.GetType().GetField(f.Name).GetValue(manager) != string.Empty).Select(f => f.Name).ToList();
 
         // generate a single psubscribe commmand (psubscribe '__key*__:<ns>/<key1>' '__key*__:<ns>/<key2>'...)
-        WriteBulkStringCommand(string.Format("psubscribe {0}", string.Format(string.Join(" ",
-            keyNames.Select(k => string.Format("\'__key*__:{0}/{1}\'", manager.namespacePrefix,
+        WriteArrayCommand(string.Format("psubscribe {0}", string.Format(string.Join(" ",
+            keyNames.Select(k => string.Format("\"\'__key*__:{0}/{1}\'\"", manager.namespacePrefix,
             (string)manager.GetType().GetField(k).GetValue(manager)))))));
     }
 
