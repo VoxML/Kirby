@@ -13,7 +13,7 @@ public class FiducialUpdater : MonoBehaviour
 
     RedisPublisherManager manager;
 
-    // TODO: declare "objects of interest" (type ObjectsOfInterest)
+    ObjectsOfInterest objects;
 
     VoxemeInit voxemeInit;
 
@@ -28,7 +28,7 @@ public class FiducialUpdater : MonoBehaviour
 
         voxemeInit = GameObject.Find("VoxWorld").GetComponent<VoxemeInit>();
 
-        // TODO: Find KirbyManager object and get ObjectsOfInterestComponent
+        objects = gameObject.GetComponent<ObjectsOfInterest>();
     }
 
     // Update is called once per frame
@@ -137,6 +137,7 @@ public class FiducialUpdater : MonoBehaviour
 
                 // TODO: add to ObjectsOfInterest objects dictionary
                 // key: fidObj, value fidObj.transform.position
+                objects.dict.Add(fidObj, fidObj.transform.position);
 
                 // reinitialize voxemes
                 voxemeInit.InitializeVoxemes();
