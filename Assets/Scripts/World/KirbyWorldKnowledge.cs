@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectsOfInterest : MonoBehaviour
+// TODO: not a todo, just a note - renamed ObjectsOfInterest to KirbyWorldKnowledge
+public class KirbyWorldKnowledge : MonoBehaviour
 {
     public Dictionary<GameObject, Vector3> dict;
     // Start is called before the first frame update

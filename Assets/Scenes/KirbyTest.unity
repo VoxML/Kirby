@@ -1116,6 +1116,11 @@ PrefabInstance:
       propertyPath: activeAgent
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2127496905063538821, guid: 6654ac9c5e0c3429e898e353484ff16c,
+        type: 3}
+      propertyPath: primitivesOverride
+      value: 
+      objectReference: {fileID: 1223134998}
     - target: {fileID: 2127496905063538822, guid: 6654ac9c5e0c3429e898e353484ff16c,
         type: 3}
       propertyPath: m_Name
@@ -2106,6 +2111,7 @@ Transform:
   m_Children:
   - {fileID: 973311164}
   - {fileID: 1330486672}
+  - {fileID: 1223134997}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2299,7 +2305,7 @@ GameObject:
   - component: {fileID: 973311164}
   - component: {fileID: 973311165}
   m_Layer: 0
-  m_Name: ObjectsOfInterest
+  m_Name: KirbyWorldKnowledge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2328,7 +2334,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 973311163}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a0984d5043f844cb963a59af3fca825, type: 3}
+  m_Script: {fileID: 11500000, guid: 8edc579da65a24fbdadfb21f2439b245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1012718343
@@ -2684,6 +2690,51 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d92550561c2bd438c8d4f99a11a56b34, type: 3}
+--- !u!1 &1223134996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1223134997}
+  - component: {fileID: 1223134998}
+  m_Layer: 0
+  m_Name: KirbyPredicatesModule
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1223134997
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223134996}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 941503512}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1223134998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223134996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521b4853fc3c34db1af0293a44639cc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  comment: 
+  display: {fileID: 0}
 --- !u!1001 &1268952470
 PrefabInstance:
   m_ObjectHideFlags: 0
