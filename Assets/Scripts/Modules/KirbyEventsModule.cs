@@ -3,7 +3,7 @@ using System.Collections;
 
 using VoxSimPlatform.Core;
 
-public class KirbyPredicatesModule : ModuleBase
+public class KirbyEventsModule : ModuleBase
 {
     EventManager eventManager;
 
@@ -12,7 +12,7 @@ public class KirbyPredicatesModule : ModuleBase
     {
         // TODO: get game object named "BehaviorController"
         // TODO: set eventManager = EventManager component on BehaviorController
-        // TODO: eventManager.NonexistentEntityError += NameOfMethodToTriggerFind
+        // TODO: eventManager.NonexistentEntityError += NameOfUnknownObjectEventHandler
     }
 
     // Update is called once per frame
@@ -26,6 +26,6 @@ public class KirbyPredicatesModule : ModuleBase
 
     }
 
-    // TODO: Add NameOfMethodToTriggerFind event handler
+    // TODO: Add NameOfUnknownObjectEventHandler event handler
     // see example: https://docs.microsoft.com/en-us/dotnet/api/system.eventhandler?view=netcore-3.1
 }

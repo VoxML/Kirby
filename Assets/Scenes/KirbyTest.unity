@@ -2701,7 +2701,7 @@ GameObject:
   - component: {fileID: 1223134997}
   - component: {fileID: 1223134998}
   m_Layer: 0
-  m_Name: KirbyPredicatesModule
+  m_Name: KirbyEventsModule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2730,7 +2730,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1223134996}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 521b4853fc3c34db1af0293a44639cc7, type: 3}
+  m_Script: {fileID: 11500000, guid: 17eaff57c8cbb422d8e5a536e3ae2fd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   comment: 

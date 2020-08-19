@@ -140,6 +140,10 @@ public class NLUModule : ModuleBase
         {
             output = CancelCommand(input);
         }
+        else
+        {
+            commandInput.inputController.MessageReceived(input);
+        }
 
         Debug.Log(string.Format("Mapped \"{0}\" to \"{1}\"", input, output));
         return output;
