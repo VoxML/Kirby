@@ -14,11 +14,14 @@ using System.Text.RegularExpressions;
 using System.Timers;
 
 using VoxSimPlatform.Agent;
+using VoxSimPlatform.Network;
 
 public class NLUModule : ModuleBase
 {
     public GameObject kirbyManager;
     public OutputController speechInputDisplay;
+
+    public CommunicationsBridge commBridge;
 
     CommandInput commandInput;
 
@@ -36,6 +39,7 @@ public class NLUModule : ModuleBase
         DataStore.Subscribe("user:speech", ParseLanguageInput);
 
         commandInput = kirbyManager.GetComponent<CommandInput>();
+        commBridge = GameObject.Find("CommunicationsBridge").GetComponent<CommunicationsBridge>();
 
         clearSpeechTimer = new Timer(clearSpeechTime);
         clearSpeechTimer.Enabled = false;
@@ -142,7 +146,8 @@ public class NLUModule : ModuleBase
         }
         else
         {
-            commandInput.inputController.MessageReceived(input);
+            output = commBridge.NLParse(input);
+            SetValue("user:event:intent", output, string.Empty);
         }
 
         Debug.Log(string.Format("Mapped \"{0}\" to \"{1}\"", input, output));
