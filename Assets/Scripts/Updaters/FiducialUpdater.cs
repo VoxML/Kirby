@@ -135,7 +135,7 @@ public class FiducialUpdater : MonoBehaviour
                 // add voxeme
                 fidObj.AddComponent<Voxeme>();
 
-                // TODO: add to ObjectsOfInterest objects dictionary
+                // add to ObjectsOfInterest objects dictionary
                 // key: fidObj, value fidObj.transform.position
                 objects.objectDict.Add(fidObj, fidObj.transform.position);
 
