@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: not a todo, just a note - renamed ObjectsOfInterest to KirbyWorldKnowledge
 public class KirbyWorldKnowledge : MonoBehaviour
 {
-    public Dictionary<GameObject, Vector3> dict;
+    public Dictionary<GameObject, Vector3> objectDict;
+
+    // TODO: declare "to find" variable
+
     // Start is called before the first frame update
     void Start()
     {

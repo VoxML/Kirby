@@ -8,17 +8,25 @@ public class KirbyEventsModule : ModuleBase
 {
     EventManager eventManager;
 
+    // TODO: declare commandInput variable (type CommandInput)
+
+    // TODO: decalre worldKnowledge variable (type KirbyWorldKnowledge)
+
     // Use this for initialization
     void Start()
     {
-        // TODO: get game object named "BehaviorController"
+        // get game object named "BehaviorController"
         GameObject behaviorController = GameObject.Find("BehaviorController");
-        // TODO: set eventManager = EventManager component on BehaviorController
+        // set eventManager = EventManager component on BehaviorController
         eventManager = behaviorController.GetComponent<EventManager>();
-        // TODO: create a DataStore subscriber for the key "user:event:intent" to trigger "PromptEvent"
-        //  (check out DialogueInteractionModule for an example of how to subscribe to keys in the DataStore
+
+        // TODO: get CommandInput component on "KirbyManager" object
+
+        // TODO: get KirbyWorldKnowledge component on "KirbyWorldKnowledge" object
+
+        // create a DataStore subscriber for the key "user:event:intent" to trigger "PromptEvent"
         DataStore.Subscribe("user:event:intent", PromptEvent);
-        // TODO:
+        // add event handler delegate
         eventManager.NonexistentEntityError += StartLooking;
     }
 
@@ -30,14 +38,13 @@ public class KirbyEventsModule : ModuleBase
 
     public void PromptEvent(string key, DataStore.IValue value)
     {
-        // TODO: get the value of key and store it in a string variable
-        //  (check out KirbySpeechModule.Speak to see an example of getting a key value)
+        // get the value of key and store it in a string variable
         string v = DataStore.GetStringValue(key);
 
-        // TODO:
-        //  if that variable is not null of empty
+        // if that variable is not null of empty
         if (!string.IsNullOrEmpty(v))
         {
+            // prompt the event
             eventManager.InsertEvent(string.Empty, 0);
             eventManager.InsertEvent(v, 1);
         }
@@ -49,11 +56,20 @@ public class KirbyEventsModule : ModuleBase
 
     }
 
-    // TODO: Add NameOfUnknownObjectEventHandler event handler
-    // see example: https://docs.microsoft.com/en-us/dotnet/api/system.eventhandler?view=netcore-3.1
     void StartLooking(object sender, EventArgs e)
     {
         Debug.Log("Made it to StartLooking");
+
+        // TODO: extract the "to find" content from the event string
+        // get the string value of "user:event:intent" and store in a variable V
+        // get the top predicate of your event string variable
+        // - use the GetTopPredicate method in the GlobalHelper class
+        // - need VoxSimPlatform.Global C# using statement
+        // if top predicate equals "find":
+        // trim "find(" and the final ")" from the event string
+        // store the remaining string in the worldKnowledge variable declared above
+
+        // TODO: post message "patrol" on commandInput (see NLUModule.cs for usage)
     }
 
    
