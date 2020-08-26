@@ -12,6 +12,8 @@ public class RedisSubscriber : RedisInterface
 
     OutputDisplay outputDisplay;
 
+    public RedisMessageType messageType;
+
     public bool subscribed = false;
 
     public bool ignoreResetNotification = true;
@@ -37,7 +39,7 @@ public class RedisSubscriber : RedisInterface
             if (!authenticated)
             {
                 outputDisplay.SetText("Authenticating subscriber...", TextDisplayMode.Persistent);
-                WriteAuthentication("auth \"ROSlab134\"");
+                WriteAuthentication("auth ROSlab134");
             }
 
             redisSocket.UpdateReceived += ReceivedUpdate;
@@ -62,9 +64,18 @@ public class RedisSubscriber : RedisInterface
             (string)manager.GetType().GetField(f.Name).GetValue(manager) != string.Empty).Select(f => f.Name).ToList();
 
         // generate a single psubscribe commmand (psubscribe '__key*__:<ns>/<key1>' '__key*__:<ns>/<key2>'...)
-        WriteArrayCommand(string.Format("psubscribe {0}", string.Format(string.Join(" ",
-            keyNames.Select(k => string.Format("\"\'__key*__:{0}/{1}\'\"", manager.namespacePrefix,
-            (string)manager.GetType().GetField(k).GetValue(manager)))))));
+        if (messageType == RedisMessageType.Array)
+        {
+            WriteArrayCommand(string.Format("psubscribe {0}", string.Format(string.Join(" ",
+                keyNames.Select(k => string.Format("\'__key*__:{0}/{1}\'", manager.namespacePrefix,
+                (string)manager.GetType().GetField(k).GetValue(manager)))))));
+        }
+        else if (messageType == RedisMessageType.BulkString)
+        {
+            WriteBulkStringCommand(string.Format("psubscribe {0}", string.Format(string.Join(" ",
+                keyNames.Select(k => string.Format("\'__key*__:{0}/{1}\'", manager.namespacePrefix,
+                (string)manager.GetType().GetField(k).GetValue(manager)))))));
+        }
     }
 
     public void DatabaseFlushed()
@@ -205,11 +216,11 @@ public class RedisSubscriber : RedisInterface
                                     switch (cmd)
                                     {
                                         case "set":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.get \"{0}\"", longKey));
+                                            manager.publishers[shortKey].WriteCommand(string.Format("json.get \"{0}\"", longKey));
                                             break;
 
                                         case "rpush":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.lpop \"{0}\"", longKey));
+                                            manager.publishers[shortKey].WriteCommand(string.Format("json.lpop \"{0}\"", longKey));
                                             break;
 
                                         default:
@@ -221,11 +232,11 @@ public class RedisSubscriber : RedisInterface
                                     switch (cmd)
                                     {
                                         case "set":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("get \"{0}\"", longKey));
+                                            manager.publishers[shortKey].WriteCommand(string.Format("get \"{0}\"", longKey));
                                             break;
 
                                         case "rpush":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("lpop \"{0}\"", longKey));
+                                            manager.publishers[shortKey].WriteCommand(string.Format("lpop \"{0}\"", longKey));
                                             break;
 
                                         default:
@@ -282,11 +293,11 @@ public class RedisSubscriber : RedisInterface
                                     switch (cmd)
                                     {
                                         case "set":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.get \"{0}\"", longKey));
+                                            manager.publishers[shortKey].WriteCommand(string.Format("json.get \"{0}\"", longKey));
                                             break;
 
                                         case "rpush":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("json.lpop \"{0}\"", longKey));
+                                            manager.publishers[shortKey].WriteCommand(string.Format("json.lpop \"{0}\"", longKey));
                                             break;
 
                                         default:
@@ -298,11 +309,11 @@ public class RedisSubscriber : RedisInterface
                                     switch (cmd)
                                     {
                                         case "set":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("get \"{0}\"", longKey));
+                                            manager.publishers[shortKey].WriteCommand(string.Format("get \"{0}\"", longKey));
                                             break;
 
                                         case "rpush":
-                                            manager.publishers[shortKey].WriteArrayCommand(string.Format("lpop \"{0}\"", longKey));
+                                            manager.publishers[shortKey].WriteCommand(string.Format("lpop \"{0}\"", longKey));
                                             break;
 
                                         default:

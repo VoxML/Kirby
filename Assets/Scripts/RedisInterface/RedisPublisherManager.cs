@@ -116,7 +116,7 @@ public class RedisPublisherManager : MonoBehaviour
 
             // halt subscriber processing while bridge is reset
             subscriber.processing = false;
-            publishers[resetKey].WriteArrayCommand(string.Format("set {0} \"1\"", string.Format("{0}/{1}", namespacePrefix, resetKey)));
+            publishers[resetKey].WriteCommand(string.Format("set {0} \"1\"", string.Format("{0}/{1}", namespacePrefix, resetKey)));
         }
         else
         {

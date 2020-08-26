@@ -20,6 +20,8 @@ public class RedisPublisher : RedisInterface
 
     OutputDisplay outputDisplay;
 
+    public RedisMessageType messageType;
+
     public string publisherKey;
 
     List<string> validReceiveCommands = new List<string>()
@@ -69,7 +71,7 @@ public class RedisPublisher : RedisInterface
 
         if (!authenticated)
         {
-            WriteAuthentication("auth \"ROSlab134\"");
+            WriteAuthentication("auth ROSlab134");
         }
     }
 
@@ -78,12 +80,24 @@ public class RedisPublisher : RedisInterface
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            WriteArrayCommand("set foo \"bar\"");
+            WriteCommand("set foo \"bar\"");
         }
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            WriteArrayCommand("get \"foo\"");
+            WriteCommand("get \"foo\"");
+        }
+    }
+
+    public void WriteCommand(string messageToSend)
+    {
+        if (messageType == RedisMessageType.Array)
+        {
+            WriteArrayCommand(messageToSend);
+        }
+        else if (messageType == RedisMessageType.BulkString)
+        {
+            WriteBulkStringCommand(messageToSend);
         }
     }
 
@@ -325,8 +339,7 @@ public class RedisPublisher : RedisInterface
                     response = raw.Trim();
                     Debug.Log(string.Format("RedisPublisher({0}): Got untyped response from Redis (responding to \"{1}\"): {2}",
                         publisherKey, lastEvent.Content, response));
-
-
+                        
                     FiducialUpdate fidUpdate;
 
                     try

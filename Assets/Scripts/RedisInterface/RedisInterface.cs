@@ -8,6 +8,12 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using VoxSimPlatform.Network;
 
+public enum RedisMessageType
+{
+    Array,
+    BulkString
+};
+
 public class RedisInterface : MonoBehaviour
 {
     protected GameObject commBridge;
@@ -57,8 +63,10 @@ public class RedisInterface : MonoBehaviour
     public virtual void WriteArrayCommand(string messageToSend)
     {
         // take a message to send to Redis, turn it into a properly formatted array, and send it
-        Regex re = new Regex("(?=.+\") (?<!\".+)");
+        Debug.Log(string.Format("Formatting string \"{0}\"", messageToSend));
+        Regex re = new Regex("(?=.+\") (?<!\".+)| (?!.+\")");
         string[] msgStrings = re.Split(messageToSend);
+
         List<string> bulkedMsgStrings = new List<string>();
         for (int i = 0; i < msgStrings.Length; i++)
         {
@@ -102,7 +110,7 @@ public class RedisInterface : MonoBehaviour
         //  type is first char of second line
         string first = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[0].Trim();
 
-        if (first.StartsWith("unknown command"))
+        if (first.Contains("unknown command"))
         {
             string[] content = raw.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             if (content.Length > 1)
