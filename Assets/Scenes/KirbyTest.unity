@@ -1854,6 +1854,7 @@ MonoBehaviour:
   display: {fileID: 0}
   kirbyManager: {fileID: 941503510}
   speechInputDisplay: {fileID: 1274097911}
+  commBridge: {fileID: 0}
   clearSpeechTime: 2500
   testingMode: 1
 --- !u!4 &827585306 stripped
@@ -2097,6 +2098,7 @@ MonoBehaviour:
   usingRejson: 0
   useSizeHeader: 0
   verboseDebugOutput: 0
+  messageType: 0
   publisherKey: 
 --- !u!4 &941503512
 Transform:
@@ -2144,6 +2146,7 @@ MonoBehaviour:
   usingRejson: 0
   useSizeHeader: 0
   verboseDebugOutput: 0
+  messageType: 1
   subscribed: 0
   ignoreResetNotification: 1
   processing: 0
@@ -2217,7 +2220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c3058fcd0ed7440cac1e926bbd9fbc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  namespacePrefix: Kirby
+  namespacePrefix: Nikhil
   mapKey: Map
   roboKey: Odom
   fiducialKey: Fiducials
