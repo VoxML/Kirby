@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using VoxSimPlatform.Global;
 using VoxSimPlatform.Vox;
 
 public class FiducialUpdater : MonoBehaviour
@@ -68,7 +69,7 @@ public class FiducialUpdater : MonoBehaviour
             {
                 if (ex is NullReferenceException)
                 {
-                    Debug.Log(string.Format("No fiducial object with ID {0} found.  Creating new fiducial object.", i));
+                    Debug.Log(string.Format("No fiducial object with ID {0} found.", i));
                 }
             }
 
@@ -103,6 +104,7 @@ public class FiducialUpdater : MonoBehaviour
             else
             {
                 // create a new fiducial object
+                Debug.Log("Creating new fiducial object.");
                 fidObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 fidObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
@@ -135,12 +137,20 @@ public class FiducialUpdater : MonoBehaviour
                 // add voxeme
                 fidObj.AddComponent<Voxeme>();
 
+                // reinitialize voxemes
+                Debug.Log("Reinitializing voxemes.");
+                voxemeInit.InitializeVoxemes();
+
                 // add to ObjectsOfInterest objects dictionary
                 // key: fidObj, value fidObj.transform.position
                 objects.objectDict.Add(fidObj, fidObj.transform.position);
-
-                // reinitialize voxemes
-                voxemeInit.InitializeVoxemes();
+                string s = "";
+                foreach (KeyValuePair<GameObject, Vector3> kvp in objects.objectDict)
+                {
+                    s += string.Format("Key = {0}, Value = {1}\n",
+                        kvp.Key.name, GlobalHelper.VectorToParsable(kvp.Value));
+                }
+                Debug.Log("Known objects dictionary content:" + s);
             }
         }
     }
