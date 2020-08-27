@@ -11,7 +11,7 @@ public class KirbyWorldKnowledge : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        // TODO: instantiate object dict (new Dictionary<,>)
     }
 
     // Update is called once per frame
