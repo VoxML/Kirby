@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using VoxSimPlatform.Global;
 
 using VoxSimPlatform.Core;
 
@@ -9,8 +10,10 @@ public class KirbyEventsModule : ModuleBase
     EventManager eventManager;
 
     // TODO: declare commandInput variable (type CommandInput)
+    CommandInput commandInput;
 
     // TODO: decalre worldKnowledge variable (type KirbyWorldKnowledge)
+    KirbyWorldKnowledge worldKnowledge;
 
     // Use this for initialization
     void Start()
@@ -21,8 +24,12 @@ public class KirbyEventsModule : ModuleBase
         eventManager = behaviorController.GetComponent<EventManager>();
 
         // TODO: get CommandInput component on "KirbyManager" object
+        GameObject kirbyManager = GameObject.Find("KirbyManager");
+        commandInput = kirbyManager.GetComponent<CommandInput>();
 
         // TODO: get KirbyWorldKnowledge component on "KirbyWorldKnowledge" object
+        GameObject kirbyWorldKnowledge = GameObject.Find("KirbyWorldKnowledge");
+        worldKnowledge = kirbyWorldKnowledge.GetComponent<KirbyWorldKnowledge>();
 
         // create a DataStore subscriber for the key "user:event:intent" to trigger "PromptEvent"
         DataStore.Subscribe("user:event:intent", PromptEvent);
@@ -68,9 +75,24 @@ public class KirbyEventsModule : ModuleBase
         // if top predicate equals "find":
         // trim "find(" and the final ")" from the event string
         // store the remaining string in the worldKnowledge variable declared above
-
+        string V = DataStore.GetStringValue("user:event:intent");
+        string topPred = GlobalHelper.GetTopPredicate(V);
+        Debug.Log(V);
+        Debug.Log(topPred);
+        Debug.Log(Equals(topPred, "find"));
+        if (Equals(topPred, "find"))
+        {
+            string trimmed = V.Remove(0, 5);
+            trimmed = trimmed.Remove(trimmed.Length - 1, 1);
+            worldKnowledge.toFind = trimmed;
+            Debug.Log("trimmed " + worldKnowledge.toFind);
+        }
         // TODO: post message "patrol" on commandInput (see NLUModule.cs for usage)
+        commandInput.inputController.inputString = "patrol";
+        commandInput.PostMessage(commandInput.inputController.inputString);
+        Debug.Log("sent command?");
     }
+
 
    
 }
