@@ -151,6 +151,12 @@ public class FiducialUpdater : MonoBehaviour
                         kvp.Key.name, GlobalHelper.VectorToParsable(kvp.Value));
                 }
                 Debug.Log("Known objects dictionary content:" + s);
+
+                // TODO:
+                // in KirbyWorldKnowledge, create a method that assesses if the
+                //  thing we just added to known objects matches the characteristics
+                //  of the "to find" variable (see KirbyWorldKnowledge)
+                // this method should take fidObj as an input and be typed void
             }
         }
     }

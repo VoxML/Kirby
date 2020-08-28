@@ -9,10 +9,10 @@ public class KirbyEventsModule : ModuleBase
 {
     EventManager eventManager;
 
-    // TODO: declare commandInput variable (type CommandInput)
+    // declare commandInput variable
     CommandInput commandInput;
 
-    // TODO: decalre worldKnowledge variable (type KirbyWorldKnowledge)
+    // declare worldKnowledge variable
     KirbyWorldKnowledge worldKnowledge;
 
     // Use this for initialization
@@ -23,11 +23,11 @@ public class KirbyEventsModule : ModuleBase
         // set eventManager = EventManager component on BehaviorController
         eventManager = behaviorController.GetComponent<EventManager>();
 
-        // TODO: get CommandInput component on "KirbyManager" object
+        // get CommandInput component on "KirbyManager" object
         GameObject kirbyManager = GameObject.Find("KirbyManager");
         commandInput = kirbyManager.GetComponent<CommandInput>();
 
-        // TODO: get KirbyWorldKnowledge component on "KirbyWorldKnowledge" object
+        // get KirbyWorldKnowledge component on "KirbyWorldKnowledge" object
         GameObject kirbyWorldKnowledge = GameObject.Find("KirbyWorldKnowledge");
         worldKnowledge = kirbyWorldKnowledge.GetComponent<KirbyWorldKnowledge>();
 
@@ -67,7 +67,7 @@ public class KirbyEventsModule : ModuleBase
     {
         Debug.Log("Made it to StartLooking");
 
-        // TODO: extract the "to find" content from the event string
+        // extract the "to find" content from the event string
         // get the string value of "user:event:intent" and store in a variable V
         // get the top predicate of your event string variable
         // - use the GetTopPredicate method in the GlobalHelper class
@@ -87,13 +87,10 @@ public class KirbyEventsModule : ModuleBase
             worldKnowledge.toFind = trimmed;
             Debug.Log("trimmed " + worldKnowledge.toFind);
         }
-        // TODO: post message "patrol" on commandInput (see NLUModule.cs for usage)
+        // post message "patrol" on commandInput (see NLUModule.cs for usage)
         commandInput.inputController.inputString = "patrol";
         commandInput.PostMessage(commandInput.inputController.inputString);
         Debug.Log("sent command?");
     }
-
-
-   
 }
 

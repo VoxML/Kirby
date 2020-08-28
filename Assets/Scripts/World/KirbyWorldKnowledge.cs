@@ -6,7 +6,7 @@ public class KirbyWorldKnowledge : MonoBehaviour
 {
     public Dictionary<GameObject, Vector3> objectDict;
 
-    // TODO: declare "to find" variable
+    // declare "to find" variable
     public string toFind;
 
     // Start is called before the first frame update
@@ -20,4 +20,12 @@ public class KirbyWorldKnowledge : MonoBehaviour
     {
         
     }
+
+    // TODO: create object characteristic assessment method here
+    //  (see FiducialUpdater)
+    // if toFind is not null and the input object for this method
+    //  matches the predicate-argument structure listed in toFind
+    //  interrupt patrol and navigate to that object
+    // we will need to declare and get things like CommandInput
+    //  as we do in KirbyEventsModule
 }
