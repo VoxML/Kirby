@@ -7,6 +7,7 @@ public class KirbyWorldKnowledge : MonoBehaviour
     public Dictionary<GameObject, Vector3> objectDict;
 
     // TODO: declare "to find" variable
+    public string toFind;
 
     // Start is called before the first frame update
     void Start()
