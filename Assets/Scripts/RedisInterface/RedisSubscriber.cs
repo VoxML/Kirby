@@ -12,6 +12,8 @@ public class RedisSubscriber : RedisInterface
 
     OutputDisplay outputDisplay;
 
+    public string password { private get; set; }
+
     public RedisMessageType messageType;
 
     public bool subscribed = false;
@@ -39,7 +41,7 @@ public class RedisSubscriber : RedisInterface
             if (!authenticated)
             {
                 outputDisplay.SetText("Authenticating subscriber...", TextDisplayMode.Persistent);
-                WriteAuthentication("auth ROSlab134");
+                WriteAuthentication(string.Format("auth {0}", password));
             }
 
             redisSocket.UpdateReceived += ReceivedUpdate;

@@ -15,6 +15,8 @@ public class RedisPublisherManager : MonoBehaviour
     List<string> publisherKeyVarNames;
     int numAuthenticatedPublishers;
 
+    public string password { private get; set; }
+
     public Dictionary<string, RedisPublisher> publishers;
 
     public string namespacePrefix;
@@ -101,6 +103,7 @@ public class RedisPublisherManager : MonoBehaviour
 
             RedisPublisher publisher = gameObject.AddComponent<RedisPublisher>();
             publisher.publisherKey = keyName;
+            publisher.password = password;
 
             publishers[publisher.publisherKey] = publisher;
         }

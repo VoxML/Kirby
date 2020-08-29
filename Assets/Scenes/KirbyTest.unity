@@ -2067,6 +2067,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 941503512}
+  - component: {fileID: 941503520}
   - component: {fileID: 941503511}
   - component: {fileID: 941503514}
   - component: {fileID: 941503518}
@@ -2220,7 +2221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c3058fcd0ed7440cac1e926bbd9fbc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  namespacePrefix: Nikhil
+  namespacePrefix: 
   mapKey: Map
   roboKey: Odom
   fiducialKey: Fiducials
@@ -2239,6 +2240,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4add484c57e2d4265a14bf6e22d1cd12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &941503520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941503510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 654b3db50baf2461ca7cec9896dd8853, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  configFile: kirby_redis_config.xml
 --- !u!1 &958546869
 GameObject:
   m_ObjectHideFlags: 0
@@ -2340,6 +2354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8edc579da65a24fbdadfb21f2439b245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  toFind: 
 --- !u!1 &1012718343
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,6 +20,8 @@ public class RedisPublisher : RedisInterface
 
     OutputDisplay outputDisplay;
 
+    public string password { private get; set; }
+
     public RedisMessageType messageType;
 
     public string publisherKey;
@@ -71,7 +73,7 @@ public class RedisPublisher : RedisInterface
 
         if (!authenticated)
         {
-            WriteAuthentication("auth ROSlab134");
+            WriteAuthentication(string.Format("auth {0}", password));
         }
     }
 
