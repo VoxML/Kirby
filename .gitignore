@@ -170,6 +170,9 @@ External/
 # ignore DataStore.log
 DataStore.log
 
+# ignore kirby_redis_config (don't commit Redis password to repo)
+kirby_redis_config.xml
+
 # ignore NuGet packages (e.g. Nunit)
 packages*
 
