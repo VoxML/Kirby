@@ -86,11 +86,17 @@ public class KirbyEventsModule : ModuleBase
             trimmed = trimmed.Remove(trimmed.Length - 1, 1);
             worldKnowledge.toFind = trimmed;
             Debug.Log("trimmed " + worldKnowledge.toFind);
+            Debug.Log(GlobalHelper.GetTopPredicate(trimmed));
+
+           
+
+
         }
         // post message "patrol" on commandInput (see NLUModule.cs for usage)
         commandInput.inputController.inputString = "patrol";
         commandInput.PostMessage(commandInput.inputController.inputString);
         Debug.Log("sent command?");
+        
     }
 }
 

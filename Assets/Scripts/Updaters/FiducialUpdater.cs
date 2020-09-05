@@ -29,7 +29,8 @@ public class FiducialUpdater : MonoBehaviour
 
         voxemeInit = GameObject.Find("VoxWorld").GetComponent<VoxemeInit>();
 
-        objects = gameObject.GetComponent<KirbyWorldKnowledge>();
+        objects = GameObject.Find("KirbyWorldKnowledge").GetComponent<KirbyWorldKnowledge>();
+        
     }
 
     // Update is called once per frame
@@ -149,14 +150,17 @@ public class FiducialUpdater : MonoBehaviour
                 {
                     s += string.Format("Key = {0}, Value = {1}\n",
                         kvp.Key.name, GlobalHelper.VectorToParsable(kvp.Value));
+                    Debug.Log("Heres a fid: " + GlobalHelper.VectorToParsable(kvp.Value));
                 }
                 Debug.Log("Known objects dictionary content:" + s);
+
 
                 // TODO:
                 // in KirbyWorldKnowledge, create a method that assesses if the
                 //  thing we just added to known objects matches the characteristics
                 //  of the "to find" variable (see KirbyWorldKnowledge)
                 // this method should take fidObj as an input and be typed void
+                objects.CheckTargetLocated(fidObj);
             }
         }
     }
