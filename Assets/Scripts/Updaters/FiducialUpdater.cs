@@ -12,6 +12,9 @@ public class FiducialUpdater : MonoBehaviour
 
     public GameObject fiducials;
 
+    public bool testSpawn;
+    public KeyCode spawnKey;
+
     RedisPublisherManager manager;
 
     KirbyWorldKnowledge objects;
@@ -19,6 +22,8 @@ public class FiducialUpdater : MonoBehaviour
     VoxemeInit voxemeInit;
 
     bool inited = false;
+
+    GameObject targetToCheck = null;
 
     // Start is called before the first frame update
     void Start()
@@ -36,7 +41,41 @@ public class FiducialUpdater : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (testSpawn)
+        { 
+            if (Input.GetKey(spawnKey))
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
+                    // Casts the ray and get the first game object hit
+                    Physics.Raycast(ray, out hit);
+
+                    if (hit.collider != null)
+                    {
+                        if (hit.collider.gameObject.name == "Floor")
+                        {
+                            GameObject fidObj = null;
+
+                            CreateNewFiducialObject(new Vector3(hit.point.x, 0.05f, hit.point.z), Vector3.zero, null, fiducials.transform.childCount+1, out fidObj);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (targetToCheck != null)
+        {
+            // TODO:
+            // in KirbyWorldKnowledge, create a method that assesses if the
+            //  thing we just added to known objects matches the characteristics
+            //  of the "to find" variable (see KirbyWorldKnowledge)
+            // this method should take fidObj as an input and be typed void
+            objects.CheckTargetLocated(targetToCheck);
+
+            targetToCheck = null;
+        }
     }
 
     public void DatabaseFlushed()
@@ -104,43 +143,13 @@ public class FiducialUpdater : MonoBehaviour
             }
             else
             {
-                // create a new fiducial object
-                Debug.Log("Creating new fiducial object.");
-                fidObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                fidObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-
                 Vector3 coords = new Vector3(-update.data[i].pose.location[1],
                     update.data[i].pose.location[2], update.data[i].pose.location[0]);
 
                 Vector3 rot = new Vector3(update.data[i].pose.orientation[1] * Mathf.Rad2Deg,
                     update.data[i].pose.location[0] * Mathf.Rad2Deg, update.data[i].pose.location[2] * Mathf.Rad2Deg);
 
-                if (update.frame == "odom")
-                {
-                    fidObj.transform.position = coords;
-                }
-                else if (update.frame == "camera")
-                {
-
-                }
-                fidObj.transform.eulerAngles = rot;
-
-                if (presetMaterials.Count > update.data[i].fid)
-                {
-                    fidObj.GetComponent<Renderer>().material = presetMaterials[update.data[i].fid-1];
-                }
-
-                fidObj.name = string.Format("Fiducial_{0}", update.data[i].fid);
-
-                fidObj.transform.parent = fiducials.transform;
-                fidObj.layer = fiducials.layer;
-
-                // add voxeme
-                fidObj.AddComponent<Voxeme>();
-
-                // reinitialize voxemes
-                Debug.Log("Reinitializing voxemes.");
-                voxemeInit.InitializeVoxemes();
+                CreateNewFiducialObject(coords, rot, update, update.data[i].fid, out fidObj);
 
                 // add to ObjectsOfInterest objects dictionary
                 // key: fidObj, value fidObj.transform.position
@@ -154,14 +163,53 @@ public class FiducialUpdater : MonoBehaviour
                 }
                 Debug.Log("Known objects dictionary content:" + s);
 
-
-                // TODO:
-                // in KirbyWorldKnowledge, create a method that assesses if the
-                //  thing we just added to known objects matches the characteristics
-                //  of the "to find" variable (see KirbyWorldKnowledge)
-                // this method should take fidObj as an input and be typed void
-                objects.CheckTargetLocated(fidObj);
+                targetToCheck = fidObj;
             }
         }
+    }
+
+    void CreateNewFiducialObject(Vector3 coords, Vector3 rot, FiducialUpdate update, int i, out GameObject fidObj)
+    {
+        // create a new fiducial object
+        Debug.Log("Creating new fiducial object.");
+        fidObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        fidObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
+        if (update != null)
+        {
+            if (update.frame == "odom")
+            {
+                fidObj.transform.position = coords;
+            }
+            else if (update.frame == "camera")
+            {
+
+            }
+        }
+        else
+        {
+            fidObj.transform.position = coords;
+        }
+
+        fidObj.transform.eulerAngles = rot;
+
+        if (presetMaterials.Count > i)
+        {
+            fidObj.GetComponent<Renderer>().material = presetMaterials[i - 1];
+        }
+
+        fidObj.name = string.Format("Fiducial_{0}", i);
+
+        fidObj.transform.parent = fiducials.transform;
+        fidObj.layer = fiducials.layer;
+
+        // add voxeme
+        fidObj.AddComponent<Voxeme>();
+
+        // reinitialize voxemes
+        Debug.Log("Reinitializing voxemes.");
+        voxemeInit.InitializeVoxemes();
+
+        fidObj = GlobalHelper.GetMostImmediateParentVoxeme(fidObj);
     }
 }

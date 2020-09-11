@@ -30,6 +30,8 @@ public class NLUModule : ModuleBase
 
     bool clearSpeech = false;
 
+    bool textInput;
+
     public bool testingMode;
 
     // Use this for initialization
@@ -64,6 +66,7 @@ public class NLUModule : ModuleBase
         {
             if (speechInputDisplay.outputString != string.Empty)
             {
+                textInput = true;
                 Debug.Log(string.Format("Setting user:speech to \"{0}\"", speechInputDisplay.outputString.Trim()));
                 SetValue("user:speech", speechInputDisplay.outputString.Trim(), string.Empty);
                 speechInputDisplay.outputString = string.Empty;
@@ -87,7 +90,7 @@ public class NLUModule : ModuleBase
                 }
             }
 
-            if (DataStore.GetBoolValue("user:isMuted"))
+            if (DataStore.GetBoolValue("user:isMuted") && !textInput)
             {
                 return;
             }
@@ -95,6 +98,11 @@ public class NLUModule : ModuleBase
             speechInputDisplay.outputString = DataStore.GetStringValue(key);
 
             string commands = MapLanguageToCommands(DataStore.GetStringValue(key));
+
+            if (textInput)
+            {
+                textInput = false;
+            }
 
             if (commands != string.Empty) {
                 commandInput.inputController.inputString = commands;

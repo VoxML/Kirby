@@ -612,7 +612,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comment: 
   display: {fileID: 0}
-  mutedByDefault: 0
+  mutedByDefault: 1
   muteToggle: 32
   outputDisplay: {fileID: 54073172}
 --- !u!1 &170076733
@@ -2209,6 +2209,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: e445f5d742db04315bc36de8878dff71, type: 2}
   - {fileID: 2100000, guid: 3721f370ea07e4109a4a674d5e37fbec, type: 2}
   fiducials: {fileID: 0}
+  testSpawn: 1
+  spawnKey: 306
 --- !u!114 &941503518
 MonoBehaviour:
   m_ObjectHideFlags: 0
