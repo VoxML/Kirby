@@ -65,7 +65,6 @@ public class KirbyEventsModule : ModuleBase
 
     void StartLooking(object sender, EventArgs e)
     {
-        Debug.Log("Made it to StartLooking");
 
         // extract the "to find" content from the event string
         // get the string value of "user:event:intent" and store in a variable V
@@ -77,16 +76,15 @@ public class KirbyEventsModule : ModuleBase
         // store the remaining string in the worldKnowledge variable declared above
         string V = DataStore.GetStringValue("user:event:intent");
         string topPred = GlobalHelper.GetTopPredicate(V);
-        Debug.Log(V);
-        Debug.Log(topPred);
-        Debug.Log(Equals(topPred, "find"));
+        //Debug.Log(topPred);
         if (Equals(topPred, "find"))
         {
+            // strip the find predicate from the string
             string trimmed = V.Remove(0, 5);
             trimmed = trimmed.Remove(trimmed.Length - 1, 1);
+            // what remains is what we are searching for
             worldKnowledge.toFind = trimmed;
-            Debug.Log("trimmed " + worldKnowledge.toFind);
-            Debug.Log(GlobalHelper.GetTopPredicate(trimmed));
+            //Debug.Log("trimmed " + worldKnowledge.toFind);
 
            
 
@@ -95,7 +93,6 @@ public class KirbyEventsModule : ModuleBase
         // post message "patrol" on commandInput (see NLUModule.cs for usage)
         commandInput.inputController.inputString = "patrol";
         commandInput.PostMessage(commandInput.inputController.inputString);
-        Debug.Log("sent command?");
         
     }
 }

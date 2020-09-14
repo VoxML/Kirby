@@ -67,11 +67,9 @@ public class FiducialUpdater : MonoBehaviour
 
         if (targetToCheck != null)
         {
-            // TODO:
-            // in KirbyWorldKnowledge, create a method that assesses if the
-            //  thing we just added to known objects matches the characteristics
-            //  of the "to find" variable (see KirbyWorldKnowledge)
-            // this method should take fidObj as an input and be typed void
+           
+            // assesses whether the thing we just added to the dict of known objects
+            // matches the characteristics of what we were looking for
             objects.CheckTargetLocated(targetToCheck);
 
             targetToCheck = null;
