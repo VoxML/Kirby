@@ -58,9 +58,12 @@ public class KirbyEventsModule : ModuleBase
 
     }
 
+    // TODO: make this method public
     void FIND(object[] args)
     {
-
+        // TODO: Go to the object args[0]
+        //  need to check and make sure that the type of args[0] is GameObject
+        //  and cast it to GameObject type to get the actual object
     }
 
     void StartLooking(object sender, EventArgs e)
