@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.4465934, g: 0.49642956, b: 0.5748249, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.496413, b: 0.5748175, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -704,6 +704,7 @@ GameObject:
   - component: {fileID: 190478257}
   - component: {fileID: 190478256}
   - component: {fileID: 190478258}
+  - component: {fileID: 190478259}
   m_Layer: 10
   m_Name: RoboStandIn
   m_TagString: Agent
@@ -943,6 +944,18 @@ MonoBehaviour:
   MacMaleVoice: 1
   role: 1
   Gender: 1
+--- !u!114 &190478259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190478246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ba57f685a4cd4c66bb671e180b72857, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &353463215
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,7 +1128,7 @@ PrefabInstance:
         type: 3}
       propertyPath: activeAgent
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 190478246}
     - target: {fileID: 2127496905063538821, guid: 6654ac9c5e0c3429e898e353484ff16c,
         type: 3}
       propertyPath: primitivesOverride
