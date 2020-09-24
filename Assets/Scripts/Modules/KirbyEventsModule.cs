@@ -64,6 +64,10 @@ public class KirbyEventsModule : ModuleBase
         // TODO: Go to the object args[0]
         //  need to check and make sure that the type of args[0] is GameObject
         //  and cast it to GameObject type to get the actual object
+        // if object is not null
+        //  extract its cooordinates and send a "go to x y command"
+        //  like in KirbyWorldKnowledge.CheckTargetLocated
+        // if it is null, do nothing, maybe print an error to the console
     }
 
     void StartLooking(object sender, EventArgs e)
