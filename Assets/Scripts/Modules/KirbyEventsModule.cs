@@ -4,6 +4,7 @@ using System;
 using VoxSimPlatform.Global;
 
 using VoxSimPlatform.Core;
+using System.Collections.Generic;
 
 public class KirbyEventsModule : ModuleBase
 {
@@ -59,8 +60,33 @@ public class KirbyEventsModule : ModuleBase
     }
 
     // TODO: make this method public
-    void FIND(object[] args)
+    public void FIND(object[] args)
     {
+        Debug.Log("Im at least in find");
+        Debug.Log("This is arg 0 : " + args[0]);
+        if (args[0] is GameObject && args[0] != null)
+        {
+            Debug.Log("i have an object");
+            GameObject o = (GameObject)args[0];
+            //args[0] = o;
+            Vector3 offset = DataStore.GetVector3Value("kirby:position") - o.transform.position;
+            offset = new Vector3(offset.x, 0.0f, offset.z);
+            offset = offset.normalized * .125f;
+
+            Vector3 position = o.transform.position + offset;
+            List<string> coords = new List<string>();
+            coords.Add(position.z.ToString());
+            coords.Add((-position.x).ToString());
+
+            // publish a go to command, to the location of block we found that matches
+            commandInput.inputController.inputString = string.Format("go to {0} {1}", coords[0], coords[1]);
+            commandInput.PostMessage(commandInput.inputController.inputString);
+        }
+        else
+        {
+            Debug.LogError("found object is null");
+        }
+
         // TODO: Go to the object args[0]
         //  need to check and make sure that the type of args[0] is GameObject
         //  and cast it to GameObject type to get the actual object

@@ -953,7 +953,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 190478246}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ba57f685a4cd4c66bb671e180b72857, type: 3}
+  m_Script: {fileID: 11500000, guid: 3cbf237ce12994861bf541b17a1ac2bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &353463215
@@ -1129,6 +1129,11 @@ PrefabInstance:
       propertyPath: activeAgent
       value: 
       objectReference: {fileID: 190478246}
+    - target: {fileID: 2127496905063538820, guid: 6654ac9c5e0c3429e898e353484ff16c,
+        type: 3}
+      propertyPath: referents
+      value: 
+      objectReference: {fileID: 190478259}
     - target: {fileID: 2127496905063538821, guid: 6654ac9c5e0c3429e898e353484ff16c,
         type: 3}
       propertyPath: primitivesOverride
