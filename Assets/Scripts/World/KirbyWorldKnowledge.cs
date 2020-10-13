@@ -12,18 +12,23 @@ public class KirbyWorldKnowledge : MonoBehaviour
     public string toFind;
     CommandInput commandInput;
 
+    public bool fullyExplored;
+    public List<GameObject> salientObjects;
+    public const int INITIAL_SALIENCEY_LIST_SIZE = 20;
+
     // Start is called before the first frame update
     void Start()
     {
         // TODO: instantiate object dict (new Dictionary<,>)
-        Debug.Log("ABOUT TO MAKE A DICTIONARY");
         objectDict = new Dictionary<GameObject, Vector3>();
-        Debug.Log("I MADE A DICITONARY");
-        Debug.Log("my new dict: " + objectDict);
 
         // get CommandInput component on "KirbyManager" object
         GameObject kirbyManager = GameObject.Find("KirbyManager");
         commandInput = kirbyManager.GetComponent<CommandInput>();
+
+        fullyExplored = false;
+        salientObjects = new List<GameObject>(INITIAL_SALIENCEY_LIST_SIZE);
+
         
     }
 
