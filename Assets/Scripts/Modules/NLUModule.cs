@@ -97,6 +97,13 @@ public class NLUModule : ModuleBase
 
             speechInputDisplay.outputString = DataStore.GetStringValue(key);
 
+            // "hey kirby" = Easter Egg
+            // don't process like normal
+            if (DataStore.GetStringValue(key).ToLower().StartsWith("hey kirby"))
+            {
+                return;
+            }
+
             string commands = MapLanguageToCommands(DataStore.GetStringValue(key));
 
             if (textInput)
