@@ -42,7 +42,10 @@ public class KirbyWorldKnowledge : MonoBehaviour
     // stops searching and navigates to the located target if so
     public void CheckTargetLocated(GameObject fidObject)
     {
-        if (toFind != null)
+        //Debug.Log("TO FIND IS: " + toFind);
+        //Debug.Log(toFind == null);
+        //Debug.Log(string.IsNullOrEmpty(toFind));
+        if (!string.IsNullOrEmpty(toFind))
         {
             // trim top predicate (a determiner) from the toFind string 
             string trimmed = toFind.Remove(0, toFind.IndexOf('(') + 1);

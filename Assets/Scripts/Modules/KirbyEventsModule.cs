@@ -36,6 +36,9 @@ public class KirbyEventsModule : ModuleBase
         DataStore.Subscribe("user:event:intent", PromptEvent);
         // add event handler delegate
         eventManager.NonexistentEntityError += StartLooking;
+
+        // create a DataStore subscriber for the key "kirby:patrol:finished" to trigger UpdateExploredFlag
+        DataStore.Subscribe("kirby:patrol:finished", UpdateExploredFlag);
     }
 
     // Update is called once per frame
@@ -56,7 +59,16 @@ public class KirbyEventsModule : ModuleBase
             eventManager.InsertEvent(string.Empty, 0);
             eventManager.InsertEvent(v, 1);
         }
+    }
 
+    public void UpdateExploredFlag(string key, DataStore.IValue value)
+    {
+        bool patrolled = DataStore.GetBoolValue(key);
+        if (patrolled)
+        {
+            worldKnowledge.fullyExplored = true;
+            Debug.Log("Set fully Explored to " + worldKnowledge.fullyExplored);
+        }
     }
 
     // TODO: make this method public

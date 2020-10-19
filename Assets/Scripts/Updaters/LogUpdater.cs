@@ -125,6 +125,10 @@ public class LogUpdater : MonoBehaviour
             
             case "FINISH_PATROL":
                 output = "I've explored as much as I can.";
+                Debug.Log("I am in finish_patrol");
+                DataStore.SetValue("kirby:patrol:finished", new DataStore.BoolValue(true), speech, string.Empty);
+                Debug.Log("I set teh value");
+                Debug.Log("Value is : " + DataStore.GetBoolValue("kirby:patrol:finished"));
                 break;
             
             case "DEBUG":
