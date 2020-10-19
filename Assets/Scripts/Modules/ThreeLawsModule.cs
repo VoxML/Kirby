@@ -28,9 +28,9 @@ public class ThreeLawsModule : ModuleBase
     void SpeakThreeLaws(string key, DataStore.IValue value)
     {
         // "hey kirby" = Easter egg
-        if (DataStore.GetStringValue(key).StartsWith("hey kirby"))
+        if (DataStore.GetStringValue(key).ToLower().StartsWith("hey kirby"))
         {
-            if (DataStore.GetStringValue(key) == "hey kirby what are the three laws")
+            if (DataStore.GetStringValue(key).ToLower() == "hey kirby what are the three laws")
             {
                 if (heavyMetalRobot && audioSource.clip != null)
                 {

@@ -99,7 +99,7 @@ public class NLUModule : ModuleBase
 
             // "hey kirby" = Easter Egg
             // don't process like normal
-            if (DataStore.GetStringValue(key).StartsWith("hey kirby"))
+            if (DataStore.GetStringValue(key).ToLower().StartsWith("hey kirby"))
             {
                 return;
             }
