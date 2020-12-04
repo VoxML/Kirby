@@ -61,7 +61,19 @@ public class InteractionPrefsModalWindow : ModalWindow {
         set
         {
             showSyntheticVision = value;
-            GameObject.Find("RoboCamera").GetComponent<SyntheticVision>().ShowFoV = showSyntheticVision;
+            synVision.ShowFoV = showSyntheticVision;
+        }
+    }
+
+    bool showOnboardCameraView = true;
+
+    public bool ShowOnboardCameraView
+    {
+        get { return showOnboardCameraView; }
+        set
+        {
+            showOnboardCameraView = value;
+            cameraManager.showPiCamView = showOnboardCameraView;
         }
     }
 
@@ -73,6 +85,9 @@ public class InteractionPrefsModalWindow : ModalWindow {
 	public bool gesturalReference = true;
 
 	string actionButtonText;
+
+    SyntheticVision synVision;
+    CameraManager cameraManager;
 
 	// Use this for initialization
 	void Start() {
@@ -86,7 +101,11 @@ public class InteractionPrefsModalWindow : ModalWindow {
 
 		windowRect = new Rect(Screen.width - 230, 110 + (int) (20 * fontSizeModifier), 215, 200);
 
-        GameObject.Find("RoboCamera").GetComponent<SyntheticVision>().ShowFoV = showSyntheticVision;
+        synVision = GameObject.Find("RoboCamera").GetComponent<SyntheticVision>();
+        synVision.ShowFoV = showSyntheticVision;
+
+        cameraManager = GameObject.Find("CameraManager").GetComponent<CameraManager>();
+        cameraManager.showPiCamView = showOnboardCameraView;
     }
 
 	// Update is called once per frame
@@ -113,20 +132,6 @@ public class InteractionPrefsModalWindow : ModalWindow {
 
 		//makes GUI window scrollable
 		scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-//		GUILayout.BeginVertical(GUI.skin.box);
-//		GUILayout.Label ("Confirmation Verbosity:");
-//		GUILayout.BeginVertical(GUI.skin.box);
-//		verbosityLevel = (VerbosityLevel)GUILayout.SelectionGrid((int)verbosityLevel, verbosityListItems, 1, new GUIStyle ("Toggle"), GUILayout.ExpandWidth(true));
-//		GUILayout.EndVertical();
-//		GUILayout.EndVertical();
-//
-//		GUILayout.BeginVertical(GUI.skin.box);
-//		GUILayout.Label ("Disambiguation Strategy:");
-//		GUILayout.BeginVertical(GUI.skin.box);
-//		disambiguationStrategy = (DisambiguationStrategy)GUILayout.SelectionGrid((int)disambiguationStrategy, disambiguationListItems, 1, new GUIStyle ("Toggle"), GUILayout.ExpandWidth(true));
-//		GUILayout.EndVertical();
-//		GUILayout.EndVertical();
-//		GUILayout.EndScrollView ();
 
 		GUILayout.BeginHorizontal(GUI.skin.box);
 		GUILayout.Label("User Name:");
@@ -135,39 +140,15 @@ public class InteractionPrefsModalWindow : ModalWindow {
 			GUILayout.ExpandWidth(false));
 		GUILayout.EndHorizontal();
 
-		//GUILayout.BeginVertical(GUI.skin.box);
-		//GUILayout.Label("Deixis:");
-		//GUILayout.BeginVertical(GUI.skin.box);
-		//deixisMethod = (DeixisMethod) GUILayout.SelectionGrid((int) deixisMethod, deixisListItems, 1,
-		//	new GUIStyle("Toggle"), GUILayout.ExpandWidth(true));
-		//GUILayout.EndVertical();
-		//GUILayout.EndVertical();
-
-		//GUILayout.BeginVertical(GUI.skin.box);
-		//GUILayout.Label("Referencing:");
-		//GUILayout.BeginVertical(GUI.skin.box);
-		//linguisticReference = GUILayout.Toggle(linguisticReference, "Linguistic", GUILayout.ExpandWidth(true));
-		//gesturalReference = GUILayout.Toggle(gesturalReference, "Gestural", GUILayout.ExpandWidth(true));
-		//GUILayout.EndVertical();
-		//GUILayout.EndVertical();
-
 		GUILayout.BeginVertical(GUI.skin.box);
 		GUILayout.Label("Agent Perception:");
 		GUILayout.BeginVertical(GUI.skin.box);
 		ShowInsetCamera =
 			GUILayout.Toggle(ShowInsetCamera, "Show Inset Camera", GUILayout.ExpandWidth(true));
-		//showVisualMemory = GUILayout.Toggle(showVisualMemory, "Show Visual Memory", GUILayout.ExpandWidth(true));
+        ShowOnboardCameraView =
+            GUILayout.Toggle(ShowOnboardCameraView, "Show Onboard Camera", GUILayout.ExpandWidth(true));
+        GUILayout.EndVertical();
 		GUILayout.EndVertical();
-		GUILayout.EndVertical();
-
-		//GUILayout.BeginHorizontal(GUI.skin.box);
-		//useTeachingAgent = GUILayout.Toggle(useTeachingAgent, "Use Teaching Agent", GUILayout.ExpandWidth(true));
-		//GUILayout.EndHorizontal();
-
-		//GUILayout.BeginHorizontal(GUI.skin.box);
-		//useTeachingAgent =
-			//GUILayout.Toggle(visualizeDialogueState, "Visualize Dialogue State", GUILayout.ExpandWidth(true));
-		//GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal(GUI.skin.box);
 		connectionLostNotification = GUILayout.Toggle(connectionLostNotification, "Connection Lost Notification",

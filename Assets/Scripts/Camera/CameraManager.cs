@@ -28,6 +28,8 @@ public class CameraManager : MonoBehaviour
 
     public bool verboseDebug;
 
+    public bool showPiCamView;
+
     CommunicationsBridge commBridge;
     PiCameraRESTClient piCam;
 
@@ -35,6 +37,7 @@ public class CameraManager : MonoBehaviour
 
     Timer piCamRefreshTimer;
 
+    GameObject piCamCanvasObj;
     RawImage piCamRawImage;
     Texture2D piCamTexture;
 
@@ -56,6 +59,7 @@ public class CameraManager : MonoBehaviour
             curSecondCamera.gameObject.tag = "Camera";
         }
 
+        showPiCamView = true;
         piCam = (PiCameraRESTClient)commBridge.FindRestClientByLabel("PiCam");
 
         if (piCam != null)
@@ -65,12 +69,24 @@ public class CameraManager : MonoBehaviour
             piCamRefreshTimer.Enabled = true;
             piCamRefreshTimer.Elapsed += RefreshPiCam;
 
-            piCamTexture = new Texture2D(320, 240, TextureFormat.RGB24, false);
-            piCamRawImage = GameObject.Find("PiCamRawImage").GetComponent<RawImage>();
+            piCamCanvasObj = GameObject.Find("PiCamViewCanvas");
+
+            if (piCamCanvasObj != null)
+            {
+                piCamTexture = new Texture2D(320, 240, TextureFormat.RGB24, false);
+                piCamRawImage = GameObject.Find("PiCamRawImage").GetComponent<RawImage>();
+                showPiCamView = true;
+            }
+            else
+            {
+                Debug.Log("Couldn't find Pi camera view canvas object!");
+                showPiCamView = false;
+            }
         }
         else
         {
-            Debug.Log("Couldn't get PiCam");
+            Debug.Log("Couldn't get PiCam!");
+            showPiCamView = false;
         }
     }
 
@@ -79,10 +95,18 @@ public class CameraManager : MonoBehaviour
     {
         if (piCam != null)
         {
-            if (refreshPiCam)
+            if (showPiCamView)
             {
-                refreshPiCam = false;
-                StartCoroutine(piCam.Get(""));
+                if (refreshPiCam)
+                {
+                    refreshPiCam = false;
+                    StartCoroutine(piCam.Get(""));
+                }
+            }
+
+            if (piCamCanvasObj != null)
+            {
+                piCamCanvasObj.SetActive(showPiCamView);
             }
         }
     }
