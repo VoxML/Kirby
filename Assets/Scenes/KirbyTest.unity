@@ -4545,6 +4545,7 @@ MonoBehaviour:
   piCamRefreshTime: 200
   verboseDebug: 0
   showPiCamView: 0
+  piCamResolution: {x: 320, y: 240}
 --- !u!4 &2112811586
 Transform:
   m_ObjectHideFlags: 0

@@ -73,7 +73,7 @@ public class InteractionPrefsModalWindow : ModalWindow {
         set
         {
             showOnboardCameraView = value;
-            cameraManager.showPiCamView = showOnboardCameraView;
+            cameraManager.ShowPiCamView = showOnboardCameraView;
         }
     }
 
@@ -105,7 +105,7 @@ public class InteractionPrefsModalWindow : ModalWindow {
         synVision.ShowFoV = showSyntheticVision;
 
         cameraManager = GameObject.Find("CameraManager").GetComponent<CameraManager>();
-        cameraManager.showPiCamView = showOnboardCameraView;
+        cameraManager.ShowPiCamView = showOnboardCameraView;
     }
 
 	// Update is called once per frame
@@ -129,6 +129,8 @@ public class InteractionPrefsModalWindow : ModalWindow {
 
 	public override void DoModalWindow(int windowID) {
 		base.DoModalWindow(windowID);
+
+        ShowOnboardCameraView = cameraManager.ShowPiCamView;
 
 		//makes GUI window scrollable
 		scrollPosition = GUILayout.BeginScrollView(scrollPosition);

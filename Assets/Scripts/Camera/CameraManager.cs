@@ -22,17 +22,23 @@ public class CameraManager : MonoBehaviour
     public Camera curMainCamera;
     public Camera curSecondCamera;
     public RenderTexture renderTextureRef;
-    public RenderTexture piCamTextureRef;
+
+    bool showPiCamView;
+    public bool ShowPiCamView
+    {
+        get { return showPiCamView; }
+        set { showPiCamView = value; }
+    }
 
     public int piCamRefreshTime;
+    public Vector2 piCamResolution;
 
     public bool verboseDebug;
-
-    public bool showPiCamView;
 
     CommunicationsBridge commBridge;
     PiCameraRESTClient piCam;
 
+    bool gotPiStream;
     bool refreshPiCam;
 
     Timer piCamRefreshTimer;
@@ -59,11 +65,13 @@ public class CameraManager : MonoBehaviour
             curSecondCamera.gameObject.tag = "Camera";
         }
 
+        gotPiStream = false;
         showPiCamView = true;
         piCam = (PiCameraRESTClient)commBridge.FindRestClientByLabel("PiCam");
 
         if (piCam != null)
         {
+            piCam.GetError += StreamError;
             piCam.GetOkay += GetImageFrame;
             piCamRefreshTimer = new Timer(piCamRefreshTime);
             piCamRefreshTimer.Enabled = true;
@@ -73,7 +81,7 @@ public class CameraManager : MonoBehaviour
 
             if (piCamCanvasObj != null)
             {
-                piCamTexture = new Texture2D(320, 240, TextureFormat.RGB24, false);
+                piCamTexture = new Texture2D((int)piCamResolution.x, (int)piCamResolution.y, TextureFormat.RGB24, false);
                 piCamRawImage = GameObject.Find("PiCamRawImage").GetComponent<RawImage>();
                 showPiCamView = true;
             }
@@ -129,6 +137,16 @@ public class CameraManager : MonoBehaviour
         curMainCamera = newMainCamera;
     }
 
+    public void StreamError(object sender, EventArgs e)
+    {
+        if (!gotPiStream && showPiCamView)  // error before first successful get
+        {                                   //  probably means we have no connection
+            showPiCamView = false;  // may as well shut it off
+            Debug.Log("Can't get PiCam stream!  Maybe the streaming client is not active?  " +
+                "Shutting off stream viewer.");
+        }
+    }
+
     public void GetImageFrame(object sender, EventArgs e)
     {
         object content = ((RestEventArgs)e).Content;
@@ -147,6 +165,7 @@ public class CameraManager : MonoBehaviour
             texture.LoadImage(dict.bytes);
             texture.Apply();
             RenderPiCamView(texture);
+            gotPiStream = true; // we've received and processed at least one frame
         }
         catch (Exception ex)
         {
