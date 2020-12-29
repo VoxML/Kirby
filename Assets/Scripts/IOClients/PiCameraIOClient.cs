@@ -18,7 +18,7 @@ public class PiCameraIOClient : MonoBehaviour {
     // Use this for initialization
     void Start() {
         commBridge = GameObject.Find("CommunicationsBridge").GetComponent<CommunicationsBridge>();
-        _piCamRestClient = (PiCameraRESTClient)commBridge.FindRestClientByLabel("PiCam");
+        _piCamRestClient = (PiCameraRESTClient)commBridge.FindRESTClientByLabel("PiCam");
     }
 
     // Update is called once per frame
@@ -28,7 +28,7 @@ public class PiCameraIOClient : MonoBehaviour {
             if (_piCamRestClient.isConnected) {
                 if (commBridge.tryAgainRest.ContainsKey(_piCamRestClient.name)) {
                     if (commBridge.tryAgainSockets[piCamUrl] == typeof(PiCameraRESTClient)) {
-                        _piCamRestClient = (PiCameraRESTClient)commBridge.FindRestClientByLabel("PiCam");
+                        _piCamRestClient = (PiCameraRESTClient)commBridge.FindRESTClientByLabel("PiCam");
                     }
                 }
             }

@@ -9,7 +9,7 @@ using System.Text;
 
 using VoxSimPlatform.Network;
 
-public class PiCameraRESTClient : RestClient
+public class PiCameraRESTClient : RESTClient
 {
     /// <summary>
     /// Name to match, that's about it.

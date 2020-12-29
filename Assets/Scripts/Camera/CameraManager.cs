@@ -67,7 +67,7 @@ public class CameraManager : MonoBehaviour
 
         gotPiStream = false;
         showPiCamView = true;
-        piCam = (PiCameraRESTClient)commBridge.FindRestClientByLabel("PiCam");
+        piCam = (PiCameraRESTClient)commBridge.FindRESTClientByLabel("PiCam");
 
         if (piCam != null)
         {
@@ -149,7 +149,7 @@ public class CameraManager : MonoBehaviour
 
     public void GetImageFrame(object sender, EventArgs e)
     {
-        object content = ((RestEventArgs)e).Content;
+        object content = ((RESTEventArgs)e).Content;
         try
         {
             PiCamPixels dict = JsonUtility.FromJson<PiCamPixels>(content.ToString());
