@@ -798,7 +798,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46e056a22b51047b9bde33a27b34d76d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  density: 0
+  voxml:
+    Lex:
+      Pred: 
+      Type: 
+    Type:
+      Head: 
+      Components: []
+      Concavity: 
+      RotatSym: 
+      ReflSym: 
+      Args: []
+      Body: []
+      Scale: 
+      Arity: 
+      Class: 
+      Value: 
+      Constr: 
+      Referent: 
+      Mapping: 
+      Corresps: []
+    Habitat:
+      Intrinsic: []
+      Extrinsic: []
+    Afford_Str:
+      Affordances: []
+    Embodiment:
+      Scale: 
+      Movable: 0
+    Attributes:
+      Attrs: []
+  predicate: robot
+  density: 1
   graspConvention: {fileID: 0}
   interactionTargets: []
   moveSpeed: 1
@@ -4236,7 +4267,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comment: 
   display: {fileID: 0}
-  heavyMetalRobot: 0
+  heavyMetalRobot: 1
   audioSource: {fileID: 1961108001}
 --- !u!82 &1961108001
 AudioSource:
@@ -4248,7 +4279,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 3cb503d25311741248b0371129bac7c5, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -4541,11 +4572,9 @@ MonoBehaviour:
   curMainCamera: {fileID: 534669904}
   curSecondCamera: {fileID: 714400445}
   renderTextureRef: {fileID: 8400000, guid: ee0b650395499434696bb972265be216, type: 2}
-  piCamTextureRef: {fileID: 0}
   piCamRefreshTime: 200
-  verboseDebug: 0
-  showPiCamView: 0
   piCamResolution: {x: 320, y: 240}
+  verboseDebug: 0
 --- !u!4 &2112811586
 Transform:
   m_ObjectHideFlags: 0
