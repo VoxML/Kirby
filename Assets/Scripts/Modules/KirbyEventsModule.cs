@@ -74,8 +74,8 @@ public class KirbyEventsModule : ModuleBase
     // TODO: make this method public
     public void FIND(object[] args)
     {
-        Debug.Log("Im at least in find");
-        Debug.Log("This is arg 0 : " + args[0]);
+        //Debug.Log("Im at least in find");
+        //Debug.Log("This is arg 0 : " + args[0]);
         if (args[0] is GameObject && args[0] != null)
         {
             Debug.Log("i have an object");
