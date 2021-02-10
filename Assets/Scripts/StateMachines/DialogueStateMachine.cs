@@ -306,6 +306,7 @@ public class DialogueStateMachine : CharacterLogicAutomaton
         States.Add(new PDAState("Ready", null));
         States.Add(new PDAState("ModularInteractionLoop", null));
         States.Add(new PDAState("PatrollingLoop", null));
+        States.Add(new PDAState("FindingLoop", null));
         States.Add(new PDAState("QuestionAnsweringLoop", null));
         States.Add(new PDAState("CleanUp", null));
         States.Add(new PDAState("EndState", null));
@@ -340,6 +341,24 @@ public class DialogueStateMachine : CharacterLogicAutomaton
             null,
             GenerateStackSymbolFromConditions(
                 (b) => b.IGetBoolValue("kirby:isPatrolling", false) == false
+            ),
+            GetState("ModularInteractionLoop"),
+            new PDAStackOperation(PDAStackOperation.PDAStackOperationType.None, null)));
+
+        TransitionRelation.Add(new PDAInstruction(
+            GetStates("ModularInteractionLoop"),
+            null,
+            GenerateStackSymbolFromConditions(
+                (b) => b.IGetBoolValue("kirby:isFinding", false) == true
+            ),
+            GetState("FindingLoop"),
+            new PDAStackOperation(PDAStackOperation.PDAStackOperationType.None, null)));
+
+        TransitionRelation.Add(new PDAInstruction(
+            GetStates("FindingLoop"),
+            null,
+            GenerateStackSymbolFromConditions(
+                (b) => b.IGetBoolValue("kirby:isFinding", false) == false
             ),
             GetState("ModularInteractionLoop"),
             new PDAStackOperation(PDAStackOperation.PDAStackOperationType.None, null)));

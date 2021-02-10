@@ -19,7 +19,7 @@ public class DialogueInteractionModule : ModuleBase
 {
     MapUpdater mapUpdater;
     KirbySpeechModule speech;
-
+    
     public DialogueStateMachine stateMachine;
 
 
@@ -193,120 +193,125 @@ public class DialogueInteractionModule : ModuleBase
     {
         Debug.Log("_________________________MADE IT TO DIM___________________");
         Debug.Log(stateMachine.CurrentState.Name);
-
         string output = "";
-        switch (update.code)
+        if (stateMachine.CurrentState.Name.Equals("ModularInteractionLoop"))
         {
-            case "READY":
-                output = "I have nothing to do.";
-                break;
+            switch (update.code)
+            {
+                case "INVALID":
+                    output = "I don't understand.";
+                    break;
 
-            case "INVALID":
-                output = "I don't understand.";
-                break;
+                case "PAUSED":
+                    output = "Okay, I'll wait.";
+                    break;
 
-            case "PAUSED":
-                output = "Okay, I'll wait.";
-                break;
+                case "CANCELLED_GOAL":
+                    output = "Okay, cancelling that.";
+                    break;
 
-            case "RESTARTING":
-                output = "Okay, let's go.";
-                break;
+                case "CANCELLED_ALL":
+                    output = "Okay, I cancelled everything.";
+                    break;
 
-            case "CANCELLED_GOAL":
-                output = "Okay, cancelling that.";
-                break;
+                case "FORWARD":
+                    output = "Sure!";
+                    break;
 
-            case "CANCELLED_ALL":
-                output = "Okay, I cancelled everything.";
-                break;
+                case "GO_TO":
+                    output = "Okay!";
+                    break;
 
-            case "FORWARD":
-                output = "Sure!";
-                break;
+                case "ESTIMATE_ROTATION":
+                    output = "Okay, turning";
+                    break;
 
-            case "GO_TO":
-                output = "Okay!";
-                break;
+                case "GO_BACK":
+                    output = "Okay, I'll go back to where I was.";
+                    break;
 
-            case "ESTIMATE_ROTATION":
-                output = "Okay, turning";
-                break;
+                case "SUCCESS_FORWARD":
+                    output = "Made it!";
+                    break;
 
-            case "VERIFY_ROTATION":
-                output = "";
-                break;
+                case "SUCCESS_GO_TO":
+                    output = "Okay, I'm here.";
+                    break;
 
-            case "GO_BACK":
-                output = "Okay, I'll go back to where I was.";
-                break;
+                case "SUCCESS_VERIFY_ROTATION":
+                    output = "Finished.";
+                    break;
 
-            case "SUCCESS_FORWARD":
-                output = "Made it!";
-                break;
+                case "SUCCESS_GO_BACK":
+                    output = "Okay, I made it back.";
+                    break;
 
-            case "SUCCESS_GO_TO":
-                output = "Okay, I'm here.";
-                break;
+                case "UNREACHABLE":
+                    output = "I can't get there.";
+                    break;
 
-            case "SUCCESS_ESTIMATE_ROTATION":
-                output = "";
-                break;
+                case "STRAYED":
+                    output = "Help, I moved but I couldn't make it to my goal.";
+                    break;
 
-            case "SUCCESS_VERIFY_ROTATION":
-                output = "I finished.";
-                break;
+                case "HELP":
+                    output = "Do you want me to keep going from here or go back to " +
+                        "where I was?";
+                    break;
 
-            case "SUCCESS_GO_BACK":
-                output = "Okay, I made it back.";
-                break;
+                case "PATROL":
+                    output = "I'll explore.";
+                    break;
 
-            case "UNREACHABLE":
-                output = "I can't get there.";
-                break;
+                case "PLAN_LOOP":
+                    output = "I'm planning where to explore next.";
+                    break;
 
-            case "STRAYED":
-                output = "Help, I moved but I couldn't make it to my goal.";
-                break;
+                case "STOP_PATROL":
+                    output = "Okay, I'll stop exploring.";
+                    break;
 
-            case "HELP":
-                output = "Do you want me to keep going from here or go back to " +
-                    "where I was?";
-                break;
+                case "FINISH_PATROL":
+                    output = "I've explored as much as I can.";
+                    DataStore.SetValue("kirby:patrol:finished", new DataStore.BoolValue(true), speech, string.Empty);
+                    break;
 
-            case "PATROL":
-                output = "I'll explore.";
-                break;
+                case "DEBUG":
+                    output = update.message;
+                    break;
 
-            case "PLAN_LOOP":
-                output = "I'm planning where to explore next.";
-                break;
-
-            case "COMPLETED_LOOP":
-                output = "I've done some exploration.";
-                break;
-
-            case "STOP_PATROL":
-                output = "Okay, I'll stop exploring.";
-                break;
-
-            case "FINISH_PATROL":
-                output = "I've explored as much as I can.";
-                Debug.Log("I am in finish_patrol");
-                DataStore.SetValue("kirby:patrol:finished", new DataStore.BoolValue(true), speech, string.Empty);
-                Debug.Log("I set teh value");
-                Debug.Log("Value is : " + DataStore.GetBoolValue("kirby:patrol:finished"));
-                break;
-
-            case "DEBUG":
-                output = update.message;
-                break;
-
-            case "QUEUE":
-                output = update.message;
-                break;
+                case "QUEUE":
+                    output = update.message;
+                    break;
+            }
+        
         }
-        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
+        else if (stateMachine.CurrentState.Name.Equals("FindingLoop"))
+        {
+            switch (update.code)
+            {
+                case "PATROL":
+                    output = "Okay, I'll look.";
+                    break;
+
+                case "STOP_PATROL":
+                    if (DataStore.GetBoolValue("kirby:isFinding"))
+                    {
+                        output = "Found it.";
+                        DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
+                    }
+                    break;
+
+                case "QUEUE":
+                    output = "I'm still looking.";
+                    break;
+            }
+        }
+        if (!output.Equals(""))
+        {
+            DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
+        }
+        
 
     }
 

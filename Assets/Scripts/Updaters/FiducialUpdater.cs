@@ -202,7 +202,8 @@ public class FiducialUpdater : MonoBehaviour
         fidObj.layer = fiducials.layer;
 
         // add voxeme
-        fidObj.AddComponent<Voxeme>();
+        Voxeme voxeme = fidObj.AddComponent<Voxeme>();
+        voxeme.predicate = "block";
 
         // reinitialize voxemes
         Debug.Log("Reinitializing voxemes.");

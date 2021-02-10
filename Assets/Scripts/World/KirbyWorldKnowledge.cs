@@ -74,7 +74,7 @@ public class KirbyWorldKnowledge : MonoBehaviour
             if (locatedColor.Equals(targetColor) && locatedShape.Equals(targetShape))
             {
                 commandInput.PostMessage("stop patrol");
-
+                
                 // get offset from Kirby to object
                 Vector3 offset = DataStore.GetVector3Value("kirby:position") - fidObject.transform.position;
                 offset = new Vector3(offset.x, 0.0f, offset.z);

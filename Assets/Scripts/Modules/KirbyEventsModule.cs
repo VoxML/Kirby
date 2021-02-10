@@ -136,6 +136,7 @@ public class KirbyEventsModule : ModuleBase
 
         }
         // post message "patrol" on commandInput (see NLUModule.cs for usage)
+        DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(true), this, string.Empty);
         commandInput.inputController.inputString = "patrol";
         commandInput.PostMessage(commandInput.inputController.inputString);
         
