@@ -192,6 +192,7 @@ public class DialogueInteractionModule : ModuleBase
     public void FilterLogFeedback(LogUpdate update)
     {
         Debug.Log("_________________________MADE IT TO DIM___________________");
+        Debug.Log(update.code);
         Debug.Log(stateMachine.CurrentState.Name);
         string output = "";
         if (stateMachine.CurrentState.Name.Equals("ModularInteractionLoop"))
@@ -199,7 +200,14 @@ public class DialogueInteractionModule : ModuleBase
             switch (update.code)
             {
                 case "INVALID":
-                    output = "I don't understand.";
+                    if (DataStore.GetBoolValue("kirby:isPatrolling"))
+                    {
+                        output = "";
+                    }
+                    else
+                    {
+                        output = "I don't understand.";
+                    } 
                     break;
 
                 case "PAUSED":
@@ -291,15 +299,19 @@ public class DialogueInteractionModule : ModuleBase
             switch (update.code)
             {
                 case "PATROL":
-                    output = "Okay, I'll look.";
+                    output = "Okay, I'll look for " + DataStore.GetStringValue("kirby:target");
                     break;
 
                 case "STOP_PATROL":
-                    if (DataStore.GetBoolValue("kirby:isFinding"))
+                    if (DataStore.GetBoolValue("kirby:locatedObject"))
                     {
                         output = "Found it.";
-                        DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
                     }
+                    else
+                    {
+                        output = "Ok. I will stop looking.";
+                    }
+                    DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
                     break;
 
                 case "QUEUE":
@@ -307,7 +319,28 @@ public class DialogueInteractionModule : ModuleBase
                     break;
             }
         }
-        if (!output.Equals(""))
+        else if (stateMachine.CurrentState.Name.Equals("PatrollingLoop"))
+        {
+            switch (update.code)
+            {
+                case "PATROL":
+                    output = "I'll explore.";
+                    break;
+
+                case "STOP_PATROL":
+                    output = "Ok, I'll stop exploring";
+                    break;
+
+                case "PAUSED":
+                    output = "Ok, I'll wait.";
+                    break;
+
+                case "QUEUE":
+                    output = "I'm exploring.";
+                    break;
+            }
+        }
+            if (!output.Equals(""))
         {
             DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
         }

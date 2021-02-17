@@ -11,6 +11,7 @@ public class KirbyWorldKnowledge : MonoBehaviour
     // declare "to find" variable
     public string toFind;
     CommandInput commandInput;
+    KirbyEventsModule events;
 
     public bool fullyExplored;
     public List<GameObject> salientObjects;
@@ -25,6 +26,7 @@ public class KirbyWorldKnowledge : MonoBehaviour
         // get CommandInput component on "KirbyManager" object
         GameObject kirbyManager = GameObject.Find("KirbyManager");
         commandInput = kirbyManager.GetComponent<CommandInput>();
+        events = kirbyManager.GetComponent<KirbyEventsModule>();
 
         fullyExplored = false;
         salientObjects = new List<GameObject>(INITIAL_SALIENCEY_LIST_SIZE);
@@ -42,7 +44,13 @@ public class KirbyWorldKnowledge : MonoBehaviour
     // stops searching and navigates to the located target if so
     public void CheckTargetLocated(GameObject fidObject)
     {
-        //Debug.Log("TO FIND IS: " + toFind);
+        Debug.Log("-------------------------------------------------------------------------------------------------TO FIND IS: " + toFind);
+        Voxeme fidObjVox = fidObject.GetComponent<Voxeme>();
+        string locatedColor = fidObjVox.voxml.Attributes.Attrs[0].Value;
+        // the shape/type of the object we found
+        string locatedShape = fidObjVox.voxml.Lex.Pred;
+        Debug.Log("color " + locatedColor);
+        Debug.Log("shape " + locatedShape);
         //Debug.Log(toFind == null);
         //Debug.Log(string.IsNullOrEmpty(toFind));
         if (!string.IsNullOrEmpty(toFind))
@@ -64,15 +72,17 @@ public class KirbyWorldKnowledge : MonoBehaviour
             string targetShape = trimmed;
 
             // get the Voxeme of the new fiducial/block
-            Voxeme fidObjVox = fidObject.GetComponent<Voxeme>();
+            //Voxeme fidObjVox = fidObject.GetComponent<Voxeme>();
             // the color of the object we found
-            string locatedColor = fidObjVox.voxml.Attributes.Attrs[0].Value;
+            //string locatedColor = fidObjVox.voxml.Attributes.Attrs[0].Value;
             // the shape/type of the object we found
-            string locatedShape = fidObjVox.voxml.Lex.Pred;
+            //string locatedShape = fidObjVox.voxml.Lex.Pred;
 
             // if what we found matches what we're looking for
             if (locatedColor.Equals(targetColor) && locatedShape.Equals(targetShape))
             {
+                Debug.Log("I think I'm equal");
+                DataStore.SetValue("kirby:locatedObject", new DataStore.BoolValue(true), events, string.Empty);
                 commandInput.PostMessage("stop patrol");
                 
                 // get offset from Kirby to object

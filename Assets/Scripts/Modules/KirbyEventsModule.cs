@@ -129,14 +129,19 @@ public class KirbyEventsModule : ModuleBase
             trimmed = trimmed.Remove(trimmed.Length - 1, 1);
             // what remains is what we are searching for
             worldKnowledge.toFind = trimmed;
+            string english = trimmed.Replace("(", " ");
+            english = english.Replace(")", " ");
+            //Debug.Log("USER EVENT INTENT: " + V);
+            DataStore.SetValue("kirby:target", new DataStore.StringValue(english.Trim()), this, string.Empty);
             //Debug.Log("trimmed " + worldKnowledge.toFind);
 
-           
+
 
 
         }
         // post message "patrol" on commandInput (see NLUModule.cs for usage)
         DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(true), this, string.Empty);
+        DataStore.SetValue("kirby:locatedObject", new DataStore.BoolValue(false), this, string.Empty);
         commandInput.inputController.inputString = "patrol";
         commandInput.PostMessage(commandInput.inputController.inputString);
         

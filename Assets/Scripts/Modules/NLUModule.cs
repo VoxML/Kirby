@@ -77,6 +77,7 @@ public class NLUModule : ModuleBase
     // callback when user:speech changes
     void ParseLanguageInput(string key, DataStore.IValue value)
     {
+        Debug.Log("ParseLanguageInput");
         if (!string.IsNullOrEmpty(DataStore.GetStringValue(key)))
         {
             // testingMode turns off the requirement that kirby:isAttendingSpeech
@@ -128,6 +129,7 @@ public class NLUModule : ModuleBase
 
     string MapLanguageToCommands(string rawInput)
     {
+        Debug.Log("MapLanguageToCommands");
         string output = string.Empty;
         string input = rawInput.ToLower();
 
@@ -139,16 +141,19 @@ public class NLUModule : ModuleBase
         {
             output = GoToThatCommand(input);
         }
-        else if (input == "go forward")
+        //else if (input == "go forward")
+        else if (input.StartsWith("go forward"))
         {
             output = GoForwardCommand(input);
         }
-        else if ((input == "turn left") || (input == "turn right"))
+        //else if ((input == "turn left") || (input == "turn right"))
+        else if ((input.StartsWith("turn left")) || (input.StartsWith("turn right")))
         {
             output = TurnCommand(input);
         }
         else if ((input == "patrol") || (input == "explore"))
         {
+            //Debug.Log("I ACKNOWLEDGE THAT YOU TOLD ME TO PATROL");
             output = PatrolCommand(input);
         }
         else if (input == "stop")
@@ -158,6 +163,10 @@ public class NLUModule : ModuleBase
         else if ((input == "cancel") || (input == "cancel all"))
         {
             output = CancelCommand(input);
+        }
+        else if (input == "queue")
+        {
+            output = QueueCommand(input);
         }
         else
         {
@@ -248,7 +257,8 @@ public class NLUModule : ModuleBase
     string PatrolCommand(string input)
     {
         string command = "patrol";
-
+        DataStore.SetValue("kirby:isPatrolling", new DataStore.BoolValue(true), this, string.Empty);
+        Debug.Log("I SET PATROLLING: " + DataStore.GetBoolValue("kirby:isPatrolling"));
         return command;
     }
 
@@ -256,7 +266,7 @@ public class NLUModule : ModuleBase
     {
         string command = string.Empty;
 
-        if (DataStore.GetBoolValue("kirby:isPatrolling"))
+        if (DataStore.GetBoolValue("kirby:isPatrolling") || DataStore.GetBoolValue("kirby:isFinding"))
         {
             command = "stop patrol";
         }
@@ -269,6 +279,13 @@ public class NLUModule : ModuleBase
     }
 
     string CancelCommand(string input)
+    {
+        string command = input;
+
+        return command;
+    }
+
+    string QueueCommand(string input)
     {
         string command = input;
 
