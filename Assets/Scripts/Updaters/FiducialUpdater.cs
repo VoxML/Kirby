@@ -202,8 +202,16 @@ public class FiducialUpdater : MonoBehaviour
         fidObj.layer = fiducials.layer;
 
         // add voxeme
+        //Debug.Log("Attrset: " + attrSet.attributes);
+        //attrSet.attributes.Add(new VoxAttributesAttr());
+        //VoxAttributesAttr attr = new VoxAttributesAttr();
         Voxeme voxeme = fidObj.AddComponent<Voxeme>();
         voxeme.predicate = "block";
+        AttributeSet attrSet = fidObj.AddComponent<AttributeSet>();
+        attrSet.attributes.Add(presetMaterials[i - 1].name.ToLower());
+        
+        Debug.Log("color set as: " + presetMaterials[i - 1].name.ToLower());
+        
 
         // reinitialize voxemes
         Debug.Log("Reinitializing voxemes.");
