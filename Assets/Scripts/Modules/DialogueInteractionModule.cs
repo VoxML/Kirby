@@ -300,6 +300,7 @@ public class DialogueInteractionModule : ModuleBase
             {
                 case "PATROL":
                     output = "Okay, I'll look for " + DataStore.GetStringValue("kirby:target");
+                    output = "";
                     break;
 
                 case "STOP_PATROL":
@@ -310,7 +311,14 @@ public class DialogueInteractionModule : ModuleBase
                     else
                     {
                         output = "Ok. I will stop looking.";
+                        DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
                     }
+                    break;
+
+                case "SUCCESS_GO_TO":
+                    output = "Here's " + DataStore.GetStringValue("kirby:target");
+                    DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
+                    output = "";
                     DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
                     break;
 

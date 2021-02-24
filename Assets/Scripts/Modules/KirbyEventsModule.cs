@@ -5,6 +5,7 @@ using VoxSimPlatform.Global;
 
 using VoxSimPlatform.Core;
 using System.Collections.Generic;
+using VoxSimPlatform.Vox;
 
 public class KirbyEventsModule : ModuleBase
 {
@@ -74,12 +75,18 @@ public class KirbyEventsModule : ModuleBase
     // TODO: make this method public
     public void FIND(object[] args)
     {
-        //Debug.Log("Im at least in find");
+        Debug.Log("Im at least in find");
         //Debug.Log("This is arg 0 : " + args[0]);
         if (args[0] is GameObject && args[0] != null)
         {
             Debug.Log("i have an object");
             GameObject o = (GameObject)args[0];
+            string color = o.GetComponent<AttributeSet>().attributes[0];
+            string shape = o.GetComponent<Voxeme>().voxml.Lex.Pred;
+            string target = "a " + color + " " + shape;
+            DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(true), this, string.Empty);
+            DataStore.SetValue("kirby:target", new DataStore.StringValue(target), this, string.Empty);
+            DataStore.SetStringValue("kirby:speech", new DataStore.StringValue("I know about " + target), this, string.Empty);
             //args[0] = o;
             Vector3 offset = DataStore.GetVector3Value("kirby:position") - o.transform.position;
             offset = new Vector3(offset.x, 0.0f, offset.z);

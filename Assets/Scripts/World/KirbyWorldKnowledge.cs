@@ -46,8 +46,8 @@ public class KirbyWorldKnowledge : MonoBehaviour
     {
         Debug.Log("-------------------------------------------------------------------------------------------------TO FIND IS: " + toFind);
         Voxeme fidObjVox = fidObject.GetComponent<Voxeme>();
-        string locatedColor = fidObjVox.voxml.Attributes.Attrs[0].Value;
-        Debug.Log("HERES WHAT INSIDE: " + fidObjVox.voxml.Attributes.Attrs[0]);
+        string locatedColor = fidObject.GetComponent<AttributeSet>().attributes[0];
+        Debug.Log("HERES WHAT INSIDE: " + fidObject.GetComponent<AttributeSet>().attributes[0]);
         // the shape/type of the object we found
         string locatedShape = fidObjVox.voxml.Lex.Pred;
         Debug.Log("color " + locatedColor);
