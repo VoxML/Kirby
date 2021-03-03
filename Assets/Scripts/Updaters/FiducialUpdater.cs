@@ -68,7 +68,7 @@ public class FiducialUpdater : MonoBehaviour
         if (targetToCheck != null)
         {
            
-            // assesses whether the thing we just added to the dict of known objects
+            // Assesses whether the most recently added known object
             // matches the characteristics of what we were looking for
             objects.CheckTargetLocated(targetToCheck);
 
@@ -117,7 +117,7 @@ public class FiducialUpdater : MonoBehaviour
 
                 if (fidObjVox != null)
                 {
-                    // fiducial object with this ID already exists
+                    // Fiducial object with this ID already exists
                     Vector3 coords = new Vector3(-update.data[i].pose.location[1],
                         update.data[i].pose.location[2], update.data[i].pose.location[0]);
 
@@ -149,8 +149,7 @@ public class FiducialUpdater : MonoBehaviour
 
                 CreateNewFiducialObject(coords, rot, update, update.data[i].fid, out fidObj);
 
-                // add to ObjectsOfInterest objects dictionary
-                // key: fidObj, value fidObj.transform.position
+                // Add new object to list of know objects
                 objects.objectDict.Add(fidObj, fidObj.transform.position);
                 string s = "";
                 foreach (KeyValuePair<GameObject, Vector3> kvp in objects.objectDict)
@@ -160,7 +159,7 @@ public class FiducialUpdater : MonoBehaviour
                     Debug.Log("Heres a fid: " + GlobalHelper.VectorToParsable(kvp.Value));
                 }
                 Debug.Log("Known objects dictionary content:" + s);
-
+                // This will be checked against targeton the next Update
                 targetToCheck = fidObj;
             }
         }
@@ -201,17 +200,11 @@ public class FiducialUpdater : MonoBehaviour
         fidObj.transform.parent = fiducials.transform;
         fidObj.layer = fiducials.layer;
 
-        // add voxeme
-        //Debug.Log("Attrset: " + attrSet.attributes);
-        //attrSet.attributes.Add(new VoxAttributesAttr());
-        //VoxAttributesAttr attr = new VoxAttributesAttr();
+        // Add voxeme
         Voxeme voxeme = fidObj.AddComponent<Voxeme>();
         voxeme.predicate = "block";
         AttributeSet attrSet = fidObj.AddComponent<AttributeSet>();
         attrSet.attributes.Add(presetMaterials[i - 1].name.ToLower());
-        
-        Debug.Log("color set as: " + presetMaterials[i - 1].name.ToLower());
-        
 
         // reinitialize voxemes
         Debug.Log("Reinitializing voxemes.");

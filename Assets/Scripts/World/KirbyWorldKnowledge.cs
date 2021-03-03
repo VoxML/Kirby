@@ -6,32 +6,31 @@ using VoxSimPlatform.Vox;
 
 public class KirbyWorldKnowledge : MonoBehaviour
 {
+    // Dictionary of known objects
     public Dictionary<GameObject, Vector3> objectDict;
 
-    // declare "to find" variable
+    // Represents what, if anything, is being looked for
     public string toFind;
+
     CommandInput commandInput;
     KirbyEventsModule events;
 
+    // Whether or not Kirby has exhaustively explored his environemnt
     public bool fullyExplored;
+
+    // Ordered list of most recently referenced objects
     public List<GameObject> salientObjects;
     public const int INITIAL_SALIENCEY_LIST_SIZE = 20;
 
     // Start is called before the first frame update
     void Start()
     {
-        // TODO: instantiate object dict (new Dictionary<,>)
         objectDict = new Dictionary<GameObject, Vector3>();
-
-        // get CommandInput component on "KirbyManager" object
         GameObject kirbyManager = GameObject.Find("KirbyManager");
         commandInput = kirbyManager.GetComponent<CommandInput>();
         events = kirbyManager.GetComponent<KirbyEventsModule>();
-
         fullyExplored = false;
         salientObjects = new List<GameObject>(INITIAL_SALIENCEY_LIST_SIZE);
-
-        
     }
 
     // Update is called once per frame
@@ -40,30 +39,34 @@ public class KirbyWorldKnowledge : MonoBehaviour
         
     }
 
-    // checks whether what we just found is what we were looking for,
-    // stops searching and navigates to the located target if so
+    // Gets the attribute list of a Voxeme
+    public List<string> GetVoxAttributes(GameObject o)
+    {
+        return o.GetComponent<AttributeSet>().attributes;
+    }
+
+    // Gets the predicate of a Voxeme
+    public string GetVoxPredicate(GameObject o)
+    {
+        return o.GetComponent<Voxeme>().voxml.Lex.Pred;
+    }
+
+    // Checks whether what we just found is what we were looking for,
+    // stops searching and navigates to the located target if so.
+    // This is called every time we enconter a new Fiducial.
     public void CheckTargetLocated(GameObject fidObject)
     {
-        Debug.Log("-------------------------------------------------------------------------------------------------TO FIND IS: " + toFind);
-        Voxeme fidObjVox = fidObject.GetComponent<Voxeme>();
-        string locatedColor = fidObject.GetComponent<AttributeSet>().attributes[0];
-        Debug.Log("HERES WHAT INSIDE: " + fidObject.GetComponent<AttributeSet>().attributes[0]);
-        // the shape/type of the object we found
-        string locatedShape = fidObjVox.voxml.Lex.Pred;
-        Debug.Log("color " + locatedColor);
-        Debug.Log("shape " + locatedShape);
-        //Debug.Log(toFind == null);
-        //Debug.Log(string.IsNullOrEmpty(toFind));
+        // Get color and shape of located object
+        string locatedColor = GetVoxAttributes(fidObject)[0];
+        string locatedShape = GetVoxPredicate(fidObject);
+        // As long as we were searching for something
         if (!string.IsNullOrEmpty(toFind))
         {
             // trim top predicate (a determiner) from the toFind string 
             string trimmed = toFind.Remove(0, toFind.IndexOf('(') + 1);
-            // remove outer closing parenthesis 
             trimmed = trimmed.Remove(trimmed.Length - 1, 1);
             // top predicate should now be the color of the block
             string targetColor = GlobalHelper.GetTopPredicate(trimmed);
-            //Debug.Log("Target color: " + targetColor);
-
             // trim the outer two predicates 
             trimmed = toFind.Remove(0, toFind.IndexOf('(') + 1);
             trimmed = trimmed.Remove(trimmed.Length - 1, 1);
@@ -72,19 +75,12 @@ public class KirbyWorldKnowledge : MonoBehaviour
             // only remaining predicate should be the object, in this case 'block'
             string targetShape = trimmed;
 
-            // get the Voxeme of the new fiducial/block
-            //Voxeme fidObjVox = fidObject.GetComponent<Voxeme>();
-            // the color of the object we found
-            //string locatedColor = fidObjVox.voxml.Attributes.Attrs[0].Value;
-            // the shape/type of the object we found
-            //string locatedShape = fidObjVox.voxml.Lex.Pred;
-
-            // if what we found matches what we're looking for
-            Debug.Log("MATCH: " + locatedColor + " " + targetColor);
+            // If found object's attributes match those of the target
             if (locatedColor.Equals(targetColor) && locatedShape.Equals(targetShape))
             {
-                Debug.Log("I think I'm equal");
+                // Update flag to say object has been located
                 DataStore.SetValue("kirby:locatedObject", new DataStore.BoolValue(true), events, string.Empty);
+                // Post a message to make Kirby stop searching
                 commandInput.PostMessage("stop patrol");
                 
                 // get offset from Kirby to object
@@ -97,7 +93,7 @@ public class KirbyWorldKnowledge : MonoBehaviour
                 coords.Add(position.z.ToString());
                 coords.Add((-position.x).ToString());
 
-                // publish a go to command, to the location of block we found that matches
+                // publish a go to command, to the location of object we found that matches
                 commandInput.inputController.inputString = string.Format("go to {0} {1}", coords[0], coords[1]);
                 commandInput.PostMessage(commandInput.inputController.inputString);
             }

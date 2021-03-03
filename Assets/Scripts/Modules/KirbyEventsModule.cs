@@ -11,34 +11,29 @@ public class KirbyEventsModule : ModuleBase
 {
     EventManager eventManager;
 
-    // declare commandInput variable
     CommandInput commandInput;
 
-    // declare worldKnowledge variable
     KirbyWorldKnowledge worldKnowledge;
 
     // Use this for initialization
     void Start()
     {
-        // get game object named "BehaviorController"
         GameObject behaviorController = GameObject.Find("BehaviorController");
-        // set eventManager = EventManager component on BehaviorController
         eventManager = behaviorController.GetComponent<EventManager>();
 
-        // get CommandInput component on "KirbyManager" object
         GameObject kirbyManager = GameObject.Find("KirbyManager");
         commandInput = kirbyManager.GetComponent<CommandInput>();
 
-        // get KirbyWorldKnowledge component on "KirbyWorldKnowledge" object
         GameObject kirbyWorldKnowledge = GameObject.Find("KirbyWorldKnowledge");
         worldKnowledge = kirbyWorldKnowledge.GetComponent<KirbyWorldKnowledge>();
 
-        // create a DataStore subscriber for the key "user:event:intent" to trigger "PromptEvent"
+        // Subscribe to "user:event:intent" to trigger "PromptEvent"
         DataStore.Subscribe("user:event:intent", PromptEvent);
-        // add event handler delegate
+
+        // In the case of a NonexistentEntityError, we will start looking for the entity
         eventManager.NonexistentEntityError += StartLooking;
 
-        // create a DataStore subscriber for the key "kirby:patrol:finished" to trigger UpdateExploredFlag
+        // Subscribe to "kirby:patrol:finished" to trigger UpdateExploredFlag
         DataStore.Subscribe("kirby:patrol:finished", UpdateExploredFlag);
     }
 
@@ -50,13 +45,11 @@ public class KirbyEventsModule : ModuleBase
 
     public void PromptEvent(string key, DataStore.IValue value)
     {
-        // get the value of key and store it in a string variable
+        
         string v = DataStore.GetStringValue(key);
 
-        // if that variable is not null of empty
         if (!string.IsNullOrEmpty(v))
         {
-            // prompt the event
             eventManager.InsertEvent(string.Empty, 0);
             eventManager.InsertEvent(v, 1);
         }
@@ -72,22 +65,26 @@ public class KirbyEventsModule : ModuleBase
         }
     }
 
-    // TODO: make this method public
     public void FIND(object[] args)
     {
-        Debug.Log("Im at least in find");
-        //Debug.Log("This is arg 0 : " + args[0]);
+        // If we already know about an object that matches what we're looking for
         if (args[0] is GameObject && args[0] != null)
         {
-            Debug.Log("i have an object");
+            // Cast to GameObject
             GameObject o = (GameObject)args[0];
-            string color = o.GetComponent<AttributeSet>().attributes[0];
-            string shape = o.GetComponent<Voxeme>().voxml.Lex.Pred;
+            // Extract the shape and color of the known object
+            string color = worldKnowledge.GetVoxAttributes(o)[0];
+            string shape = worldKnowledge.GetVoxPredicate(o);
+            // This prose representation of the target will be used in the dialog
             string target = "a " + color + " " + shape;
+            // Update isFinding flag to trigger transition to FindingState in dialog PDA
             DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(true), this, string.Empty);
+            // Store prose representatio in :target key
             DataStore.SetValue("kirby:target", new DataStore.StringValue(target), this, string.Empty);
+            // Publish feedback from Kirby that an object is known
             DataStore.SetStringValue("kirby:speech", new DataStore.StringValue("I know about " + target), this, string.Empty);
-            //args[0] = o;
+
+            // Get the coordinates of the known object
             Vector3 offset = DataStore.GetVector3Value("kirby:position") - o.transform.position;
             offset = new Vector3(offset.x, 0.0f, offset.z);
             offset = offset.normalized * .125f;
@@ -97,7 +94,7 @@ public class KirbyEventsModule : ModuleBase
             coords.Add(position.z.ToString());
             coords.Add((-position.x).ToString());
 
-            // publish a go to command, to the location of block we found that matches
+            // Publish a go to command, to the location of object we found that matches
             commandInput.inputController.inputString = string.Format("go to {0} {1}", coords[0], coords[1]);
             commandInput.PostMessage(commandInput.inputController.inputString);
         }
@@ -105,50 +102,34 @@ public class KirbyEventsModule : ModuleBase
         {
             Debug.LogError("found object is null");
         }
-
-        // TODO: Go to the object args[0]
-        //  need to check and make sure that the type of args[0] is GameObject
-        //  and cast it to GameObject type to get the actual object
-        // if object is not null
-        //  extract its cooordinates and send a "go to x y command"
-        //  like in KirbyWorldKnowledge.CheckTargetLocated
-        // if it is null, do nothing, maybe print an error to the console
     }
 
     void StartLooking(object sender, EventArgs e)
     {
 
-        // extract the "to find" content from the event string
-        // get the string value of "user:event:intent" and store in a variable V
-        // get the top predicate of your event string variable
-        // - use the GetTopPredicate method in the GlobalHelper class
-        // - need VoxSimPlatform.Global C# using statement
-        // if top predicate equals "find":
-        // trim "find(" and the final ")" from the event string
-        // store the remaining string in the worldKnowledge variable declared above
+        // Get the representation of the user's input
         string V = DataStore.GetStringValue("user:event:intent");
+        // Get the top predicate from the representation
         string topPred = GlobalHelper.GetTopPredicate(V);
-        //Debug.Log(topPred);
+        // If we are dealing with a find command
         if (Equals(topPred, "find"))
         {
-            // strip the find predicate from the string
+            // Strip the find predicate from the string
             string trimmed = V.Remove(0, 5);
             trimmed = trimmed.Remove(trimmed.Length - 1, 1);
-            // what remains is what we are searching for
+            // What remains is what we are searching for, still in predicate form
             worldKnowledge.toFind = trimmed;
+            // Create a prose-y representation by removing ( )
             string english = trimmed.Replace("(", " ");
             english = english.Replace(")", " ");
-            //Debug.Log("USER EVENT INTENT: " + V);
+            // Store this in the :target key
             DataStore.SetValue("kirby:target", new DataStore.StringValue(english.Trim()), this, string.Empty);
-            //Debug.Log("trimmed " + worldKnowledge.toFind);
-
-
-
-
         }
-        // post message "patrol" on commandInput (see NLUModule.cs for usage)
+        // Set :isFinding flag to trigger Dialog PDA transition
         DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(true), this, string.Empty);
+        // Set flag for when the object has been found to false
         DataStore.SetValue("kirby:locatedObject", new DataStore.BoolValue(false), this, string.Empty);
+        // Publish a patrol command to have Kirby start looking
         commandInput.inputController.inputString = "patrol";
         commandInput.PostMessage(commandInput.inputController.inputString);
         
