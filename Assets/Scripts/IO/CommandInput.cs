@@ -19,7 +19,7 @@ public class CommandInput : MonoBehaviour
             Debug.LogWarning("CommandInput.Start: Could not find InputController.  Expect errors!");
         }
 
-        inputController.InputReceived += PostMessage;
+        //inputController.InputReceived += PostMessage;
 
         redisPublisherManager = gameObject.GetComponent<RedisPublisherManager>();
         if (redisPublisherManager == null)

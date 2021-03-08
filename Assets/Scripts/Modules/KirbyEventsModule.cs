@@ -130,7 +130,7 @@ public class KirbyEventsModule : ModuleBase
         // Set flag for when the object has been found to false
         DataStore.SetValue("kirby:locatedObject", new DataStore.BoolValue(false), this, string.Empty);
         // Publish a patrol command to have Kirby start looking
-        commandInput.inputController.inputString = "patrol";
+        commandInput.inputController.inputString = "patrol 2 20 5 ";
         commandInput.PostMessage(commandInput.inputController.inputString);
         
     }

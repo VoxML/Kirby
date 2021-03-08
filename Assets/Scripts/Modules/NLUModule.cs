@@ -257,8 +257,6 @@ public class NLUModule : ModuleBase
     string PatrolCommand(string input)
     {
         string command = "patrol";
-        DataStore.SetValue("kirby:isPatrolling", new DataStore.BoolValue(true), this, string.Empty);
-        Debug.Log("I SET PATROLLING: " + DataStore.GetBoolValue("kirby:isPatrolling"));
         return command;
     }
 

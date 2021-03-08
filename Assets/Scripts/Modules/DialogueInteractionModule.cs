@@ -191,15 +191,16 @@ public class DialogueInteractionModule : ModuleBase
 
     public void FilterLogFeedback(LogUpdate update)
     {
-        Debug.Log("_________________________MADE IT TO DIM___________________");
-        Debug.Log(update.code);
-        Debug.Log(stateMachine.CurrentState.Name);
+        Debug.Log("Handling feedback " + update.code);
+        Debug.Log("Current Dialog State: " + stateMachine.CurrentState.Name);
         string output = "";
         if (stateMachine.CurrentState.Name.Equals("ModularInteractionLoop"))
         {
             switch (update.code)
             {
                 case "INVALID":
+                    // There is sometimes noise when Kirby is/starts patrolling,
+                    // don't send feedback from Kirby in this case
                     if (DataStore.GetBoolValue("kirby:isPatrolling"))
                     {
                         output = "";
@@ -269,19 +270,7 @@ public class DialogueInteractionModule : ModuleBase
 
                 case "PATROL":
                     output = "I'll explore.";
-                    break;
-
-                case "PLAN_LOOP":
-                    output = "I'm planning where to explore next.";
-                    break;
-
-                case "STOP_PATROL":
-                    output = "Okay, I'll stop exploring.";
-                    break;
-
-                case "FINISH_PATROL":
-                    output = "I've explored as much as I can.";
-                    DataStore.SetValue("kirby:patrol:finished", new DataStore.BoolValue(true), speech, string.Empty);
+                    DataStore.SetValue("kirby:isPatrolling", new DataStore.BoolValue(true), this, string.Empty);
                     break;
 
                 case "DEBUG":
@@ -299,15 +288,17 @@ public class DialogueInteractionModule : ModuleBase
             switch (update.code)
             {
                 case "PATROL":
+                    // If Kirby is finding and starts patrolling, he is looking for something
                     output = "Okay, I'll look for " + DataStore.GetStringValue("kirby:target");
-                    output = "";
                     break;
 
                 case "STOP_PATROL":
+                    // If this command was published because we found the target object
                     if (DataStore.GetBoolValue("kirby:locatedObject"))
                     {
                         output = "Found it.";
                     }
+                    // If this command was published because the user wants to stop looking
                     else
                     {
                         output = "Ok. I will stop looking.";
@@ -315,13 +306,25 @@ public class DialogueInteractionModule : ModuleBase
                     }
                     break;
 
+                case "FINISH_PATROL":
+                    output = "I could not find " + DataStore.GetStringValue("kirby:target");
+                    DataStore.SetValue("kirby:patrol:finished", new DataStore.BoolValue(true), speech, string.Empty);
+                    DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
+                    output = "";
+                    DataStore.SetValue("kirby:isPatrolling", new DataStore.BoolValue(false), this, string.Empty);
+                    break;
+
+                // Kirby goes to an object if he finds the target
                 case "SUCCESS_GO_TO":
+                    // Publish success message while still in FindingLooop
                     output = "Here's " + DataStore.GetStringValue("kirby:target");
                     DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
                     output = "";
+                    // Then transition out of Finding, don't publish more feedback
                     DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
                     break;
 
+                // This won't work while patrolling, will work during go-to
                 case "QUEUE":
                     output = "I'm still looking.";
                     break;
@@ -337,6 +340,7 @@ public class DialogueInteractionModule : ModuleBase
 
                 case "STOP_PATROL":
                     output = "Ok, I'll stop exploring";
+                    DataStore.SetValue("kirby:isPatrolling", new DataStore.BoolValue(false), this, string.Empty);
                     break;
 
                 case "PAUSED":
@@ -345,6 +349,18 @@ public class DialogueInteractionModule : ModuleBase
 
                 case "QUEUE":
                     output = "I'm exploring.";
+                    break;
+
+                case "PLAN_LOOP":
+                    output = "I'm planning where to explore next.";
+                    break;
+
+                case "FINISH_PATROL":
+                    output = "I've explored as much as I can.";
+                    DataStore.SetValue("kirby:patrol:finished", new DataStore.BoolValue(true), speech, string.Empty);
+                    DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
+                    output = "";
+                    DataStore.SetValue("kirby:isPatrolling", new DataStore.BoolValue(false), this, string.Empty);
                     break;
             }
         }
