@@ -70,6 +70,7 @@ public class KirbyEventsModule : ModuleBase
         // If we already know about an object that matches what we're looking for
         if (args[0] is GameObject && args[0] != null)
         {
+            Debug.Log("I'm in FIND");
             // Cast to GameObject
             GameObject o = (GameObject)args[0];
             // Extract the shape and color of the known object
@@ -109,6 +110,7 @@ public class KirbyEventsModule : ModuleBase
 
         // Get the representation of the user's input
         string V = DataStore.GetStringValue("user:event:intent");
+        Debug.Log("HERE IS V: " + V);
         // Get the top predicate from the representation
         string topPred = GlobalHelper.GetTopPredicate(V);
         // If we are dealing with a find command
@@ -130,7 +132,8 @@ public class KirbyEventsModule : ModuleBase
         // Set flag for when the object has been found to false
         DataStore.SetValue("kirby:locatedObject", new DataStore.BoolValue(false), this, string.Empty);
         // Publish a patrol command to have Kirby start looking
-        commandInput.inputController.inputString = "patrol 2 20 5 ";
+        //commandInput.inputController.inputString = "patrol 2 20 5 ";
+        commandInput.inputController.inputString = "patrol";
         commandInput.PostMessage(commandInput.inputController.inputString);
         
     }

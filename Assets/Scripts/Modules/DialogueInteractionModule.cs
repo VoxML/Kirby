@@ -22,6 +22,8 @@ public class DialogueInteractionModule : ModuleBase
     
     public DialogueStateMachine stateMachine;
 
+    KirbyWorldKnowledge worldKnowledge;
+
 
     // Use this for initialization
     void Start()
@@ -32,6 +34,9 @@ public class DialogueInteractionModule : ModuleBase
 
         mapUpdater = GameObject.Find("KirbyManager").GetComponent<MapUpdater>();
         speech = GameObject.Find("KirbyManager").GetComponent<KirbySpeechModule>();
+
+        GameObject kirbyWorldKnowledge = GameObject.Find("KirbyWorldKnowledge");
+        worldKnowledge = kirbyWorldKnowledge.GetComponent<KirbyWorldKnowledge>();
 
         if (mapUpdater == null)
         {
@@ -304,6 +309,7 @@ public class DialogueInteractionModule : ModuleBase
                         output = "Ok. I will stop looking.";
                         DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
                     }
+                    worldKnowledge.toFind = "";
                     break;
 
                 case "FINISH_PATROL":
@@ -311,7 +317,8 @@ public class DialogueInteractionModule : ModuleBase
                     DataStore.SetValue("kirby:patrol:finished", new DataStore.BoolValue(true), speech, string.Empty);
                     DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
                     output = "";
-                    DataStore.SetValue("kirby:isPatrolling", new DataStore.BoolValue(false), this, string.Empty);
+                    DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
+                    worldKnowledge.toFind = "";
                     break;
 
                 // Kirby goes to an object if he finds the target
