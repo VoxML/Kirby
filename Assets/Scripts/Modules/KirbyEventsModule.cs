@@ -67,15 +67,28 @@ public class KirbyEventsModule : ModuleBase
 
     public void FIND(object[] args)
     {
+        Debug.Log("I FOUND: " + args.Length);
         // If we already know about an object that matches what we're looking for
         if (args[0] is GameObject && args[0] != null)
         {
-            Debug.Log("I'm in FIND");
+
+            //Debug.Log("I'm in FIND");
+            //Debug.Log("I found: " + args.Length);
+            //for (int i = 0; i < args.Length; i++)
+            //{
+            //    Debug.Log("I found: " + i);
+            //    GameObject obj = (GameObject)args[i];
+            //    string c = worldKnowledge.GetVoxAttributes(obj)[0];
+            //    string s = worldKnowledge.GetVoxPredicate(obj);
+            //    Debug.Log("I found: " + c + " " + s);
+            //}
             // Cast to GameObject
             GameObject o = (GameObject)args[0];
             // Extract the shape and color of the known object
             string color = worldKnowledge.GetVoxAttributes(o)[0];
             string shape = worldKnowledge.GetVoxPredicate(o);
+           
+            
             // This prose representation of the target will be used in the dialog
             string target = "a " + color + " " + shape;
             // Update isFinding flag to trigger transition to FindingState in dialog PDA
@@ -122,10 +135,17 @@ public class KirbyEventsModule : ModuleBase
             // What remains is what we are searching for, still in predicate form
             worldKnowledge.toFind = trimmed;
             // Create a prose-y representation by removing ( )
-            string english = trimmed.Replace("(", " ");
-            english = english.Replace(")", " ");
+            string prose = trimmed.Replace("(", " ");
+            prose = prose.Replace(")", " ");
             // Store this in the :target key
-            DataStore.SetValue("kirby:target", new DataStore.StringValue(english.Trim()), this, string.Empty);
+            if (prose.Contains("all"))
+            {
+                DataStore.SetValue("kirby:target", new DataStore.StringValue(prose.Trim() + "s"), this, string.Empty);
+            }
+            else
+            {
+                DataStore.SetValue("kirby:target", new DataStore.StringValue(prose.Trim()), this, string.Empty);
+            }
         }
         // Set :isFinding flag to trigger Dialog PDA transition
         DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(true), this, string.Empty);

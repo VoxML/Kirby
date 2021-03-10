@@ -67,7 +67,9 @@ public class KirbyWorldKnowledge : MonoBehaviour
         if (!string.IsNullOrEmpty(toFind))
         {
             string targetColor = ExtractColorFromToFind();
+            //Debug.Log("EXTRACTED COLOR:" + targetColor);
             string targetShape = ExtractShapeFromToFind();
+            //Debug.Log("EXTRACTED SHAPE: " + targetShape);
 
             // If found object's attributes match those of the target
             if (locatedColor.Equals(targetColor) && locatedShape.Equals(targetShape))
@@ -78,11 +80,12 @@ public class KirbyWorldKnowledge : MonoBehaviour
                     int count = CountKnownMatches(targetShape, targetColor);
                     if (count == 1)
                     {
-                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue("There is a " + targetColor + " " + targetShape), speech, string.Empty);
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue("There's a " + targetColor + " " + targetShape), speech, string.Empty);
                     }
                     else
                     {
-                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue("There is another " + targetColor + " " + targetShape), speech, string.Empty);
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(""), speech, string.Empty);
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue("There's another " + targetColor + " " + targetShape), speech, string.Empty);
                     }
                 }
                 else
@@ -123,6 +126,7 @@ public class KirbyWorldKnowledge : MonoBehaviour
                     count++;
                 }
             }
+            Debug.Log("THIS IS THE COUNT: " + count);
             return count;
         }
         else
@@ -133,29 +137,18 @@ public class KirbyWorldKnowledge : MonoBehaviour
 
     public string ExtractColorFromToFind()
     {
-        // trim top predicate (a determiner) from the toFind string 
-        string trimmed = toFind.Remove(0, toFind.IndexOf('(') + 1);
-        trimmed = trimmed.Remove(trimmed.Length - 1, 1);
-        // top predicate should now be the color of the block
-        string targetColor = GlobalHelper.GetTopPredicate(trimmed);
-        return targetColor;
+        char[] delimiters = {'(', ')'};
+        string[] parts = toFind.Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries);
+        //Debug.Log("Extracted: " + parts);
+        return parts[parts.Length - 2];
     }
 
     public string ExtractShapeFromToFind()
     {
-        // trim top predicate (a determiner) from the toFind string 
-        string trimmed = toFind.Remove(0, toFind.IndexOf('(') + 1);
-        trimmed = trimmed.Remove(trimmed.Length - 1, 1);
-        // top predicate should now be the color of the block
-        string targetColor = GlobalHelper.GetTopPredicate(trimmed);
-        // trim the outer two predicates 
-        trimmed = toFind.Remove(0, toFind.IndexOf('(') + 1);
-        trimmed = trimmed.Remove(trimmed.Length - 1, 1);
-        trimmed = trimmed.Remove(0, trimmed.IndexOf('(') + 1);
-        trimmed = trimmed.Remove(trimmed.Length - 1, 1);
-        // only remaining predicate should be the object, in this case 'block'
-        string targetShape = trimmed;
-        return targetShape;
+        char[] delimiters = { '(', ')' };
+        string[] parts = toFind.Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries);
+        //Debug.Log("Extracted: " + parts);
+        return parts[parts.Length - 1];
     }
 
 }

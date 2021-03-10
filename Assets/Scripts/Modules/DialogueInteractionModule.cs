@@ -313,7 +313,27 @@ public class DialogueInteractionModule : ModuleBase
                     break;
 
                 case "FINISH_PATROL":
-                    output = "I could not find " + DataStore.GetStringValue("kirby:target");
+                    if (DataStore.GetStringValue("kirby:target").Contains("all"))
+                    {
+                        int matches = worldKnowledge.CountKnownMatches(worldKnowledge.ExtractShapeFromToFind(), worldKnowledge.ExtractColorFromToFind());
+                        string target = DataStore.GetStringValue("kirby:target").Split(' ')[1] + " " + DataStore.GetStringValue("kirby:target").Split(' ')[2];
+                        if (matches == 0)
+                        {
+                            output = "I could not find any " + target;
+                        }
+                        else if (matches == 1)
+                        {
+                            output = "I finished looking. There is " + matches + " " + target.Substring(0, target.Length - 1);
+                        }
+                        else
+                        {
+                            output = "I finished looking. There is " + matches + " " + target;
+                        }
+                    }
+                    else
+                    {
+                        output = "I could not find " + DataStore.GetStringValue("kirby:target");
+                    }
                     DataStore.SetValue("kirby:patrol:finished", new DataStore.BoolValue(true), speech, string.Empty);
                     DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
                     output = "";
