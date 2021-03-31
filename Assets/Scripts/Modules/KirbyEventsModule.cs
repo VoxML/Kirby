@@ -35,6 +35,9 @@ public class KirbyEventsModule : ModuleBase
         // In the case of a NonexistentEntityError, we will start looking for the entity
         eventManager.NonexistentEntityError += StartLooking;
 
+        // TODO: replace MyDisambiguationHandler with, well, your disambiguation handler 
+        eventManager.DisambiguationError += MyDisambiguationHandler;
+
         // Subscribe to "kirby:patrol:finished" to trigger UpdateExploredFlag
         DataStore.Subscribe("kirby:patrol:finished", UpdateExploredFlag);
 
@@ -188,6 +191,11 @@ public class KirbyEventsModule : ModuleBase
             }
            
         } 
+    }
+
+    void MyDisambiguationHandler(object sender, EventArgs e)
+    {
+        Debug.Log("I'm in my disambiguation handler, handling disambiguations");
     }
 
     void BeginExploration()
