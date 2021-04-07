@@ -338,21 +338,35 @@ public class DialogueInteractionModule : ModuleBase
                     break;
 
                 case "FINISH_PATROL":
-                    if (DataStore.GetStringValue("kirby:target").Contains("all"))
+                    String target = DataStore.GetStringValue("kirby:target");
+                    String color = worldKnowledge.ExtractColorFromToFind();
+                    String shape = worldKnowledge.ExtractShapeFromToFind();
+                    int matches = worldKnowledge.CountKnownMatches(shape, color);
+                    if (target.Contains("all"))
                     {
-                        int matches = worldKnowledge.CountKnownMatches(worldKnowledge.ExtractShapeFromToFind(), worldKnowledge.ExtractColorFromToFind());
-                        string target = DataStore.GetStringValue("kirby:target").Split(' ')[1] + " " + DataStore.GetStringValue("kirby:target").Split(' ')[2];
+                        //string target = DataStore.GetStringValue("kirby:target").Split(' ')[1] + " " + DataStore.GetStringValue("kirby:target").Split(' ')[2];
                         if (matches == 0)
                         {
-                            output = "I could not find any " + target;
+                            output = "I could not find any " + color + " " + shape + "s";
                         }
                         else if (matches == 1)
                         {
-                            output = "I finished looking. There is " + matches + " " + target.Substring(0, target.Length - 1);
+                            output = "I finished looking. There is " + matches + " " + color + " " + shape;
                         }
                         else
                         {
-                            output = "I finished looking. There is " + matches + " " + target;
+                            output = "I finished looking. There are " + matches + " " + color + " " + shape + "s";
+                        }
+                    }
+                    else if (target.Contains("two"))
+                    {
+                        if (matches == 0)
+                        {
+                            output = "I looked everywhere, but I could not find " + target;
+                        }
+                        else if (matches == 1)
+                        {
+                            output = "I looked everywhere. I could only find one " + color + " " + shape;
                         }
                     }
                     else

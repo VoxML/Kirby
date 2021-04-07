@@ -76,8 +76,14 @@ public class KirbyEventsModule : ModuleBase
     {
         //Debug.Log("I FOUND: " + args.Length);
         Debug.Log("PREDICATE: " + DataStore.GetStringValue("user:event:intent"));
-        String quant = ExtractDeterminers(DataStore.GetStringValue("user:event:intent"));
-        if (quant.Contains("all") || quant.Contains("every"))
+        String V = DataStore.GetStringValue("user:event:intent");
+        String quant = ExtractDeterminers(V);
+        Debug.Log("PREDICATE + QUANT: " + quant);
+        String t = ExtractTarget(V);
+        String s = t.Split(' ')[1];
+        String c = t.Split(' ')[0];
+        int matches = worldKnowledge.CountKnownMatches(s, c);
+        if (quant.Contains("all") || quant.Contains("the_pl"))
         {
             if (worldKnowledge.fullyExplored)
             {
@@ -94,27 +100,55 @@ public class KirbyEventsModule : ModuleBase
         }
         else if (quant.Contains("two"))
         {
-            if (args[1] == null)
+            Debug.Log("PREDICATE QUANT DOES CONTAIN TWO");
+            Debug.Log("PREDICATE " + args.ToString());
+            if (matches == 2)
             {
-                if (worldKnowledge.fullyExplored)
+                if (quant.Contains("the"))
                 {
-                    String status = "I have already looked everywhere and there is only one.";
-                    DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);  
+                    String status = "I have already found them.";
+                    DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
                 }
                 else
                 {
-                    String status = "I already know about one. I will look for another.";
+                    String status = "I have already found two.";
                     DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
-                    DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(true), this, string.Empty);
-                    BeginExploration();
                 }
             }
             else
             {
-                String status = "I have already found two.";
-                Debug.Log("I alread found two");
-                DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                if (!worldKnowledge.fullyExplored)
+                {
+                    if (quant.Contains("the"))
+                    {
+                        String status = "I have already found one. I will look for the other.";
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        BeginExploration();
+                    }
+                    else
+                    {
+                        String status = "I have already found one, I will look for another.";
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        BeginExploration();
+                    }
+                }
+                else
+                {
+                    if (quant.Contains("the"))
+                    {
+                        String status = "I have already searched everywhere, and I was only able to find one.";
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                    }
+                    else
+                    {
+                        String status = "I have already looked everywhere, and there is only one.";
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                    }
+                }
+                
             }
+            
+            
         }
         else
         {
@@ -181,15 +215,69 @@ public class KirbyEventsModule : ModuleBase
         // If we are dealing with a find command
         if (Equals(topPred, "find"))
         {
+            String quant = ExtractDeterminers(V);
+            String target = ExtractTarget(V);
+            String shape = target.Split(' ')[1];
+            String color = target.Split(' ')[0];
+            int matches = worldKnowledge.CountKnownMatches(shape, color);
+            Debug.Log("matches" + matches + " " + shape + " " + color);
             if (!worldKnowledge.fullyExplored)
             {
+                //if (matches == 1 && quant.Contains("two")) // If one has already been located
+                //{
+                //    if (quant.Contains("the")) // Handles 'the two'
+                //    {
+                //        String status = "I already know about one. I will look for the other.";
+                //        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                //        DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(true), this, string.Empty);
+                //    }
+                //    else
+                //    {
+                //        String status = "I already know about one. I will look for another.";
+                //        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                //        DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(true), this, string.Empty);
+                //    }
+                //}
                 BeginExploration();
             }
             else
             {
-                DataStore.SetStringValue("kirby:speech", new DataStore.StringValue("I have looked and there are none."), this, string.Empty);
+                if (quant.Contains("two"))
+                {
+                    if (quant.Contains("the")) // Handles 'the two' (presupposition that there are two)
+                    {
+                        if (matches == 1)
+                        {
+                            String status = "I have already searched everywhere, and I was only able to find one.";
+                            DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        }
+                        else
+                        {
+                            String status = "I have already searched everywhere, and I couldn't find any.";
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        }
+                    }
+                    else
+                    {
+                        String status = "I have already searched everywhere, and there are none.";
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        //    //if (matches == 1)
+                        //    //{
+                        //    //    String status = "I have already looked everywhere, and there is only one.";
+                        //    //    DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        //    //}
+                        //    //else
+                        //    //{
+                        //        String status = "I have already searched everywhere, and there are none.";
+                        //        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        //    //} 
+                    }
+                }
+                else
+                {
+                    DataStore.SetStringValue("kirby:speech", new DataStore.StringValue("I have already looked, and there are none."), this, string.Empty);
+                }   
             }
-           
         } 
     }
 
@@ -207,17 +295,27 @@ public class KirbyEventsModule : ModuleBase
         trimmed = trimmed.Remove(trimmed.Length - 1, 1);
         // What remains is what we are searching for, still in predicate form
         worldKnowledge.toFind = trimmed;
-        // Create a prose-y representation by removing ( )
-        string prose = trimmed.Replace("(", " ");
-        prose = prose.Replace(")", " ");
+        Debug.Log("TO FIND: " + worldKnowledge.toFind);
+        //// Create a prose-y representation by removing ( )
+        //string prose = trimmed.Replace("(", " ");
+        //prose = prose.Replace(")", " ");
+        String quant = ExtractDeterminers(V);
+        String target = ExtractTarget(V);
+        //worldKnowledge.toFind = quant + " " + target;
         // Store this in the :target key
-        if (prose.Contains("all") || prose.Contains("every"))
+        if (quant.Contains("all") || quant.Contains("the_pl"))
+        // handles 'all', 'all the', and 'the' + pl
         {
-            DataStore.SetValue("kirby:target", new DataStore.StringValue(prose.Trim() + "s"), this, string.Empty);
+            DataStore.SetValue("kirby:target", new DataStore.StringValue("all the " + target + "s"), this, string.Empty);
+        }
+        else if (quant.Contains("two"))
+        // handles 'two' and 'the two'
+        {
+            DataStore.SetValue("kirby:target", new DataStore.StringValue(quant + " " + target + "s"), this, string.Empty);
         }
         else
         {
-            DataStore.SetValue("kirby:target", new DataStore.StringValue(prose.Trim()), this, string.Empty);
+            DataStore.SetValue("kirby:target", new DataStore.StringValue(quant + " " + target), this, string.Empty);
         }
         // Set :isFinding flag to trigger Dialog PDA transition
         DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(true), this, string.Empty);
@@ -241,6 +339,14 @@ public class KirbyEventsModule : ModuleBase
         words[words.Length - 1] = "";   // remove color
         words[words.Length - 2] = "";   // remove shape
         return String.Join(" ", words);
+    }
+
+    public String ExtractTarget(String userIntent)
+    {
+        char[] delimiters = { '(', ')' };
+        string[] words = userIntent.Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries);
+        string[] target = { words[words.Length - 2], words[words.Length - 1] };
+        return String.Join(" ", target);
     }
 }
 
