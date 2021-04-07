@@ -316,15 +316,16 @@ public class DialogueInteractionModule : ModuleBase
                     else
                     {
                         // If Kirby is finding and starts patrolling, he is looking for something
-                        output = "Okay, I'll look for " + DataStore.GetStringValue("kirby:target");
+                        output = "Okay, I'll look for" + DataStore.GetStringValue("kirby:target");
                         Debug.Log("I'm trying to talk");
                     }
                     Debug.Log("Patrol output: " + output);
                     break;
 
                 case "STOP_PATROL":
-                    // If this command was published because we found the target object
-                    if (DataStore.GetBoolValue("kirby:locatedObject"))
+                    // If this command was published because we found the target object,
+                    // and this isn't a case where we're looking for two objects
+                    if (DataStore.GetBoolValue("kirby:locatedObject") && !DataStore.GetBoolValue("kirby:lookingForMore"))
                     {
                         output = "Found it.";
                     }
@@ -384,14 +385,14 @@ public class DialogueInteractionModule : ModuleBase
                 // Kirby goes to an object if he finds the target
                 case "SUCCESS_GO_TO":
                     // Publish success message while still in FindingLooop
-                    if (DataStore.GetBoolValue("kirby:lookingForMore"))
+                    if (!DataStore.GetBoolValue("kirby:lookingForMore"))
                     {
                         output = "Here's " + DataStore.GetStringValue("kirby:target");
                         DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
                         output = "";
-                        // Then transition out of Finding, don't publish more feedback
-                        DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
                     }
+                    // Then transition out of Finding, don't publish more feedback
+                    DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
                     DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(false), this, string.Empty);
                     break;
 

@@ -123,12 +123,14 @@ public class KirbyEventsModule : ModuleBase
                     {
                         String status = "I have already found one. I will look for the other.";
                         DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(true), this, string.Empty);
                         BeginExploration();
                     }
                     else
                     {
                         String status = "I have already found one, I will look for another.";
                         DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(true), this, string.Empty);
                         BeginExploration();
                     }
                 }
@@ -223,21 +225,21 @@ public class KirbyEventsModule : ModuleBase
             Debug.Log("matches" + matches + " " + shape + " " + color);
             if (!worldKnowledge.fullyExplored)
             {
-                //if (matches == 1 && quant.Contains("two")) // If one has already been located
-                //{
-                //    if (quant.Contains("the")) // Handles 'the two'
-                //    {
-                //        String status = "I already know about one. I will look for the other.";
-                //        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
-                //        DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(true), this, string.Empty);
-                //    }
-                //    else
-                //    {
-                //        String status = "I already know about one. I will look for another.";
-                //        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
-                //        DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(true), this, string.Empty);
-                //    }
-                //}
+                if (matches == 1 && quant.Contains("two")) // If one has already been located
+                {
+                    if (quant.Contains("the")) // Handles 'the two'
+                    {
+                        String status = "I already found the first one. I will look for the other.";
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(true), this, string.Empty);
+                    }
+                    else
+                    {
+                        String status = "I already know about one. I will look for another.";
+                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                        DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(true), this, string.Empty);
+                    }
+                }
                 BeginExploration();
             }
             else
@@ -254,7 +256,7 @@ public class KirbyEventsModule : ModuleBase
                         else
                         {
                             String status = "I have already searched everywhere, and I couldn't find any.";
-                        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+                            DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
                         }
                     }
                     else
@@ -284,6 +286,8 @@ public class KirbyEventsModule : ModuleBase
     void MyDisambiguationHandler(object sender, EventArgs e)
     {
         Debug.Log("I'm in my disambiguation handler, handling disambiguations");
+        String status = "Which one do you mean?";
+        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
     }
 
     void BeginExploration()
