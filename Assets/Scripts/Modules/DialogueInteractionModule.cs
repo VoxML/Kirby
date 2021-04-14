@@ -330,10 +330,14 @@ public class DialogueInteractionModule : ModuleBase
                         output = "Found it.";
                     }
                     // If this command was published because the user wants to stop looking
-                    else
+                    else if (!DataStore.GetBoolValue("kirby:disambiguating"))
                     {
                         output = "Ok. I will stop looking.";
                         DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
+                    }
+                    else
+                    {
+                        output = "";
                     }
                     worldKnowledge.toFind = "";
                     break;
@@ -394,6 +398,14 @@ public class DialogueInteractionModule : ModuleBase
                     // Then transition out of Finding, don't publish more feedback
                     DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
                     DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(false), this, string.Empty);
+                    DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(false), this, string.Empty);
+                    break;
+
+                case "GO_TO":
+                    if (DataStore.GetBoolValue("kirby:disambiguating"))
+                    {
+                        output = "Ok!";
+                    }
                     break;
 
                 // This won't work while patrolling, will work during go-to

@@ -153,7 +153,7 @@ public class NLUModule : ModuleBase
         }
         else if ((input == "patrol") || (input == "explore"))
         {
-            //Debug.Log("I ACKNOWLEDGE THAT YOU TOLD ME TO PATROL");
+            Debug.Log("DISAMBIG: I ACKNOWLEDGE THAT YOU TOLD ME TO PATROL");
             output = PatrolCommand(input);
         }
         else if (input == "stop")
@@ -167,6 +167,10 @@ public class NLUModule : ModuleBase
         else if (input == "queue")
         {
             output = QueueCommand(input);
+        }
+        else if (input == "this" || input == "this one")
+        {
+            output = GoToThatCommand(input);
         }
         else
         {

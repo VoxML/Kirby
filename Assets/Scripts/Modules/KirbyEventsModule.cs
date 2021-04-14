@@ -155,7 +155,7 @@ public class KirbyEventsModule : ModuleBase
         else
         {
             // If we already know about an object that matches what we're looking for
-            if (args[0] is GameObject && args[0] != null)
+            if (args[0] is GameObject && args[0] != null && !DataStore.GetBoolValue("kirby:disambiguating"))
             {
 
                 //Debug.Log("I'm in FIND");
@@ -287,11 +287,16 @@ public class KirbyEventsModule : ModuleBase
     {
         Debug.Log("I'm in my disambiguation handler, handling disambiguations");
         String status = "Which one do you mean?";
+        DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(true), this, string.Empty);
+        Debug.Log("DISAMBIG : " + DataStore.GetBoolValue("kirby:disambiguating"));
+        //commandInput.inputController.inputString = "stop patrol ";
+        //commandInput.PostMessage(commandInput.inputController.inputString);
         DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
     }
 
     void BeginExploration()
     {
+
         // Get the representation of the user's input
         string V = DataStore.GetStringValue("user:event:intent");
         // Strip the find predicate from the string
@@ -326,11 +331,20 @@ public class KirbyEventsModule : ModuleBase
         // Set flag for when the object has been found to false
         DataStore.SetValue("kirby:locatedObject", new DataStore.BoolValue(false), this, string.Empty);
         // Publish a patrol command to have Kirby start looking
-        commandInput.inputController.inputString = "patrol 2 20 5 ";
-        Debug.Log("Patrol before");
-        //commandInput.inputController.inputString = "patrol";
-        commandInput.PostMessage(commandInput.inputController.inputString);
-        Debug.Log("Patrol after");
+
+        //commandInput.inputController.inputString = "patrol 2 20 5 ";
+        //Debug.Log("Patrol before");
+        ////commandInput.inputController.inputString = "patrol";
+        //commandInput.PostMessage(commandInput.inputController.inputString);
+        //Debug.Log("Patrol after");
+        if (!DataStore.GetBoolValue("kirby:disambiguating"))
+        {
+            commandInput.inputController.inputString = "patrol 2 20 5";
+            // commandInput.inputController.inputString = "patrol";
+            Debug.Log("patrol before");
+            commandInput.PostMessage(commandInput.inputController.inputString);
+            Debug.Log("Patrol after");
+        }
     }
 
 
