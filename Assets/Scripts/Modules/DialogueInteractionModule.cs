@@ -330,14 +330,15 @@ public class DialogueInteractionModule : ModuleBase
                         output = "Found it.";
                     }
                     // If this command was published because the user wants to stop looking
-                    else if (!DataStore.GetBoolValue("kirby:disambiguating"))
+                    //else if (!DataStore.GetBoolValue("kirby:disambiguating"))
+                    //{
+                    //    output = "Ok. I will stop looking.";
+                    //    DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
+                    //}
+                    else
                     {
                         output = "Ok. I will stop looking.";
                         DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
-                    }
-                    else
-                    {
-                        output = "";
                     }
                     worldKnowledge.toFind = "";
                     break;
@@ -395,23 +396,43 @@ public class DialogueInteractionModule : ModuleBase
                         DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(output), speech, string.Empty);
                         output = "";
                     }
+                    worldKnowledge.toFind = "";
                     // Then transition out of Finding, don't publish more feedback
                     DataStore.SetValue("kirby:isFinding", new DataStore.BoolValue(false), this, string.Empty);
                     DataStore.SetValue("kirby:lookingForMore", new DataStore.BoolValue(false), this, string.Empty);
-                    DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(false), this, string.Empty);
+                    //DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(false), this, string.Empty);
                     break;
 
                 case "GO_TO":
-                    if (DataStore.GetBoolValue("kirby:disambiguating"))
-                    {
-                        output = "Ok!";
-                    }
+                    //if (DataStore.GetBoolValue("kirby:disambiguating"))
+                    //{
+                    //    output = "Ok!";
+                    //}
+                    output = "";
                     break;
 
                 // This won't work while patrolling, will work during go-to
                 case "QUEUE":
                     output = "I'm still looking.";
                     break;
+            }
+        }
+        else if (stateMachine.CurrentState.Name.Equals("DisambiguatingLoop"))
+        {
+            switch(update.code)
+            {
+                case "GO_TO":
+                    if (DataStore.GetBoolValue("kirby:that"))
+                    {
+                        output = "Ok!";
+                        DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(false), this, string.Empty);
+                    }
+                    else
+                    {
+                        output = "";
+                    }
+                    break;
+                    
             }
         }
         else if (stateMachine.CurrentState.Name.Equals("PatrollingLoop"))

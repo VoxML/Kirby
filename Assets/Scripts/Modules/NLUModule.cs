@@ -233,11 +233,12 @@ public class NLUModule : ModuleBase
             Vector3 offset = DataStore.GetVector3Value("kirby:position")-targetObj.transform.position;
             offset = new Vector3(offset.x, 0.0f, offset.z);
             offset = offset.normalized * .125f;
-
+            DataStore.SetValue("kirby:that", new DataStore.BoolValue(true), this, string.Empty);
             Vector3 position = targetObj.transform.position+offset;
             List<string> coords = new List<string>();
             coords.Add(position.z.ToString());
             coords.Add((-position.x).ToString());
+
             command = string.Format("go to {0} {1}", coords[0], coords[1]);
         }
 
