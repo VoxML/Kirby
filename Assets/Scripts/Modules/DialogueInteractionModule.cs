@@ -296,6 +296,10 @@ public class DialogueInteractionModule : ModuleBase
         }
         else if (stateMachine.CurrentState.Name.Equals("FindingLoop"))
         {
+            DataStore.SetStringValue("kirby:ambiguousIntent", new DataStore.StringValue(""), this, string.Empty);
+            DataStore.SetStringValue("user:event:intent", new DataStore.StringValue(""), this, string.Empty);
+            DataStore.SetValue("kirby:disambiguationAttempts", new DataStore.IntValue(0), this, string.Empty);
+            DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(false), this, string.Empty);
             Debug.Log("Finding " + update.code);
             Debug.Log("Finding events: " + (DataStore.GetBoolValue("kirby:lookingForMore")));
             switch (update.code)
@@ -424,16 +428,64 @@ public class DialogueInteractionModule : ModuleBase
                 case "GO_TO":
                     if (DataStore.GetBoolValue("kirby:that"))
                     {
-                        output = "Ok!";
-                        DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(false), this, string.Empty);
+                        output = "Ok I'll go to that one!";
                     }
                     else
                     {
                         output = "";
                     }
                     break;
-                    
+                case "INVALID":
+                    // There is sometimes noise when Kirby is/starts patrolling,
+                    // don't send feedback from Kirby in this case
+                    if (DataStore.GetBoolValue("kirby:isPatrolling"))
+                    {
+                        output = "";
+                    }
+                    else
+                    {
+                        output = "I don't understand.";
+                    }
+                    break;
+
+                case "PAUSED":
+                    output = "Okay, I'll wait.";
+                    break;
+
+                case "CANCELLED_GOAL":
+                    output = "Okay, cancelling that.";
+                    break;
+
+                case "CANCELLED_ALL":
+                    output = "Okay, I cancelled everything.";
+                    break;
+
+                case "FORWARD":
+                    output = "Sure!";
+                    break;
+
+                case "ESTIMATE_ROTATION":
+                    output = "Okay, turning";
+                    break;
+
+                case "PATROL":
+                    output = "I'll explore.";
+                    DataStore.SetValue("kirby:isPatrolling", new DataStore.BoolValue(true), this, string.Empty);
+                    break;
+
+                case "DEBUG":
+                    output = update.message;
+                    break;
+
+                case "QUEUE":
+                    output = update.message;
+                    break;
+
             }
+            DataStore.SetStringValue("kirby:ambiguousIntent", new DataStore.StringValue(""), this, string.Empty);
+            DataStore.SetStringValue("user:event:intent", new DataStore.StringValue(""), this, string.Empty);
+            DataStore.SetValue("kirby:disambiguationAttempts", new DataStore.IntValue(0), this, string.Empty);
+            DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(false), this, string.Empty);
         }
         else if (stateMachine.CurrentState.Name.Equals("PatrollingLoop"))
         {

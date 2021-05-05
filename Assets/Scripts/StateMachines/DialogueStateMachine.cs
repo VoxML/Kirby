@@ -356,6 +356,15 @@ public class DialogueStateMachine : CharacterLogicAutomaton
             new PDAStackOperation(PDAStackOperation.PDAStackOperationType.None, null)));
 
         TransitionRelation.Add(new PDAInstruction(
+            GetStates("DisambiguatingLoop"),
+            null,
+            GenerateStackSymbolFromConditions(
+                (b) => b.IGetBoolValue("kirby:isFinding", false) == true
+            ),
+            GetState("FindingLoop"),
+            new PDAStackOperation(PDAStackOperation.PDAStackOperationType.None, null)));
+
+        TransitionRelation.Add(new PDAInstruction(
             GetStates("FindingLoop"),
             null,
             GenerateStackSymbolFromConditions(
@@ -365,7 +374,7 @@ public class DialogueStateMachine : CharacterLogicAutomaton
             new PDAStackOperation(PDAStackOperation.PDAStackOperationType.None, null)));
 
         TransitionRelation.Add(new PDAInstruction(
-            GetStates("FindingLoop"),
+            GetStates("ModularInteractionLoop"),
             null,
             GenerateStackSymbolFromConditions(
                 (b) => b.IGetBoolValue("kirby:disambiguating", false) == true

@@ -286,12 +286,41 @@ public class KirbyEventsModule : ModuleBase
     void MyDisambiguationHandler(object sender, EventArgs e)
     {
         Debug.Log("I'm in my disambiguation handler, handling disambiguations");
-        String status = "Which one do you mean?";
-        DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(true), this, string.Empty);
-        Debug.Log("DISAMBIG : " + DataStore.GetBoolValue("kirby:disambiguating"));
+        Debug.Log("DISAMBIGUATION: dis attempts: " + DataStore.GetIntValue("kirby:disambiguationAttempts"));
+        Debug.Log("DISAMBIGUATION: USER INTENT: " + DataStore.GetStringValue("user:event:intent"));
+        Debug.Log("DISAMBIGUATION: PREVIOUS AMBIG REQ: " + DataStore.GetStringValue("kirby:ambiguousIntent"));
+        string status = "";
+        if (DataStore.GetIntValue("kirby:disambiguationAttempts") == 0 ||
+            !DataStore.GetStringValue("user:event:intent").Equals(DataStore.GetStringValue("kirby:ambiguousIntent")))
+        {
+            status = "Which one do you mean?";
+            DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(true), this, string.Empty);
+            Debug.Log("DISAMBIGUATION: DIS : " + DataStore.GetBoolValue("kirby:disambiguating"));
+            DataStore.SetValue("kirby:disambiguationAttempts", new DataStore.IntValue(1), this, string.Empty);
+            DataStore.SetStringValue("kirby:ambiguousIntent", new DataStore.StringValue(DataStore.GetStringValue("user:event:intent")), this, string.Empty);
+            Debug.Log("DISAMBIG : " + DataStore.GetBoolValue("kirby:disambiguating"));
+            DataStore.SetStringValue("user:event:intent", new DataStore.StringValue(""), this, string.Empty);
+        }
+        else if (DataStore.GetIntValue("kirby:disambiguationAttempts") == 1 &&
+            DataStore.GetStringValue("user:event:intent").Equals(DataStore.GetStringValue("kirby:ambiguousIntent")))
+        {
+            status = "I need you to tell me which one you mean.";
+            DataStore.SetValue("kirby:disambiguationAttempts", new DataStore.IntValue(2), this, string.Empty);
+            DataStore.SetStringValue("user:event:intent", new DataStore.StringValue(""), this, string.Empty);
+        }
+        else
+        {
+            status = "I'm sorry, I don't know what you're talking about.";
+            DataStore.SetValue("kirby:disambiguationAttempts", new DataStore.IntValue(0), this, string.Empty);
+            DataStore.SetStringValue("kirby:ambiguousIntent", new DataStore.StringValue(""), this, string.Empty);
+            DataStore.SetValue("kirby:disambiguating", new DataStore.BoolValue(false), this, string.Empty);
+            DataStore.SetStringValue("user:event:intent", new DataStore.StringValue(""), this, string.Empty);
+
+        }
+        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
         //commandInput.inputController.inputString = "stop patrol ";
         //commandInput.PostMessage(commandInput.inputController.inputString);
-        DataStore.SetStringValue("kirby:speech", new DataStore.StringValue(status), this, string.Empty);
+
     }
 
     void BeginExploration()
